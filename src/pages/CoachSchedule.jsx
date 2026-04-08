@@ -17,7 +17,11 @@ export default function CoachSchedule() {
   const [newBlock, setNewBlock] = useState({ label: '', start_date: '', end_date: '', block_all_day: true, blocked_start_time: '', blocked_end_time: '' });
 
   useEffect(() => {
-    if (!user?.coach_id) return;
+    if (!user) return;
+    if (!user.coach_id) {
+      setLoading(false);
+      return;
+    }
     const load = async () => {
       const coaches = await base44.entities.Coach.filter({ id: user.coach_id });
       if (coaches.length > 0) setCoach(coaches[0]);
@@ -53,8 +57,9 @@ export default function CoachSchedule() {
 
   if (!user?.coach_id) {
     return (
-      <div className="py-24 text-center">
-        <p className="text-muted-foreground">Coach profile not linked. Contact an admin.</p>
+      <div className="py-24 text-center space-y-2">
+        <p className="text-foreground font-oswald text-xl uppercase tracking-wider">Coach Profile Not Linked</p>
+        <p className="text-muted-foreground text-sm">Your user account is not linked to a Coach profile yet.<br />Please ask an admin to set your <strong>coach_id</strong> in the Users panel.</p>
       </div>
     );
   }
