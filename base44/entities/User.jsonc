@@ -1,0 +1,99 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "coach",
+        "user"
+      ],
+      "default": "user"
+    },
+    "is_super_admin": {
+      "type": "boolean",
+      "default": false
+    },
+    "phone": {
+      "type": "string"
+    },
+    "dob": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_minor": {
+      "type": "boolean",
+      "default": false
+    },
+    "parent_first_name": {
+      "type": "string"
+    },
+    "parent_last_name": {
+      "type": "string"
+    },
+    "parent_email": {
+      "type": "string"
+    },
+    "parent_phone": {
+      "type": "string"
+    },
+    "parent_relationship": {
+      "type": "string"
+    },
+    "position": {
+      "type": "string",
+      "enum": [
+        "Goalkeeper",
+        "Defender",
+        "Midfielder",
+        "Striker",
+        "Winger",
+        "Center Back",
+        "Fullback",
+        "Other"
+      ]
+    },
+    "skill_level": {
+      "type": "string",
+      "enum": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "Competitive"
+      ]
+    },
+    "bio": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "coach_id": {
+      "type": "string",
+      "description": "Links user to Coach entity record"
+    },
+    "profile_setup_complete": {
+      "type": "boolean",
+      "default": false
+    },
+    "matching_opted_in": {
+      "type": "boolean",
+      "default": false
+    },
+    "matching_age_min": {
+      "type": "number"
+    },
+    "matching_age_max": {
+      "type": "number"
+    },
+    "terms_accepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "media_release_accepted": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}
