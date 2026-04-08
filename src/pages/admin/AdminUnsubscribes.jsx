@@ -1,0 +1,48 @@
+import React, { useEffect, useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import useCurrentUser from '@/hooks/useCurrentUser';
+import { Badge } from '@/components/ui/badge';
+import { format } from 'date-fns';
+import { MailX } from 'lucide-react';
+
+export default function AdminUnsubscribes() {
+  const { isAdmin } = useCurrentUser();
+  const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    base44.entities.UnsubscribeRecord.list('-created_date').then(data => { setRecords(data); setLoading(false); });
+  }, []);
+
+  if (!isAdmin) return <div className="py-24 text-center text-muted-foreground">Access denied.</div>;
+
+  return (
+    <div className="py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <h1 className="font-oswald text-3xl font-bold tracking-tight text-foreground mb-2">UNSUBSCRIBES</h1>
+        <p className="text-muted-foreground mb-8">{records.length} total · {records.filter(r => !r.resubscribed).length} active</p>
+
+        {loading ? (
+          <div className="text-center py-12"><div className="w-8 h-8 border-4 border-muted border-t-accent rounded-full animate-spin mx-auto" /></div>
+        ) : (
+          <div className="space-y-2">
+            {records.map(rec => (
+              <div key={rec.id} className="bg-card border border-border rounded-lg p-4 flex items-center justify-between">
+                <div>
+                  <p className="font-oswald tracking-wider text-foreground text-sm">{rec.email}</p>
+                  {rec.reason && <p className="text-xs text-muted-foreground mt-0.5 italic">"{rec.reason}"</p>}
+                  <p className="text-xs text-muted-foreground mt-0.5">{rec.created_date ? format(new Date(rec.created_date), 'MMM d, yyyy') : ''}</p>
+                </div>
+                {rec.resubscribed
+                  ? <Badge className="bg-green-500/10 text-green-400 border-green-500/20 border text-xs">Re-subscribed</Badge>
+                  : <Badge className="bg-destructive/10 text-destructive border-destructive/20 border text-xs"><MailX className="w-3 h-3 mr-1" />Unsubscribed</Badge>
+                }
+              </div>
+            ))}
+            {records.length === 0 && <p className="text-center text-muted-foreground py-8">No unsubscribes yet.</p>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
