@@ -17,12 +17,23 @@ const emptyCoach = { first_name: '', last_name: '', email: '', phone: '', county
 export default function AdminCoaches() {
   const { isAdmin } = useCurrentUser();
   const [coaches, setCoaches] = useState([]);
+  const [users, setUsers] = useState([]);
   const [editing, setEditing] = useState(null);
   const [open, setOpen] = useState(false);
+  const [linkDialog, setLinkDialog] = useState(null);
   const [specInput, setSpecInput] = useState('');
 
-  useEffect(() => { loadCoaches(); }, []);
+  useEffect(() => {
+    loadCoaches();
+    base44.entities.User.list().then(setUsers);
+  }, []);
   const loadCoaches = () => base44.entities.Coach.list('display_order').then(setCoaches);
+
+  const linkUser = async (userId) => {
+    await base44.entities.User.update(userId, { coach_id: linkDialog.id, role: 'coach' });
+    toast.success('User linked as coach');
+    setLinkDialog(null);
+  };
 
   const save = async () => {
     if (editing.id) {
@@ -151,13 +162,44 @@ export default function AdminCoaches() {
                   </div>
                 </div>
               </div>
-              <Button size="sm" variant="ghost" onClick={() => { setEditing({...coach}); setOpen(true); }}>
-                <Pencil className="w-4 h-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                {(() => {
+                  const linked = users.find(u => u.coach_id === coach.id);
+                  return linked ? (
+                    <span className="text-xs text-accent font-oswald tracking-wide">Linked: {linked.full_name || linked.email}</span>
+                  ) : (
+                    <Button size="sm" variant="outline" className="text-xs font-oswald tracking-wider uppercase h-7" onClick={() => setLinkDialog(coach)}>
+                      Link User
+                    </Button>
+                  );
+                })()}
+                <Button size="sm" variant="ghost" onClick={() => { setEditing({...coach}); setOpen(true); }}>
+                  <Pencil className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>
       </div>
+
+      <Dialog open={!!linkDialog} onOpenChange={() => setLinkDialog(null)}>
+        <DialogContent className="bg-card border-border">
+          <DialogHeader><DialogTitle className="font-oswald tracking-wider">LINK USER TO {linkDialog?.first_name?.toUpperCase()} {linkDialog?.last_name?.toUpperCase()}</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground mb-3">Select the user account that belongs to this coach. Their role will be set to "coach".</p>
+          <div className="space-y-2 max-h-72 overflow-y-auto">
+            {users.filter(u => !u.coach_id || u.coach_id === linkDialog?.id).map(u => (
+              <button
+                key={u.id}
+                onClick={() => linkUser(u.id)}
+                className="w-full text-left p-3 rounded-lg border border-border bg-secondary hover:border-accent/50 transition-all"
+              >
+                <p className="font-oswald tracking-wide text-sm text-foreground">{u.full_name}</p>
+                <p className="text-xs text-muted-foreground">{u.email}</p>
+              </button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
