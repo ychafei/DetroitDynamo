@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Calendar, Plus, Trash2, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import WeeklyAvailabilityEditor from '@/components/coach/WeeklyAvailabilityEditor';
 
 export default function CoachSchedule() {
   const { user } = useCurrentUser();
@@ -15,6 +16,8 @@ export default function CoachSchedule() {
   const [coach, setCoach] = useState(null);
   const [loading, setLoading] = useState(true);
   const [newBlock, setNewBlock] = useState({ label: '', start_date: '', end_date: '', block_all_day: true, blocked_start_time: '', blocked_end_time: '' });
+  const [availability, setAvailability] = useState({});
+  const [savingAvail, setSavingAvail] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -24,7 +27,10 @@ export default function CoachSchedule() {
     }
     const load = async () => {
       const coaches = await base44.entities.Coach.filter({ id: user.coach_id });
-      if (coaches.length > 0) setCoach(coaches[0]);
+      if (coaches.length > 0) {
+        setCoach(coaches[0]);
+        setAvailability(coaches[0].availability || {});
+      }
       const b = await base44.entities.CoachBlock.filter({ coach_id: user.coach_id, is_active: true }, '-start_date');
       setBlocks(b);
       setLoading(false);
@@ -43,6 +49,13 @@ export default function CoachSchedule() {
     const b = await base44.entities.CoachBlock.filter({ coach_id: user.coach_id, is_active: true }, '-start_date');
     setBlocks(b);
     setNewBlock({ label: '', start_date: '', end_date: '', block_all_day: true, blocked_start_time: '', blocked_end_time: '' });
+  };
+
+  const saveAvailability = async () => {
+    setSavingAvail(true);
+    await base44.entities.Coach.update(coach.id, { availability });
+    toast.success('Availability saved');
+    setSavingAvail(false);
   };
 
   const removeBlock = async (id) => {
@@ -69,6 +82,18 @@ export default function CoachSchedule() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <h1 className="font-oswald text-3xl font-bold tracking-tight text-foreground mb-2">SCHEDULE MANAGER</h1>
         <p className="text-muted-foreground mb-10">Manage your availability and block off dates.</p>
+
+        {/* Weekly Availability */}
+        <div className="bg-card border border-border rounded-lg p-6 mb-8">
+          <h2 className="font-oswald text-lg tracking-widest uppercase text-foreground mb-1">
+            <Clock className="inline w-4 h-4 mr-2" />Weekly Availability
+          </h2>
+          <p className="text-xs text-muted-foreground mb-4">Set which days and hours you're available for bookings.</p>
+          <WeeklyAvailabilityEditor availability={availability} onChange={setAvailability} />
+          <Button onClick={saveAvailability} disabled={savingAvail} className="mt-4 bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
+            {savingAvail ? 'Saving...' : 'Save Availability'}
+          </Button>
+        </div>
 
         {/* Add Block */}
         <div className="bg-card border border-border rounded-lg p-6 mb-8">

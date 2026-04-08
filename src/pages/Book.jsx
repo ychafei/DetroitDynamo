@@ -78,10 +78,34 @@ export default function Book() {
     });
   };
 
+  const timeToMinutes = (t) => {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  };
+
   const isTimeSlotTaken = (time) => {
     if (!selectedDate) return false;
     const dateStr = format(selectedDate, 'yyyy-MM-dd');
-    return existingSessions.some(s => s.date === dateStr && s.start_time === time);
+    const slotStart = timeToMinutes(time);
+    const slotEnd = slotStart + 30; // each slot is 30 min wide
+    return existingSessions.some(s => {
+      if (s.date !== dateStr) return false;
+      const sessionStart = timeToMinutes(s.start_time);
+      const sessionEnd = sessionStart + (s.duration_minutes || 60);
+      // block the slot if it overlaps with the session window at all
+      return slotStart < sessionEnd && slotEnd > sessionStart;
+    });
+  };
+
+  const isTimeSlotOutsideAvailability = (time) => {
+    if (!selectedDate || !coach?.availability) return false;
+    const dayName = format(selectedDate, 'EEEE'); // e.g. "Monday"
+    const dayAvail = coach.availability[dayName];
+    if (!dayAvail || !dayAvail.enabled) return true;
+    const slotMins = timeToMinutes(time);
+    const startMins = timeToMinutes(dayAvail.start);
+    const endMins = timeToMinutes(dayAvail.end);
+    return slotMins < startMins || slotMins >= endMins;
   };
 
   const handleSubmit = async () => {
@@ -246,13 +270,15 @@ export default function Book() {
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               {TIME_SLOTS.map((time) => {
                 const taken = isTimeSlotTaken(time);
+                const outside = isTimeSlotOutsideAvailability(time);
+                const disabled = taken || outside;
                 return (
                   <button
                     key={time}
-                    onClick={() => !taken && setSelectedTime(time)}
-                    disabled={taken}
+                    onClick={() => !disabled && setSelectedTime(time)}
+                    disabled={disabled}
                     className={`p-3 rounded-md border text-sm font-oswald tracking-wide transition-all ${
-                      taken
+                      disabled
                         ? 'border-border bg-secondary/50 text-muted-foreground/40 line-through cursor-not-allowed'
                         : selectedTime === time
                           ? 'border-accent bg-accent/10 text-accent'
