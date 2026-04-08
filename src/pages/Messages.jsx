@@ -21,7 +21,7 @@ export default function Messages() {
   useEffect(() => {
     if (!user) return;
     loadConversations();
-    base44.entities.Coach.filter({ is_active: true }).then(setCoaches);
+    base44.entities.Coach.filter({ is_active: true }).then(data => setCoaches(data.filter(c => c.email)));
   }, [user]);
 
   const loadConversations = async () => {
@@ -87,6 +87,7 @@ export default function Messages() {
   };
 
   const startConvoWithCoach = async (coach) => {
+    if (!coach.email) return;
     const all = await base44.entities.Conversation.filter({});
     let convo = all.find(c =>
       c.participant_emails?.includes(user.email) &&
@@ -96,7 +97,7 @@ export default function Messages() {
     if (!convo) {
       convo = await base44.entities.Conversation.create({
         type: 'coach_client',
-        participant_emails: [user.email, coach.email],
+        participant_emails: [String(user.email), String(coach.email)],
         participant_names: [user.full_name || user.email, `${coach.first_name} ${coach.last_name}`],
         coach_id: coach.id,
       });
