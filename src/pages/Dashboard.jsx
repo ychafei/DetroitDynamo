@@ -166,7 +166,7 @@ export default function Dashboard() {
                         <div className="flex justify-between items-start">
                           <div>
                             <h3 className="font-oswald text-lg font-bold tracking-wider">
-                              {format(new Date(session.date), 'EEEE, MMMM d')}
+                              {format(new Date(session.date + 'T00:00:00'), 'EEEE, MMMM d')}
                             </h3>
                             <p className="text-sm text-muted-foreground">
                               {session.start_time} · {session.duration_minutes} min · {session.county}
@@ -227,7 +227,7 @@ export default function Dashboard() {
                         <div className="flex justify-between items-center">
                           <div>
                             <p className="font-oswald tracking-wider text-sm">
-                              {format(new Date(session.date), 'MMM d, yyyy')} · {session.start_time}
+                               {format(new Date(session.date + 'T00:00:00'), 'MMM d, yyyy')} · {session.start_time}
                             </p>
                             <p className="text-xs text-muted-foreground">
                               {isCoach ? session.client_name : coach ? `${coach.first_name} ${coach.last_name}` : ''}

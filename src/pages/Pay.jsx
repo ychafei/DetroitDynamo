@@ -49,7 +49,7 @@ export default function Pay() {
                 <div key={session.id} className="bg-card border border-border rounded-lg p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="font-oswald text-lg font-bold tracking-wider">{format(new Date(session.date), 'EEEE, MMMM d')}</h3>
+                      <h3 className="font-oswald text-lg font-bold tracking-wider">{format(new Date(session.date + 'T00:00:00'), 'EEEE, MMMM d')}</h3>
                       <p className="text-sm text-muted-foreground">{session.start_time} · {session.duration_minutes} min · {session.county}</p>
                     </div>
                     <Badge className="bg-accent/10 text-accent border-accent/20">Unpaid</Badge>
