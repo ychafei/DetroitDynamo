@@ -10,15 +10,20 @@ export default function PublicLayout() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.isAuthenticated().then(async (authed) => {
-      if (!authed) return;
-      const u = await base44.auth.me();
-      setCurrentUser(u);
-      // Show onboarding if profile not yet complete and user is not a coach/admin
-      if (!u?.profile_setup_complete && u?.role === 'user') {
-        setShowOnboarding(true);
+    const loadUser = async () => {
+      try {
+        const authed = await base44.auth.isAuthenticated();
+        if (!authed) return;
+        const u = await base44.auth.me();
+        setCurrentUser(u);
+        if (!u?.profile_setup_complete && u?.role === 'user') {
+          setShowOnboarding(true);
+        }
+      } catch {
+        // unauthenticated — no-op
       }
-    });
+    };
+    loadUser();
   }, []);
 
   return (
