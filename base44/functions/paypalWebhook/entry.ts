@@ -10,7 +10,7 @@ Deno.serve(async (req) => {
   const secretKey = Deno.env.get('PAYPAL_SECRET_KEY');
   const webhookId = Deno.env.get('PAYPAL_WEBHOOK_ID');
 
-  const tokenRes = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+  const tokenRes = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic ' + btoa(`${clientId}:${secretKey}`),
@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
   });
   const { access_token } = await tokenRes.json();
 
-  const verifyRes = await fetch('https://api-m.sandbox.paypal.com/v1/notifications/verify-webhook-signature', {
+  const verifyRes = await fetch('https://api-m.paypal.com/v1/notifications/verify-webhook-signature', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${access_token}`,

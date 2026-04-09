@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
   const secretKey = Deno.env.get('PAYPAL_SECRET_KEY');
 
   // Get PayPal access token
-  const tokenRes = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+  const tokenRes = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic ' + btoa(`${clientId}:${secretKey}`),
@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
   // Create order with custom_id encoding user + package info
   const customId = `${user.email}|${packageId}|${packageName}|${packageSessions}|${sessionDurationMinutes}`;
 
-  const orderRes = await fetch('https://api-m.sandbox.paypal.com/v2/checkout/orders', {
+  const orderRes = await fetch('https://api-m.paypal.com/v2/checkout/orders', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${access_token}`,
