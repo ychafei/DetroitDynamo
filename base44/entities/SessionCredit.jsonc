@@ -1,0 +1,33 @@
+{
+  "name": "SessionCredit",
+  "type": "object",
+  "properties": {
+    "client_email": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "package_id": {
+      "type": "string"
+    },
+    "package_name": {
+      "type": "string"
+    },
+    "total_credits": {
+      "type": "number"
+    },
+    "used_credits": {
+      "type": "number",
+      "default": 0
+    },
+    "per_session_base_price": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "client_email",
+    "package_id",
+    "total_credits"
+  ]
+}
