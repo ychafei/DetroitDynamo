@@ -549,14 +549,29 @@ export default function Book() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Pay <strong className="text-foreground">${sessionPrice}</strong> securely via PayPal.
                 </p>
-                <PayPalCheckout
-                  amount={sessionPrice}
-                  packageId={selectedPackage?.id}
-                  packageName={selectedPackage?.name}
-                  packageSessions={selectedPackage?.sessions || 1}
-                  sessionDurationMinutes={duration?.minutes}
-                  onSuccess={handlePaymentConfirmed}
-                />
+                {!user ? (
+                  <div className="text-center py-4">
+                    <p className="text-sm text-muted-foreground mb-4">You must be signed in to complete your purchase.</p>
+                    <Button
+                      className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90"
+                      onClick={() => {
+                        sessionStorage.setItem('lc_booking', JSON.stringify({ step, county, coach, selectedPackage, duration, goals, selectedTags }));
+                        base44.auth.redirectToLogin(window.location.href);
+                      }}
+                    >
+                      Sign In to Pay
+                    </Button>
+                  </div>
+                ) : (
+                  <PayPalCheckout
+                    amount={sessionPrice}
+                    packageId={selectedPackage?.id}
+                    packageName={selectedPackage?.name}
+                    packageSessions={selectedPackage?.sessions || 1}
+                    sessionDurationMinutes={duration?.minutes}
+                    onSuccess={handlePaymentConfirmed}
+                  />
+                )}
               </div>
             )}
 

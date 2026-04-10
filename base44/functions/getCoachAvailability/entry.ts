@@ -2,7 +2,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 Deno.serve(async (req) => {
   try {
-    const { coach_id } = await req.json();
+    const body = await req.json();
+    const { coach_id } = body;
     const base44 = createClientFromRequest(req);
 
     const [blocks, sessions] = await Promise.all([
