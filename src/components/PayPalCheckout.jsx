@@ -40,17 +40,19 @@ export default function PayPalCheckout({ amount, packageId, packageName, package
       clientId: PAYPAL_CLIENT_ID,
       currency: 'USD',
       intent: 'capture',
+      'enable-funding': 'applepay,googlepay,venmo,card',
+      'disable-funding': '',
       components: 'buttons',
-      enableFunding: 'applepay,googlepay,venmo',
     }}>
       {error && <p className="text-destructive text-sm mb-3">{error}</p>}
       {processing && <p className="text-muted-foreground text-sm mb-3">Processing payment...</p>}
       <PayPalButtons
-        style={{ layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay', height: 48 }}
+        style={{ layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay', height: 48 }}
         createOrder={createOrder}
         onApprove={onApprove}
         onError={onError}
         onCancel={() => setError('Payment cancelled. Please try again.')}
+        forceReRender={[amount]}
       />
     </PayPalScriptProvider>
   );
