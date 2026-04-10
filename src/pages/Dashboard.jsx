@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, MessageSquare, Settings, Shield, Clock, CheckCircle2, AlertCircle, XCircle, CreditCard } from 'lucide-react';
+import { Calendar, MessageSquare, Settings, Shield, Clock, CheckCircle2, XCircle, CreditCard, Zap } from 'lucide-react';
 import { format, isBefore, addHours } from 'date-fns';
 import PaymentHandles from '@/components/shared/PaymentHandles';
 
@@ -12,6 +12,7 @@ export default function Dashboard() {
   const { user, isAdmin, isCoach } = useCurrentUser();
   const [sessions, setSessions] = useState([]);
   const [coaches, setCoaches] = useState({});
+  const [credits, setCredits] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +32,9 @@ export default function Dashboard() {
       coachList.forEach(c => { map[c.id] = c; });
       setCoaches(map);
 
+      const userCredits = await base44.entities.SessionCredit.filter({ client_email: user.email });
+      setCredits(userCredits);
+
       const convos = await base44.entities.Conversation.filter({});
       const myConvos = convos.filter(c => c.participant_emails?.includes(user.email));
       const msgs = await base44.entities.Message.filter({});
@@ -49,22 +53,30 @@ export default function Dashboard() {
   const handleCancel = async (session) => {
     const now = new Date();
     const sessionTime = new Date(`${session.date}T${session.start_time}`);
-
-    // Only block clients from cancelling on the day of or after
-    if (!isCoach && !isBefore(now, new Date(session.date + 'T00:00:00'))) {
-      alert('Sessions can only be cancelled before the day of the appointment.');
-      return;
-    }
-
     const isLateCancel = isBefore(sessionTime, addHours(now, 24));
 
     if (isLateCancel) {
-      const ok = confirm('This session is within 24 hours. A late-cancellation fee may apply at the coach\'s discretion. Continue?');
-      if (!ok) return;
+      alert('This session is within 24 hours. Credits cannot be automatically refunded. Please contact support@lctrainings.com to speak with a rep.');
+      return;
     }
 
-    await base44.entities.Session.update(session.id, { status: 'cancelled', cancellation_reason: isLateCancel ? 'Late cancellation' : '' });
+    const ok = confirm('Are you sure you want to cancel this session? Your credit hours will be returned to your balance.');
+    if (!ok) return;
+
+    await base44.entities.Session.update(session.id, { status: 'cancelled', cancellation_reason: 'Client cancelled' });
     setSessions(prev => prev.map(s => s.id === session.id ? { ...s, status: 'cancelled' } : s));
+
+    // Refund credits if session was paid
+    if (session.payment_status === 'paid') {
+      const hoursToRefund = (session.duration_minutes || 60) / 60;
+      const activeCredit = credits.find(c => c.client_email === user.email && c.used_credits > 0);
+      if (activeCredit) {
+        const updated = await base44.entities.SessionCredit.update(activeCredit.id, {
+          used_credits: Math.max(0, activeCredit.used_credits - hoursToRefund)
+        });
+        setCredits(prev => prev.map(c => c.id === activeCredit.id ? updated : c));
+      }
+    }
   };
 
   if (loading) {
@@ -117,6 +129,25 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+
+        {/* Credits Balance (clients only) */}
+        {!isCoach && (() => {
+          const totalHours = credits.reduce((sum, c) => sum + (c.total_credits - c.used_credits), 0);
+          const roundedHours = parseFloat(totalHours.toFixed(2));
+          if (roundedHours <= 0) return null;
+          return (
+            <div className="mb-6 bg-accent/10 border border-accent/30 rounded-lg p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Zap className="w-5 h-5 text-accent" />
+                <div>
+                  <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground">Credit Hours Available</p>
+                  <p className="font-oswald text-2xl font-bold text-accent">{roundedHours} hr{roundedHours !== 1 ? 's' : ''}</p>
+                </div>
+              </div>
+              <a href="/book" className="text-xs font-oswald tracking-wider uppercase text-accent hover:underline">Use Credits →</a>
+            </div>
+          );
+        })()}
 
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
@@ -212,7 +243,7 @@ export default function Dashboard() {
                         </div>
                         {/* Cancellation policy reminder */}
                         <p className="text-xs text-muted-foreground/60 mt-3">
-                          24h cancellation policy applies. Late cancellations may incur a fee.
+                          Free cancellation &gt;24h before session. Within 24h — contact <span className="text-accent">support@lctrainings.com</span> to get credits back.
                         </p>
                       </div>
                     );

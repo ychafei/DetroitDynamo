@@ -56,6 +56,7 @@ export default function Book() {
   const [creditRecord, setCreditRecord]       = useState(null);
 
   // Schedule later state
+  const [paymentMethod, setPaymentMethod]      = useState(null); // 'paypal' | 'cash'
   const [scheduling, setScheduling]           = useState(false); // true = user chose "Schedule Now"
   const [blocks, setBlocks]                   = useState([]);
   const [existingSessions, setExistingSessions] = useState([]);
@@ -148,11 +149,12 @@ export default function Book() {
 
     let credit;
     if (useExistingCredit && existingCredit) {
-      // Deduct from existing credits
+      // Deduct from existing credits (in hours)
+      const hoursUsed = duration.hours;
       credit = await base44.entities.SessionCredit.update(existingCredit.id, {
-        used_credits: existingCredit.used_credits + 1
+        used_credits: existingCredit.used_credits + hoursUsed
       });
-      setCreditRecord({ ...existingCredit, used_credits: existingCredit.used_credits + 1 });
+      setCreditRecord({ ...existingCredit, used_credits: existingCredit.used_credits + hoursUsed });
     } else {
       // New package — create credits
       credit = await base44.entities.SessionCredit.create({
@@ -160,7 +162,7 @@ export default function Book() {
         client_name: user.full_name || user.email,
         package_id: selectedPackage.id,
         package_name: selectedPackage.name,
-        total_credits: selectedPackage.sessions || 1,
+        total_credits: (selectedPackage.sessions || 1) * 1, // total credit hours = sessions * 1hr base
         used_credits: 0,
         per_session_base_price: Math.round(selectedPackage.price / (selectedPackage.sessions || 1)),
       });
@@ -184,7 +186,7 @@ export default function Book() {
       start_time: selectedTime,
       duration_minutes: duration.minutes,
       status: 'pending',
-      payment_status: 'paid',
+      payment_status: paymentMethod === 'cash' ? 'unpaid' : 'paid',
       county,
       session_goals: sessionGoals,
       total_price: sessionPrice,
@@ -209,7 +211,7 @@ export default function Book() {
 
   // ── Payment confirmed screen ──────────────────────────────────────────────
   if (paymentConfirmed) {
-    const remainingCredits = (creditRecord?.total_credits || selectedPackage?.sessions || 1) - (creditRecord?.used_credits || 1);
+    const remainingCredits = parseFloat(((creditRecord?.total_credits || selectedPackage?.sessions || 1) - (creditRecord?.used_credits ?? duration?.hours ?? 1)).toFixed(2));
 
     if (sessionBooked) {
       return (
@@ -291,9 +293,9 @@ export default function Book() {
             Your <strong>{selectedPackage?.name}</strong> package is active.
           </p>
           <div className="bg-card border border-border rounded-lg p-4 mb-8">
-            <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-2">Your Credits</p>
+            <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-2">Your Credit Hours</p>
             <p className="font-oswald text-4xl font-bold text-accent">{remainingCredits}</p>
-            <p className="text-sm text-muted-foreground">session{remainingCredits !== 1 ? 's' : ''} remaining</p>
+            <p className="text-sm text-muted-foreground">credit hour{remainingCredits !== 1 ? 's' : ''} remaining</p>
           </div>
           <div className="flex flex-col gap-3">
             <Button onClick={() => setScheduling(true)}
@@ -542,12 +544,12 @@ export default function Book() {
               )}
             </div>
 
-            {/* PayPal Payment */}
+            {/* Payment Options */}
             {!useExistingCredit && (
               <div className="bg-card border border-border rounded-lg p-6 mb-6">
                 <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-4">Payment</p>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Pay <strong className="text-foreground">${sessionPrice}</strong> securely via PayPal.
+                  Pay <strong className="text-foreground">${sessionPrice}</strong> securely.
                 </p>
                 {!user ? (
                   <div className="text-center py-4">
@@ -563,14 +565,29 @@ export default function Book() {
                     </Button>
                   </div>
                 ) : (
-                  <PayPalCheckout
-                    amount={sessionPrice}
-                    packageId={selectedPackage?.id}
-                    packageName={selectedPackage?.name}
-                    packageSessions={selectedPackage?.sessions || 1}
-                    sessionDurationMinutes={duration?.minutes}
-                    onSuccess={handlePaymentConfirmed}
-                  />
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pay Online</p>
+                      <PayPalCheckout
+                        amount={sessionPrice}
+                        packageId={selectedPackage?.id}
+                        packageName={selectedPackage?.name}
+                        packageSessions={selectedPackage?.sessions || 1}
+                        sessionDurationMinutes={duration?.minutes}
+                        onSuccess={() => { setPaymentMethod('paypal'); return handlePaymentConfirmed(); }}
+                      />
+                    </div>
+                    <div className="border-t border-border pt-4">
+                      <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pay with Cash</p>
+                      <p className="text-xs text-muted-foreground mb-3">Bring exact cash to your session. Your coach will collect payment at the time of training.</p>
+                      <Button
+                        onClick={() => { setPaymentMethod('cash'); handlePaymentConfirmed(); }}
+                        className="w-full bg-secondary border border-border text-foreground font-oswald tracking-wider uppercase hover:bg-secondary/80 h-12"
+                      >
+                        💵 Pay with Cash at Session
+                      </Button>
+                    </div>
+                  </div>
                 )}
               </div>
             )}
