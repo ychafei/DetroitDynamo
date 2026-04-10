@@ -23,12 +23,15 @@ export default function OnboardingModal({ user, onComplete }) {
   });
   const [saving, setSaving] = useState(false);
 
+  const isCoach = user?.role === 'coach' || user?.role === 'admin';
   const age = form.dob ? Math.floor((Date.now() - new Date(form.dob)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
-  const isUnder18 = age !== null && age < 18;
+  const isUnder18 = !isCoach && age !== null && age < 18;
 
   const totalSteps = isUnder18 ? 3 : 2;
 
-  const canProceedStep1 = form.phone && form.dob && form.position && form.skill_level;
+  const canProceedStep1 = isCoach
+    ? form.phone && form.dob
+    : form.phone && form.dob && form.position && form.skill_level;
   const canProceedStep2 = isUnder18 ? (form.parent_name && form.parent_phone) : form.agreed_to_terms;
   const canFinish = form.agreed_to_terms;
 
@@ -71,24 +74,28 @@ export default function OnboardingModal({ user, onComplete }) {
               <Label>Date of Birth</Label>
               <Input type="date" value={form.dob} onChange={e => setForm({ ...form, dob: e.target.value })} className="mt-1" />
             </div>
-            <div>
-              <Label>Position</Label>
-              <Select value={form.position} onValueChange={v => setForm({ ...form, position: v })}>
-                <SelectTrigger className="mt-1"><SelectValue placeholder="Select position" /></SelectTrigger>
-                <SelectContent>
-                  {POSITIONS.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Skill Level</Label>
-              <Select value={form.skill_level} onValueChange={v => setForm({ ...form, skill_level: v })}>
-                <SelectTrigger className="mt-1"><SelectValue placeholder="Select skill level" /></SelectTrigger>
-                <SelectContent>
-                  {SKILL_LEVELS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
+            {!isCoach && (
+              <>
+                <div>
+                  <Label>Position</Label>
+                  <Select value={form.position} onValueChange={v => setForm({ ...form, position: v })}>
+                    <SelectTrigger className="mt-1"><SelectValue placeholder="Select position" /></SelectTrigger>
+                    <SelectContent>
+                      {POSITIONS.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Skill Level</Label>
+                  <Select value={form.skill_level} onValueChange={v => setForm({ ...form, skill_level: v })}>
+                    <SelectTrigger className="mt-1"><SelectValue placeholder="Select skill level" /></SelectTrigger>
+                    <SelectContent>
+                      {SKILL_LEVELS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            )}
             <Button disabled={!canProceedStep1} onClick={() => setStep(2)} className="w-full bg-accent text-accent-foreground hover:bg-accent/90 font-oswald uppercase tracking-wider">
               Continue
             </Button>
