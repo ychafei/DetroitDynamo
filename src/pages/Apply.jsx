@@ -6,17 +6,26 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Upload, FileText } from 'lucide-react';
 
 export default function Apply() {
   const [form, setForm] = useState({ first_name: '', last_name: '', email: '', phone: '', dob: '', county: '', coaching_background: '', background_check_consent: false });
+  const [resumeFile, setResumeFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    await base44.entities.CoachApplication.create(form);
+    let resume_url = '';
+    if (resumeFile) {
+      setUploading(true);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: resumeFile });
+      resume_url = file_url;
+      setUploading(false);
+    }
+    await base44.entities.CoachApplication.create({ ...form, resume_url });
     setSubmitting(false);
     setSubmitted(true);
   };
@@ -80,6 +89,17 @@ export default function Apply() {
           <div>
             <Label className="font-oswald tracking-wider uppercase text-xs">Coaching Background *</Label>
             <Textarea required value={form.coaching_background} onChange={e => setForm({...form, coaching_background: e.target.value})} className="bg-card border-border mt-1" rows={5} placeholder="Tell us about your coaching experience..." />
+          </div>
+          <div>
+            <Label className="font-oswald tracking-wider uppercase text-xs">Resume / CV (optional)</Label>
+            <label className="mt-1 flex items-center gap-3 cursor-pointer border border-dashed border-border rounded-md p-4 hover:border-accent/50 transition-colors">
+              <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={e => setResumeFile(e.target.files[0])} />
+              {resumeFile ? (
+                <><FileText className="w-5 h-5 text-accent" /><span className="text-sm text-foreground">{resumeFile.name}</span></>
+              ) : (
+                <><Upload className="w-5 h-5 text-muted-foreground" /><span className="text-sm text-muted-foreground">Upload PDF, DOC, or DOCX</span></>
+              )}
+            </label>
           </div>
           <div className="flex items-start gap-3">
             <Checkbox checked={form.background_check_consent} onCheckedChange={v => setForm({...form, background_check_consent: v})} />

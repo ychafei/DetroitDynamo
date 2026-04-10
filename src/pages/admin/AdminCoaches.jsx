@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Pencil, MapPin } from 'lucide-react';
+import { Plus, Pencil, MapPin, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
 const emptyCoach = { first_name: '', last_name: '', email: '', phone: '', county: '', training_area: '', bio: '', quote: '', specializations: [], is_active: true, is_head_coach: false, venmo: '', zelle: '', cashapp: '', paypal: '', cash_accepted: false };
@@ -22,6 +22,16 @@ export default function AdminCoaches() {
   const [open, setOpen] = useState(false);
   const [linkDialog, setLinkDialog] = useState(null);
   const [specInput, setSpecInput] = useState('');
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingPhoto(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    setEditing(prev => ({ ...prev, photo_url: file_url }));
+    setUploadingPhoto(false);
+  };
 
   useEffect(() => {
     loadCoaches();
@@ -75,6 +85,22 @@ export default function AdminCoaches() {
               <DialogHeader><DialogTitle className="font-oswald tracking-wider">{editing?.id ? 'EDIT COACH' : 'ADD COACH'}</DialogTitle></DialogHeader>
               {editing && (
                 <div className="space-y-4 mt-4">
+                  {/* Profile Photo */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-secondary border border-border overflow-hidden flex items-center justify-center">
+                      {editing.photo_url ? (
+                        <img src={editing.photo_url} alt="Coach" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="font-oswald text-xl text-muted-foreground/40">{editing.first_name?.[0]}{editing.last_name?.[0]}</span>
+                      )}
+                    </div>
+                    <label className="cursor-pointer">
+                      <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+                      <Button type="button" variant="outline" size="sm" className="font-oswald tracking-wider uppercase text-xs pointer-events-none">
+                        <Upload className="w-3 h-3 mr-1" />{uploadingPhoto ? 'Uploading...' : 'Upload Photo'}
+                      </Button>
+                    </label>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label className="font-oswald tracking-wider uppercase text-xs">First Name</Label>
