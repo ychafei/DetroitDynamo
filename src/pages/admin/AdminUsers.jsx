@@ -11,6 +11,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Shield, Ban, UserPlus, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 
+const PROTECTED_EMAIL = 'yousef.elchafei@gmail.com';
+
 export default function AdminUsers() {
   const { isAdmin, isSuperAdmin, user: me } = useCurrentUser();
   const [users, setUsers] = useState([]);
@@ -146,27 +148,33 @@ export default function AdminUsers() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Select value={u.role || 'user'} onValueChange={v => updateRole(u.id, v)}>
-                      <SelectTrigger className="w-28 h-7 text-xs bg-secondary border-border">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="user">Client</SelectItem>
-                        <SelectItem value="coach">Coach</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button size="sm" variant="ghost" className="text-yellow-400 h-7 text-xs" onClick={() => { setWarnDialog(u); setWarnMessage(''); }}>
-                      <AlertTriangle className="w-3 h-3 mr-1" /> Warn
-                    </Button>
-                    {!isBanned ? (
-                      <Button size="sm" variant="ghost" className="text-destructive h-7 text-xs" onClick={() => { setBanDialog(u); setBanReason(''); }}>
-                        <Ban className="w-3 h-3 mr-1" /> Ban
-                      </Button>
+                    {u.email === PROTECTED_EMAIL ? (
+                      <span className="text-xs font-oswald tracking-wider text-accent px-2 py-1 bg-accent/10 border border-accent/20 rounded">🔒 Protected</span>
                     ) : (
-                      <Button size="sm" variant="ghost" className="text-green-400 h-7 text-xs" onClick={() => unban(u.email)}>
-                        Unban
-                      </Button>
+                      <>
+                        <Select value={u.role || 'user'} onValueChange={v => updateRole(u.id, v)}>
+                          <SelectTrigger className="w-28 h-7 text-xs bg-secondary border-border">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="user">Client</SelectItem>
+                            <SelectItem value="coach">Coach</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button size="sm" variant="ghost" className="text-yellow-400 h-7 text-xs" onClick={() => { setWarnDialog(u); setWarnMessage(''); }}>
+                          <AlertTriangle className="w-3 h-3 mr-1" /> Warn
+                        </Button>
+                        {!isBanned ? (
+                          <Button size="sm" variant="ghost" className="text-destructive h-7 text-xs" onClick={() => { setBanDialog(u); setBanReason(''); }}>
+                            <Ban className="w-3 h-3 mr-1" /> Ban
+                          </Button>
+                        ) : (
+                          <Button size="sm" variant="ghost" className="text-green-400 h-7 text-xs" onClick={() => unban(u.email)}>
+                            Unban
+                          </Button>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
