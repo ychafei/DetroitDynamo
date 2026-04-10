@@ -67,7 +67,7 @@ export default function Settings() {
           <TabsList className="bg-card border border-border mb-8">
             <TabsTrigger value="profile" className="font-oswald tracking-wider uppercase text-xs">Profile</TabsTrigger>
             {isCoach && <TabsTrigger value="payment" className="font-oswald tracking-wider uppercase text-xs">Payment</TabsTrigger>}
-            <TabsTrigger value="matching" className="font-oswald tracking-wider uppercase text-xs">Matching</TabsTrigger>
+            {!isCoach && <TabsTrigger value="matching" className="font-oswald tracking-wider uppercase text-xs">Matching</TabsTrigger>}
           </TabsList>
 
           {/* Profile Tab */}
@@ -82,57 +82,63 @@ export default function Settings() {
                 <Input type="date" value={profile.dob} onChange={e => setProfile({...profile, dob: e.target.value})} className="bg-card border-border mt-1" />
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label className="font-oswald tracking-wider uppercase text-xs">Position</Label>
-                <Select value={profile.position} onValueChange={v => setProfile({...profile, position: v})}>
-                  <SelectTrigger className="bg-card border-border mt-1"><SelectValue placeholder="Select position" /></SelectTrigger>
-                  <SelectContent>
-                    {['Goalkeeper', 'Defender', 'Midfielder', 'Striker', 'Winger', 'Center Back', 'Fullback', 'Other'].map(p => (
-                      <SelectItem key={p} value={p}>{p}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            {!isCoach && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label className="font-oswald tracking-wider uppercase text-xs">Position</Label>
+                  <Select value={profile.position} onValueChange={v => setProfile({...profile, position: v})}>
+                    <SelectTrigger className="bg-card border-border mt-1"><SelectValue placeholder="Select position" /></SelectTrigger>
+                    <SelectContent>
+                      {['Goalkeeper', 'Defender', 'Midfielder', 'Striker', 'Winger', 'Center Back', 'Fullback', 'Other'].map(p => (
+                        <SelectItem key={p} value={p}>{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="font-oswald tracking-wider uppercase text-xs">Skill Level</Label>
+                  <Select value={profile.skill_level} onValueChange={v => setProfile({...profile, skill_level: v})}>
+                    <SelectTrigger className="bg-card border-border mt-1"><SelectValue placeholder="Select level" /></SelectTrigger>
+                    <SelectContent>
+                      {['Beginner', 'Intermediate', 'Advanced', 'Competitive'].map(l => (
+                        <SelectItem key={l} value={l}>{l}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div>
-                <Label className="font-oswald tracking-wider uppercase text-xs">Skill Level</Label>
-                <Select value={profile.skill_level} onValueChange={v => setProfile({...profile, skill_level: v})}>
-                  <SelectTrigger className="bg-card border-border mt-1"><SelectValue placeholder="Select level" /></SelectTrigger>
-                  <SelectContent>
-                    {['Beginner', 'Intermediate', 'Advanced', 'Competitive'].map(l => (
-                      <SelectItem key={l} value={l}>{l}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            )}
             <div>
               <Label className="font-oswald tracking-wider uppercase text-xs">Bio</Label>
               <Textarea value={profile.bio} onChange={e => setProfile({...profile, bio: e.target.value})} className="bg-card border-border mt-1" rows={3} />
             </div>
 
-            {/* Parent/Guardian */}
-            <div className="border-t border-border pt-6">
-              <h3 className="font-oswald text-sm tracking-widest uppercase text-muted-foreground mb-4">Parent / Guardian Info</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label className="font-oswald tracking-wider uppercase text-xs">Parent First Name</Label>
-                  <Input value={profile.parent_first_name} onChange={e => setProfile({...profile, parent_first_name: e.target.value})} className="bg-card border-border mt-1" />
+            {!isCoach && (() => {
+              const age = profile.dob ? Math.floor((Date.now() - new Date(profile.dob)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
+              return age !== null && age < 18 ? (
+                <div className="border-t border-border pt-6">
+                  <h3 className="font-oswald text-sm tracking-widest uppercase text-muted-foreground mb-4">Parent / Guardian Info</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="font-oswald tracking-wider uppercase text-xs">Parent First Name</Label>
+                      <Input value={profile.parent_first_name} onChange={e => setProfile({...profile, parent_first_name: e.target.value})} className="bg-card border-border mt-1" />
+                    </div>
+                    <div>
+                      <Label className="font-oswald tracking-wider uppercase text-xs">Parent Last Name</Label>
+                      <Input value={profile.parent_last_name} onChange={e => setProfile({...profile, parent_last_name: e.target.value})} className="bg-card border-border mt-1" />
+                    </div>
+                    <div>
+                      <Label className="font-oswald tracking-wider uppercase text-xs">Parent Email</Label>
+                      <Input value={profile.parent_email} onChange={e => setProfile({...profile, parent_email: e.target.value})} className="bg-card border-border mt-1" />
+                    </div>
+                    <div>
+                      <Label className="font-oswald tracking-wider uppercase text-xs">Parent Phone</Label>
+                      <Input value={profile.parent_phone} onChange={e => setProfile({...profile, parent_phone: e.target.value})} className="bg-card border-border mt-1" />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <Label className="font-oswald tracking-wider uppercase text-xs">Parent Last Name</Label>
-                  <Input value={profile.parent_last_name} onChange={e => setProfile({...profile, parent_last_name: e.target.value})} className="bg-card border-border mt-1" />
-                </div>
-                <div>
-                  <Label className="font-oswald tracking-wider uppercase text-xs">Parent Email</Label>
-                  <Input value={profile.parent_email} onChange={e => setProfile({...profile, parent_email: e.target.value})} className="bg-card border-border mt-1" />
-                </div>
-                <div>
-                  <Label className="font-oswald tracking-wider uppercase text-xs">Parent Phone</Label>
-                  <Input value={profile.parent_phone} onChange={e => setProfile({...profile, parent_phone: e.target.value})} className="bg-card border-border mt-1" />
-                </div>
-              </div>
-            </div>
+              ) : null;
+            })()}
 
             <Button onClick={saveProfile} disabled={saving} className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
               {saving ? 'Saving...' : 'Save Profile'}
