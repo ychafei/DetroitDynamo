@@ -180,6 +180,8 @@ export default function Book() {
     setSubmitting(true);
     const sessionGoals = [...selectedTags, goals].filter(Boolean).join(', ');
     const pmMethod = useExistingCredit ? 'credits' : paymentMethod === 'cash' ? 'cash' : 'electronic';
+    const durationMinutes = duration?.minutes ?? 60;
+    const clientAge = user.dob ? Math.floor((Date.now() - new Date(user.dob)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
 
     // Deduct credits when using the "Use Existing Credits → Schedule Now" direct path
     if (useExistingCredit && skipToSchedule && existingCredit && duration) {
