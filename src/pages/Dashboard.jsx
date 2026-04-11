@@ -264,7 +264,7 @@ export default function Dashboard() {
                             <Badge className={`${sc?.color} border`}>
                               <Icon className="w-3 h-3 mr-1" />{sc?.label}
                             </Badge>
-                            {session.payment_status === 'unpaid' && (
+                            {session.payment_status === 'unpaid' && session.payment_method === 'cash' && (
                               <Badge className="bg-accent/10 text-accent border-accent/20 border">Unpaid</Badge>
                             )}
                           </div>
