@@ -100,12 +100,23 @@ export default function Navbar() {
                   </Button>
                 </div>
               ) : (
-                <Button
-                  onClick={() => base44.auth.redirectToLogin()}
-                  className="bg-accent text-accent-foreground font-oswald tracking-wide uppercase text-xs hover:bg-accent/90"
-                >
-                  Sign In
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => base44.auth.redirectToLogin()}
+                    className="font-oswald tracking-wide uppercase text-xs"
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => base44.auth.redirectToLogin()}
+                    className="bg-accent text-accent-foreground font-oswald tracking-wide uppercase text-xs hover:bg-accent/90"
+                  >
+                    Sign Up
+                  </Button>
+                </div>
               )}
             </div>
           </div>
@@ -163,7 +174,7 @@ export default function Navbar() {
                   className="w-full bg-accent text-accent-foreground font-oswald tracking-wide uppercase text-xs"
                   onClick={() => base44.auth.redirectToLogin()}
                 >
-                  Sign In
+                  Sign In / Sign Up
                 </Button>
               )}
             </div>

@@ -9,6 +9,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 const POSITIONS = ['Goalkeeper', 'Center Back', 'Fullback', 'Defensive Midfielder', 'Central Midfielder', 'Attacking Midfielder', 'Winger', 'Striker', 'Forward', 'Other'];
 const SKILL_LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Competitive'];
 
+const cleanPhone = (val) => val.replace(/\D/g, '');
+const isValidPhone = (val) => cleanPhone(val).length === 10;
+const hasNumbers = (val) => /\d/.test(val);
+const isValidEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+
 export default function OnboardingModal({ user, onComplete }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -16,7 +21,8 @@ export default function OnboardingModal({ user, onComplete }) {
     dob: user?.dob || '',
     position: user?.position || '',
     skill_level: user?.skill_level || '',
-    parent_name: '',
+    parent_first_name: '',
+    parent_last_name: '',
     parent_phone: '',
     parent_email: '',
     agreed_to_terms: false,
@@ -29,21 +35,28 @@ export default function OnboardingModal({ user, onComplete }) {
 
   const totalSteps = isUnder18 ? 3 : 2;
 
+  const phoneValid = isValidPhone(form.phone);
   const canProceedStep1 = isCoach
-    ? form.phone && form.dob
-    : form.phone && form.dob && form.position && form.skill_level;
-  const canProceedStep2 = isUnder18 ? (form.parent_name && form.parent_phone) : form.agreed_to_terms;
+    ? form.phone && form.dob && phoneValid
+    : form.phone && form.dob && form.position && form.skill_level && phoneValid;
+
+  const parentFirstOk = form.parent_first_name.trim().length > 0 && !hasNumbers(form.parent_first_name);
+  const parentLastOk = form.parent_last_name.trim().length > 0 && !hasNumbers(form.parent_last_name);
+  const parentPhoneOk = isValidPhone(form.parent_phone);
+  const parentEmailOk = !form.parent_email || isValidEmail(form.parent_email);
+  const canProceedStep2 = isUnder18 ? (parentFirstOk && parentLastOk && parentPhoneOk && parentEmailOk) : form.agreed_to_terms;
   const canFinish = form.agreed_to_terms;
 
   const handleSave = async () => {
     setSaving(true);
     await base44.auth.updateMe({
-      phone: form.phone,
+      phone: cleanPhone(form.phone),
       dob: form.dob,
       position: form.position,
       skill_level: form.skill_level,
-      parent_name: form.parent_name || undefined,
-      parent_phone: form.parent_phone || undefined,
+      parent_first_name: form.parent_first_name || undefined,
+      parent_last_name: form.parent_last_name || undefined,
+      parent_phone: form.parent_phone ? cleanPhone(form.parent_phone) : undefined,
       parent_email: form.parent_email || undefined,
       profile_setup_complete: true,
     });
@@ -64,14 +77,23 @@ export default function OnboardingModal({ user, onComplete }) {
           </div>
         </div>
 
+        {/* Step 1: Basic Info */}
         {step === 1 && (
           <div className="space-y-4">
             <div>
-              <Label>Phone Number</Label>
-              <Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="(555) 000-0000" className="mt-1" />
+              <Label>Phone Number <span className="text-destructive">*</span></Label>
+              <Input
+                value={form.phone}
+                onChange={e => setForm({ ...form, phone: e.target.value })}
+                placeholder="(555) 000-0000"
+                className="mt-1"
+              />
+              {form.phone && !phoneValid && (
+                <p className="text-xs text-destructive mt-1">Must be a 10-digit phone number</p>
+              )}
             </div>
             <div>
-              <Label>Date of Birth</Label>
+              <Label>Date of Birth <span className="text-destructive">*</span></Label>
               <Input type="date" value={form.dob} onChange={e => setForm({ ...form, dob: e.target.value })} className="mt-1" />
             </div>
             {!isCoach && (
@@ -96,34 +118,84 @@ export default function OnboardingModal({ user, onComplete }) {
                 </div>
               </>
             )}
-            <Button disabled={!canProceedStep1} onClick={() => setStep(2)} className="w-full bg-accent text-accent-foreground hover:bg-accent/90 font-oswald uppercase tracking-wider">
+            <Button
+              disabled={!canProceedStep1}
+              onClick={() => setStep(2)}
+              className="w-full bg-accent text-accent-foreground hover:bg-accent/90 font-oswald uppercase tracking-wider"
+            >
               Continue
             </Button>
           </div>
         )}
 
+        {/* Step 2: Guardian Info (under 18) */}
         {step === 2 && isUnder18 && (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">Since you're under 18, we need a parent or guardian's information.</p>
-            <div>
-              <Label>Parent/Guardian Name</Label>
-              <Input value={form.parent_name} onChange={e => setForm({ ...form, parent_name: e.target.value })} placeholder="Full name" className="mt-1" />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Parent First Name <span className="text-destructive">*</span></Label>
+                <Input
+                  value={form.parent_first_name}
+                  onChange={e => setForm({ ...form, parent_first_name: e.target.value })}
+                  placeholder="First name"
+                  className="mt-1"
+                />
+                {form.parent_first_name && hasNumbers(form.parent_first_name) && (
+                  <p className="text-xs text-destructive mt-1">No numbers allowed</p>
+                )}
+              </div>
+              <div>
+                <Label>Parent Last Name <span className="text-destructive">*</span></Label>
+                <Input
+                  value={form.parent_last_name}
+                  onChange={e => setForm({ ...form, parent_last_name: e.target.value })}
+                  placeholder="Last name"
+                  className="mt-1"
+                />
+                {form.parent_last_name && hasNumbers(form.parent_last_name) && (
+                  <p className="text-xs text-destructive mt-1">No numbers allowed</p>
+                )}
+              </div>
             </div>
             <div>
-              <Label>Parent/Guardian Phone</Label>
-              <Input value={form.parent_phone} onChange={e => setForm({ ...form, parent_phone: e.target.value })} placeholder="(555) 000-0000" className="mt-1" />
+              <Label>Parent Phone <span className="text-destructive">*</span></Label>
+              <Input
+                value={form.parent_phone}
+                onChange={e => setForm({ ...form, parent_phone: e.target.value })}
+                placeholder="(555) 000-0000"
+                className="mt-1"
+              />
+              {form.parent_phone && !isValidPhone(form.parent_phone) && (
+                <p className="text-xs text-destructive mt-1">Must be a 10-digit phone number</p>
+              )}
             </div>
             <div>
-              <Label>Parent/Guardian Email (optional)</Label>
-              <Input value={form.parent_email} onChange={e => setForm({ ...form, parent_email: e.target.value })} placeholder="email@example.com" className="mt-1" />
+              <Label>Parent Email (optional)</Label>
+              <Input
+                value={form.parent_email}
+                onChange={e => setForm({ ...form, parent_email: e.target.value })}
+                placeholder="email@example.com"
+                className="mt-1"
+              />
+              {form.parent_email && !isValidEmail(form.parent_email) && (
+                <p className="text-xs text-destructive mt-1">Invalid email address</p>
+              )}
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setStep(1)} className="flex-1">Back</Button>
-              <Button disabled={!canProceedStep2} onClick={() => setStep(3)} className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 font-oswald uppercase tracking-wider">Continue</Button>
+              <Button
+                disabled={!canProceedStep2}
+                onClick={() => setStep(3)}
+                className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 font-oswald uppercase tracking-wider"
+              >
+                Continue
+              </Button>
             </div>
           </div>
         )}
 
+        {/* Terms step */}
         {((step === 2 && !isUnder18) || (step === 3 && isUnder18)) && (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">Please read and agree to our terms before getting started.</p>
@@ -142,7 +214,11 @@ export default function OnboardingModal({ user, onComplete }) {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setStep(step - 1)} className="flex-1">Back</Button>
-              <Button disabled={!canFinish || saving} onClick={handleSave} className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 font-oswald uppercase tracking-wider">
+              <Button
+                disabled={!canFinish || saving}
+                onClick={handleSave}
+                className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 font-oswald uppercase tracking-wider"
+              >
                 {saving ? 'Saving...' : 'Get Started'}
               </Button>
             </div>

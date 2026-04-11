@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Shield, Ban, UserPlus, AlertTriangle } from 'lucide-react';
+import { Shield, Ban, UserPlus, AlertTriangle, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PROTECTED_EMAIL = 'yousef.elchafei@gmail.com';
@@ -27,6 +27,10 @@ export default function AdminUsers() {
   const [inviting, setInviting] = useState(false);
   const [warnDialog, setWarnDialog] = useState(null);
   const [warnMessage, setWarnMessage] = useState('');
+  const [creditDialog, setCreditDialog] = useState(null);
+  const [creditAmount, setCreditAmount] = useState('');
+  const [creditPackageName, setCreditPackageName] = useState('Admin Grant');
+  const [creditSaving, setCreditSaving] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -162,6 +166,9 @@ export default function AdminUsers() {
                             <SelectItem value="admin">Admin</SelectItem>
                           </SelectContent>
                         </Select>
+                        <Button size="sm" variant="ghost" className="text-accent h-7 text-xs" onClick={() => { setCreditDialog(u); setCreditAmount(''); setCreditPackageName('Admin Grant'); }}>
+                          <Zap className="w-3 h-3 mr-1" /> Credits
+                        </Button>
                         <Button size="sm" variant="ghost" className="text-yellow-400 h-7 text-xs" onClick={() => { setWarnDialog(u); setWarnMessage(''); }}>
                           <AlertTriangle className="w-3 h-3 mr-1" /> Warn
                         </Button>
@@ -233,6 +240,44 @@ export default function AdminUsers() {
           </div>
           <Button onClick={handleInvite} disabled={inviting} className="mt-6 w-full bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
             {inviting ? 'Sending...' : 'Send Invitation'}
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Credits Dialog */}
+      <Dialog open={!!creditDialog} onOpenChange={() => setCreditDialog(null)}>
+        <DialogContent className="bg-card border-border">
+          <DialogHeader><DialogTitle className="font-oswald tracking-wider">ISSUE CREDITS</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground">{creditDialog?.full_name} ({creditDialog?.email})</p>
+          <div className="space-y-4 mt-4">
+            <div>
+              <Label className="font-oswald tracking-wider uppercase text-xs">Credit Hours to Add</Label>
+              <Input type="number" value={creditAmount} onChange={e => setCreditAmount(e.target.value)} placeholder="e.g. 5" className="bg-secondary border-border mt-1" min="0.5" step="0.5" />
+            </div>
+            <div>
+              <Label className="font-oswald tracking-wider uppercase text-xs">Package / Reason</Label>
+              <Input value={creditPackageName} onChange={e => setCreditPackageName(e.target.value)} className="bg-secondary border-border mt-1" />
+            </div>
+          </div>
+          <Button
+            disabled={!creditAmount || parseFloat(creditAmount) <= 0 || creditSaving}
+            onClick={async () => {
+              setCreditSaving(true);
+              await base44.entities.SessionCredit.create({
+                client_email: creditDialog.email,
+                client_name: creditDialog.full_name || creditDialog.email,
+                package_id: 'admin_grant',
+                package_name: creditPackageName,
+                total_credits: parseFloat(creditAmount),
+                used_credits: 0,
+              });
+              toast.success(`${creditAmount} credit hour(s) added to ${creditDialog.email}`);
+              setCreditDialog(null);
+              setCreditSaving(false);
+            }}
+            className="mt-4 w-full bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90"
+          >
+            {creditSaving ? 'Saving...' : `Issue ${creditAmount || '?'} Credit Hour(s)`}
           </Button>
         </DialogContent>
       </Dialog>

@@ -181,14 +181,16 @@ export default function Book() {
     const sessionGoals = [...selectedTags, goals].filter(Boolean).join(', ');
     const pmMethod = useExistingCredit ? 'credits' : paymentMethod === 'cash' ? 'cash' : 'electronic';
     const durationMinutes = duration?.minutes ?? 60;
+    const clientAge = user.dob ? Math.floor((Date.now() - new Date(user.dob)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
     await base44.entities.Session.create({
       coach_id: coach.id,
       client_email: user.email,
       client_name: user.full_name || user.email,
+      client_age: clientAge,
       date: format(selectedDate, 'yyyy-MM-dd'),
       start_time: selectedTime,
       duration_minutes: durationMinutes,
-      status: 'pending',
+      status: 'confirmed',
       payment_status: pmMethod === 'cash' ? 'unpaid' : 'paid',
       payment_method: pmMethod,
       county,
@@ -523,6 +525,17 @@ export default function Book() {
         {step === 5 && (
           <div>
             <h2 className="font-oswald text-3xl font-bold tracking-tight mb-8">CHECKOUT</h2>
+
+            {/* Profile gate */}
+            {user && !user.profile_setup_complete && (
+              <div className="mb-6 p-4 rounded-lg bg-accent/10 border border-accent/30">
+                <p className="text-accent font-oswald tracking-wider uppercase text-sm mb-1">Complete Your Profile First</p>
+                <p className="text-xs text-muted-foreground mb-3">You must complete your profile before booking a session.</p>
+                <Button onClick={() => window.location.href = '/settings'} size="sm" className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
+                  Go to Settings
+                </Button>
+              </div>
+            )}
 
             {/* Order Summary */}
             <div className="bg-card border border-border rounded-lg p-6 mb-6">

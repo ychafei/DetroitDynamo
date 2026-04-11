@@ -6,13 +6,19 @@ Deno.serve(async (req) => {
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
   const allUsers = await base44.asServiceRole.entities.User.filter({ matching_opted_in: true });
+
+  const calcAge = (dob) => {
+    if (!dob) return null;
+    return Math.floor((Date.now() - new Date(dob)) / (365.25 * 24 * 60 * 60 * 1000));
+  };
+
   const eligible = allUsers
     .filter(u => u.email !== user.email)
     .map(u => ({
       email: u.email,
       first_name: u.full_name?.split(' ')[0] || 'Player',
-      age_min: u.matching_age_min,
-      age_max: u.matching_age_max,
+      player_age: calcAge(u.dob),
+      matching_age_group: u.matching_age_group || null,
     }));
 
   return Response.json({ players: eligible });

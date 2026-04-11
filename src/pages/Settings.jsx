@@ -198,20 +198,33 @@ export default function Settings() {
             <div className="flex items-center justify-between p-4 bg-card border border-border rounded-lg">
               <div>
                 <p className="font-oswald tracking-wider text-sm">Opt In to Player Matching</p>
-                <p className="text-xs text-muted-foreground mt-1">Allow other clients to see your first name and player age for match requests.</p>
+                <p className="text-xs text-muted-foreground mt-1">Allow other clients to see your first name and age for match requests.</p>
               </div>
               <Switch checked={profile.matching_opted_in} onCheckedChange={v => setProfile({...profile, matching_opted_in: v})} />
             </div>
             {profile.matching_opted_in && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="font-oswald tracking-wider uppercase text-xs">Min Player Age</Label>
-                  <Input type="number" value={profile.matching_age_min} onChange={e => setProfile({...profile, matching_age_min: parseInt(e.target.value) || 0})} className="bg-card border-border mt-1" />
+              <div className="space-y-3">
+                <Label className="font-oswald tracking-wider uppercase text-xs">Preferred Age Group</Label>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { label: 'Ages 5–8', value: '5-8' },
+                    { label: 'Ages 9–12', value: '9-12' },
+                    { label: 'Ages 13+', value: '13+' },
+                  ].map(group => (
+                    <button
+                      key={group.value}
+                      onClick={() => setProfile({...profile, matching_age_group: group.value})}
+                      className={`p-3 rounded-lg border text-sm font-oswald tracking-wider uppercase text-center transition-all ${
+                        profile.matching_age_group === group.value
+                          ? 'border-accent bg-accent/10 text-accent'
+                          : 'border-border text-muted-foreground hover:border-accent/30'
+                      }`}
+                    >
+                      {group.label}
+                    </button>
+                  ))}
                 </div>
-                <div>
-                  <Label className="font-oswald tracking-wider uppercase text-xs">Max Player Age</Label>
-                  <Input type="number" value={profile.matching_age_max} onChange={e => setProfile({...profile, matching_age_max: parseInt(e.target.value) || 0})} className="bg-card border-border mt-1" />
-                </div>
+                <p className="text-xs text-muted-foreground">You'll appear in matching for players in your selected age group.</p>
               </div>
             )}
             <Button onClick={saveProfile} disabled={saving} className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">

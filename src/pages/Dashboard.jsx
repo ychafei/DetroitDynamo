@@ -240,7 +240,10 @@ export default function Dashboard() {
                               {session.start_time} · {session.duration_minutes} min · {session.county}
                             </p>
                             {isCoach ? (
-                              <p className="text-sm text-muted-foreground mt-1">Client: {session.client_name}</p>
+                              <div>
+                                <p className="text-sm text-muted-foreground mt-1">Client: {session.client_name}{session.client_age ? ` · Age ${session.client_age}` : ''}</p>
+                                {session.session_goals && <p className="text-xs text-muted-foreground mt-0.5">Goals: {session.session_goals}</p>}
+                              </div>
                             ) : coach ? (
                               <p className="text-sm text-muted-foreground mt-1">Coach: {coach.first_name} {coach.last_name}</p>
                             ) : null}
@@ -267,7 +270,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div className="flex gap-2 mt-4">
-                          {session.payment_status === 'unpaid' && !isCoach && (
+                          {session.payment_status === 'unpaid' && !isCoach && session.payment_method === 'cash' && (
                             <Link to="/pay">
                               <Button size="sm" className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase text-xs hover:bg-accent/90">
                                 <CreditCard className="w-3 h-3 mr-1" /> Pay Now
@@ -275,14 +278,28 @@ export default function Dashboard() {
                             </Link>
                           )}
                           {isCoach && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleCancel(session)}
-                              className="font-oswald tracking-wider uppercase text-xs text-destructive hover:text-destructive"
-                            >
-                              Cancel
-                            </Button>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleCancel(session)}
+                                className="font-oswald tracking-wider uppercase text-xs text-destructive hover:text-destructive"
+                              >
+                                Cancel
+                              </Button>
+                              {session.payment_method === 'cash' && session.payment_status === 'unpaid' && (
+                                <Button
+                                  size="sm"
+                                  onClick={async () => {
+                                    await base44.entities.Session.update(session.id, { payment_status: 'paid' });
+                                    setSessions(prev => prev.map(s => s.id === session.id ? { ...s, payment_status: 'paid' } : s));
+                                  }}
+                                  className="bg-green-600 text-white font-oswald tracking-wider uppercase text-xs hover:bg-green-700"
+                                >
+                                  Confirm Cash
+                                </Button>
+                              )}
+                            </div>
                           )}
                         </div>
                         {/* Cancellation policy reminder */}
