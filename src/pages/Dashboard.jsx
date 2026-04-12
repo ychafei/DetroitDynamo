@@ -94,18 +94,17 @@ export default function Dashboard() {
     await base44.entities.Session.update(session.id, { status: 'cancelled', cancellation_reason: 'Cancelled by coach' });
     setSessions(prev => prev.map(s => s.id === session.id ? { ...s, status: 'cancelled' } : s));
 
-    // Refund credits to client if session was paid with credits/electronic and not a late cancel
+    // Refund 1 session credit if paid with credits/electronic and not a late cancel
     // Cash sessions don't have credit records, so skip those
     if (!isLateCancel && session.payment_method !== 'cash' && (session.payment_method === 'credits' || session.payment_status === 'paid')) {
-      const hoursToRefund = (session.duration_minutes || 60) / 60;
       const clientCredits = await base44.entities.SessionCredit.filter({ client_email: session.client_email });
-      // Find the most recently used credit record (highest used_credits) to refund to
+      // Find the most recently used credit record (highest used_credits) to refund 1 session to
       const activeCredit = clientCredits
         .filter(c => c.used_credits > 0)
         .sort((a, b) => b.used_credits - a.used_credits)[0];
       if (activeCredit) {
         await base44.entities.SessionCredit.update(activeCredit.id, {
-          used_credits: Math.max(0, activeCredit.used_credits - hoursToRefund)
+          used_credits: Math.max(0, activeCredit.used_credits - 1)
         });
       }
     }
@@ -236,19 +235,38 @@ export default function Dashboard() {
 
         {/* Credits Balance (clients only) */}
         {!isCoach && (() => {
-          const totalHours = credits.reduce((sum, c) => sum + (c.total_credits - c.used_credits), 0);
-          const roundedHours = parseFloat(totalHours.toFixed(2));
-          if (roundedHours <= 0) return null;
+          const activeCredits = credits.filter(c => (c.total_credits - c.used_credits) > 0);
+          if (activeCredits.length === 0) return null;
           return (
-            <div className="mb-6 bg-accent/10 border border-accent/30 rounded-lg p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Zap className="w-5 h-5 text-accent" />
-                <div>
-                  <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground">Credit Hours Available</p>
-                  <p className="font-oswald text-2xl font-bold text-accent">{roundedHours} hr{roundedHours !== 1 ? 's' : ''}</p>
-                </div>
-              </div>
-              <a href="/book" className="text-xs font-oswald tracking-wider uppercase text-accent hover:underline">Use Credits →</a>
+            <div className="mb-6 space-y-3">
+              {activeCredits.map(credit => {
+                const remaining = credit.total_credits - credit.used_credits;
+                const durationLabel = credit.session_duration_minutes ? `${credit.session_duration_minutes} min` : '';
+                return (
+                  <div key={credit.id} className="bg-accent/10 border border-accent/30 rounded-lg p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Zap className="w-5 h-5 text-accent" />
+                      <div>
+                        <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground">
+                          {credit.package_name || 'Sessions'}
+                        </p>
+                        <p className="font-oswald text-2xl font-bold text-accent">
+                          {remaining} session{remaining !== 1 ? 's' : ''} remaining
+                        </p>
+                        {durationLabel && (
+                          <p className="text-xs text-muted-foreground">{durationLabel} per session</p>
+                        )}
+                      </div>
+                    </div>
+                    <Link
+                      to={`/book?credit_id=${credit.id}`}
+                      className="text-xs font-oswald tracking-wider uppercase text-accent hover:underline"
+                    >
+                      Schedule Session →
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
           );
         })()}
