@@ -445,25 +445,6 @@ export default function Book() {
             <h2 className="font-oswald text-3xl font-bold tracking-tight mb-2">SELECT A PACKAGE</h2>
             <p className="text-muted-foreground text-sm mb-8">Multi-session packages give you credits to schedule sessions whenever you're ready.</p>
 
-            {user && !existingCredit && (
-              <div className="mb-6 flex flex-wrap gap-3">
-                <button
-                  onClick={() => { setUseExistingCredit(false); }}
-                  className="px-4 py-2 rounded-md border text-xs font-oswald tracking-wide uppercase transition-all border-accent bg-accent/10 text-accent">
-                  Buy Credits
-                </button>
-                <button
-                  onClick={() => {
-                    setUseExistingCredit(false);
-                    const singlePkg = packages.find(p => (p.sessions || 1) === 1);
-                    if (singlePkg) { setSelectedPackage(singlePkg); setStep(3); }
-                  }}
-                  className="px-4 py-2 rounded-md border text-xs font-oswald tracking-wide uppercase transition-all border-border text-muted-foreground hover:border-accent/30">
-                  Pay Per Session
-                </button>
-              </div>
-            )}
-
             {existingCredit && (
               <div className="mb-6 p-4 rounded-lg bg-primary/10 border border-primary/30">
                 <p className="text-primary font-oswald tracking-wider text-sm uppercase mb-1">You have existing credits!</p>
@@ -625,9 +606,9 @@ export default function Book() {
               {duration?.discount > 0 && (
                 <p className="text-xs text-green-400 mt-2">{Math.round(duration.discount * 100)}% multi-hour discount applied</p>
               )}
-              {selectedPackage?.sessions > 1 && (
+              {selectedPackage?.sessions > 1 && sessionPrice && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  Package total: ${selectedPackage.price} for {selectedPackage.sessions} sessions
+                  Package total: ${sessionPrice * selectedPackage.sessions} for {selectedPackage.sessions} sessions
                 </p>
               )}
             </div>
@@ -637,7 +618,7 @@ export default function Book() {
               <div className="bg-card border border-border rounded-lg p-6 mb-6">
                 <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-4">Payment</p>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Pay <strong className="text-foreground">${sessionPrice}</strong> securely.
+                  Pay <strong className="text-foreground">${sessionPrice * (selectedPackage?.sessions || 1)}</strong> securely.
                 </p>
                 {!user ? (
                   <div className="text-center py-4">
@@ -657,7 +638,7 @@ export default function Book() {
                     <div>
                       <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pay Online</p>
                       <PayPalCheckout
-                        amount={sessionPrice}
+                        amount={sessionPrice * (selectedPackage?.sessions || 1)}
                         packageId={selectedPackage?.id}
                         packageName={selectedPackage?.name}
                         packageSessions={selectedPackage?.sessions || 1}
