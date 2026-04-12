@@ -4,9 +4,11 @@ import { base44 } from '@/api/base44Client';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, MessageSquare, Settings, Shield, Clock, CheckCircle2, XCircle, CreditCard, Zap } from 'lucide-react';
-import { format, isBefore, addHours } from 'date-fns';
+import { Calendar as CalendarIcon, MessageSquare, Settings, Shield, Clock, CheckCircle2, XCircle, Zap, CalendarClock } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { format, isBefore, addHours, startOfDay, parseISO, isWithinInterval } from 'date-fns';
 import PaymentHandles from '@/components/shared/PaymentHandles';
+import { toast } from 'sonner';
 
 export default function Dashboard() {
   const { user, isAdmin, isCoach } = useCurrentUser();
@@ -15,6 +17,20 @@ export default function Dashboard() {
   const [credits, setCredits] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [rescheduleSession, setRescheduleSession] = useState(null);
+  const [rescheduleDate, setRescheduleDate] = useState(null);
+  const [rescheduleTime, setRescheduleTime] = useState('');
+  const [rescheduleBlocks, setRescheduleBlocks] = useState([]);
+  const [rescheduleExistingSessions, setRescheduleExistingSessions] = useState([]);
+  const [rescheduling, setRescheduling] = useState(false);
+
+  const TIME_SLOTS = [];
+  for (let h = 8; h <= 20; h++) {
+    TIME_SLOTS.push(`${String(h).padStart(2, '0')}:00`);
+    if (h < 20) TIME_SLOTS.push(`${String(h).padStart(2, '0')}:30`);
+  }
+
+  const timeToMinutes = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
 
   useEffect(() => {
     if (!user) return;
@@ -25,6 +41,16 @@ export default function Dashboard() {
       } else {
         allSessions = await base44.entities.Session.filter({ client_email: user.email }, '-date');
       }
+
+      // Auto-complete past sessions
+      const now = new Date();
+      for (const s of allSessions) {
+        if ((s.status === 'pending' || s.status === 'confirmed') && new Date(`${s.date}T${s.start_time}`) < now) {
+          await base44.entities.Session.update(s.id, { status: 'completed' });
+          s.status = 'completed';
+        }
+      }
+
       setSessions(allSessions);
 
       const coachList = await base44.entities.Coach.list();
@@ -69,16 +95,92 @@ export default function Dashboard() {
     setSessions(prev => prev.map(s => s.id === session.id ? { ...s, status: 'cancelled' } : s));
 
     // Refund credits to client if session was paid with credits/electronic and not a late cancel
-    if (!isLateCancel && (session.payment_method === 'credits' || session.payment_status === 'paid')) {
+    // Cash sessions don't have credit records, so skip those
+    if (!isLateCancel && session.payment_method !== 'cash' && (session.payment_method === 'credits' || session.payment_status === 'paid')) {
       const hoursToRefund = (session.duration_minutes || 60) / 60;
       const clientCredits = await base44.entities.SessionCredit.filter({ client_email: session.client_email });
-      const activeCredit = clientCredits.find(c => c.used_credits > 0);
+      // Find the most recently used credit record (highest used_credits) to refund to
+      const activeCredit = clientCredits
+        .filter(c => c.used_credits > 0)
+        .sort((a, b) => b.used_credits - a.used_credits)[0];
       if (activeCredit) {
         await base44.entities.SessionCredit.update(activeCredit.id, {
           used_credits: Math.max(0, activeCredit.used_credits - hoursToRefund)
         });
       }
     }
+  };
+
+  const handleStartReschedule = async (session) => {
+    setRescheduleSession(session);
+    setRescheduleDate(null);
+    setRescheduleTime('');
+    const res = await base44.functions.invoke('getCoachAvailability', { coach_id: session.coach_id });
+    setRescheduleBlocks(res.data.blocks || []);
+    setRescheduleExistingSessions(res.data.sessions || []);
+  };
+
+  const handleConfirmReschedule = async () => {
+    if (!rescheduleSession || !rescheduleDate || !rescheduleTime) return;
+    setRescheduling(true);
+    const newDate = format(rescheduleDate, 'yyyy-MM-dd');
+    await base44.entities.Session.update(rescheduleSession.id, {
+      date: newDate,
+      start_time: rescheduleTime,
+    });
+    const coach = coaches[rescheduleSession.coach_id];
+    if (coach) {
+      await base44.functions.invoke('sendBookingEmails', {
+        clientEmail: rescheduleSession.client_email,
+        clientName: rescheduleSession.client_name,
+        coachEmail: coach.email,
+        coachName: `${coach.first_name} ${coach.last_name}`,
+        dateStr: format(rescheduleDate, 'EEEE, MMMM d, yyyy'),
+        time: rescheduleTime,
+        durationLabel: `${rescheduleSession.duration_minutes} min`,
+        county: rescheduleSession.county,
+        sessionGoals: rescheduleSession.session_goals || '',
+        origin: window.location.origin,
+      });
+    }
+    setSessions(prev => prev.map(s => s.id === rescheduleSession.id ? { ...s, date: newDate, start_time: rescheduleTime } : s));
+    setRescheduleSession(null);
+    setRescheduling(false);
+    toast.success('Session rescheduled! A confirmation email has been sent.');
+  };
+
+  const isRescheduleDateBlocked = (date) => {
+    const d = startOfDay(date);
+    return rescheduleBlocks.some(b => {
+      if (!b.block_all_day) return false;
+      const start = startOfDay(parseISO(b.start_date));
+      const end = startOfDay(parseISO(b.end_date));
+      return isWithinInterval(d, { start, end });
+    });
+  };
+
+  const isRescheduleTimeSlotTaken = (time) => {
+    if (!rescheduleDate) return false;
+    const dateStr = format(rescheduleDate, 'yyyy-MM-dd');
+    const slotStart = timeToMinutes(time);
+    const slotEnd = slotStart + 30;
+    return rescheduleExistingSessions.some(s => {
+      if (s.date !== dateStr) return false;
+      if (s.id === rescheduleSession?.id) return false;
+      const sStart = timeToMinutes(s.start_time);
+      const sEnd = sStart + (s.duration_minutes || 60);
+      return slotStart < sEnd && slotEnd > sStart;
+    });
+  };
+
+  const isRescheduleTimeOutsideAvailability = (time) => {
+    if (!rescheduleDate || !rescheduleSession) return false;
+    const coach = coaches[rescheduleSession.coach_id];
+    if (!coach?.availability) return false;
+    const dayAvail = coach.availability[format(rescheduleDate, 'EEEE')];
+    if (!dayAvail || !dayAvail.enabled) return true;
+    const slotMins = timeToMinutes(time);
+    return slotMins < timeToMinutes(dayAvail.start) || slotMins >= timeToMinutes(dayAvail.end);
   };
 
   if (loading) {
@@ -154,7 +256,7 @@ export default function Dashboard() {
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
           {[
-            { label: 'Upcoming', value: upcoming.length, icon: Calendar },
+            { label: 'Upcoming', value: upcoming.length, icon: CalendarIcon },
             { label: 'Total Sessions', value: sessions.length, icon: Clock },
             { label: 'Role', value: user?.role?.toUpperCase() || 'USER', icon: Shield },
             { label: 'Unread', value: unreadCount, icon: MessageSquare },
@@ -213,7 +315,7 @@ export default function Dashboard() {
               <h2 className="font-oswald text-xl font-bold tracking-wider text-foreground mb-4">UPCOMING SESSIONS</h2>
               {upcoming.length === 0 ? (
                 <div className="bg-card border border-border rounded-lg p-8 text-center">
-                  <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                  <CalendarIcon className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
                   <p className="text-muted-foreground text-sm">No upcoming sessions.</p>
                   {!isCoach && (
                     <Link to="/book">
@@ -270,13 +372,6 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div className="flex gap-2 mt-4">
-                          {session.payment_status === 'unpaid' && !isCoach && session.payment_method === 'cash' && (
-                            <Link to="/pay">
-                              <Button size="sm" className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase text-xs hover:bg-accent/90">
-                                <CreditCard className="w-3 h-3 mr-1" /> Pay Now
-                              </Button>
-                            </Link>
-                          )}
                           {isCoach && (
                             <div className="flex gap-2">
                               <Button
@@ -301,13 +396,25 @@ export default function Dashboard() {
                               )}
                             </div>
                           )}
+                          {!isCoach && (() => {
+                            const sessionDateTime = new Date(`${session.date}T${session.start_time}`);
+                            const canReschedule = !isBefore(sessionDateTime, addHours(new Date(), 24));
+                            return canReschedule ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleStartReschedule(session)}
+                                className="font-oswald tracking-wider uppercase text-xs"
+                              >
+                                <CalendarClock className="w-3 h-3 mr-1" /> Reschedule
+                              </Button>
+                            ) : (
+                              <p className="text-xs text-muted-foreground/60">
+                                Within 24 hours — contact your coach to reschedule or email <span className="text-accent">support@lctrainings.com</span>.
+                              </p>
+                            );
+                          })()}
                         </div>
-                        {/* Cancellation policy reminder */}
-                        {!isCoach && (
-                          <p className="text-xs text-muted-foreground/60 mt-3">
-                            To cancel or reschedule, contact your coach directly or email <span className="text-accent">support@lctrainings.com</span>.
-                          </p>
-                        )}
                       </div>
                     );
                   })}
@@ -328,7 +435,7 @@ export default function Dashboard() {
                         <div className="flex justify-between items-center">
                           <div>
                             <p className="font-oswald tracking-wider text-sm">
-                               {format(new Date(session.date + 'T00:00:00'), 'MMM d, yyyy')} · {session.start_time}
+                               {format(new Date(session.date + 'T00:00:00'), 'MMM d, yyyy')} · {session.start_time} · {session.duration_minutes} min
                             </p>
                             <p className="text-xs text-muted-foreground">
                               {isCoach ? session.client_name : coach ? `${coach.first_name} ${coach.last_name}` : ''}
@@ -361,7 +468,7 @@ export default function Dashboard() {
                 {!isCoach && (
                   <Link to="/book" className="block">
                     <Button variant="ghost" className="w-full justify-start text-sm">
-                      <Calendar className="w-4 h-4 mr-2" /> Book a Session
+                      <CalendarIcon className="w-4 h-4 mr-2" /> Book a Session
                     </Button>
                   </Link>
                 )}
@@ -379,6 +486,76 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
+        {/* Reschedule Modal */}
+        {rescheduleSession && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+            <div className="bg-card border border-border rounded-lg w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+              <h2 className="font-oswald text-2xl font-bold tracking-tight mb-2">RESCHEDULE SESSION</h2>
+              <p className="text-muted-foreground text-sm mb-6">
+                Pick a new date and time with {coaches[rescheduleSession.coach_id]?.first_name} {coaches[rescheduleSession.coach_id]?.last_name}.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pick a Date</p>
+                  <Calendar
+                    mode="single"
+                    selected={rescheduleDate}
+                    onSelect={setRescheduleDate}
+                    disabled={(date) => isBefore(date, startOfDay(new Date())) || isRescheduleDateBlocked(date)}
+                    className="rounded-lg border border-border bg-card p-4"
+                  />
+                </div>
+                {rescheduleDate && (
+                  <div>
+                    <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pick a Time</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {TIME_SLOTS.map((time) => {
+                        const taken = isRescheduleTimeSlotTaken(time);
+                        const outside = isRescheduleTimeOutsideAvailability(time);
+                        const disabled = taken || outside;
+                        return (
+                          <button
+                            key={time}
+                            onClick={() => !disabled && setRescheduleTime(time)}
+                            disabled={disabled}
+                            className={`p-2 rounded-md border text-xs font-oswald tracking-wide transition-all ${
+                              disabled
+                                ? 'border-border bg-secondary/50 text-muted-foreground/40 line-through cursor-not-allowed'
+                                : rescheduleTime === time
+                                  ? 'border-accent bg-accent/10 text-accent'
+                                  : 'border-border bg-card hover:border-accent/30'
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <Button
+                  variant="outline"
+                  onClick={() => setRescheduleSession(null)}
+                  className="font-oswald tracking-wider uppercase"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleConfirmReschedule}
+                  disabled={!rescheduleDate || !rescheduleTime || rescheduling}
+                  className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90"
+                >
+                  {rescheduling ? 'Rescheduling...' : 'Confirm Reschedule'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
