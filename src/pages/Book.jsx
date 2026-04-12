@@ -268,8 +268,6 @@ export default function Book() {
 
   // ── Payment confirmed screen ──────────────────────────────────────────────
   if (paymentConfirmed || skipToSchedule) {
-    const remainingSessions = (creditRecord?.total_credits || selectedPackage?.sessions || 1) - (creditRecord?.used_credits ?? 1);
-
     if (sessionBooked) {
       return (
         <div className="min-h-[80vh] flex items-center justify-center px-4">
@@ -346,14 +344,9 @@ export default function Book() {
             <CheckCircle2 className="w-8 h-8 text-green-400" />
           </div>
           <h1 className="font-oswald text-3xl font-bold tracking-tight mb-4">PAYMENT CONFIRMED!</h1>
-          <p className="text-muted-foreground mb-2">
+          <p className="text-muted-foreground mb-8">
             Your <strong>{selectedPackage?.name}</strong> package is active.
           </p>
-          <div className="bg-card border border-border rounded-lg p-4 mb-8">
-            <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-2">Your Sessions</p>
-            <p className="font-oswald text-4xl font-bold text-accent">{remainingSessions}</p>
-            <p className="text-sm text-muted-foreground">session{remainingSessions !== 1 ? 's' : ''} remaining</p>
-          </div>
           <div className="flex flex-col gap-3">
             <Button onClick={() => setScheduling(true)}
               className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
