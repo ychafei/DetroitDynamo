@@ -43,7 +43,7 @@ export default function OnboardingModal({ user, onComplete }) {
   const parentFirstOk = form.parent_first_name.trim().length > 0 && !hasNumbers(form.parent_first_name);
   const parentLastOk = form.parent_last_name.trim().length > 0 && !hasNumbers(form.parent_last_name);
   const parentPhoneOk = isValidPhone(form.parent_phone);
-  const parentEmailOk = !form.parent_email || isValidEmail(form.parent_email);
+  const parentEmailOk = form.parent_email && isValidEmail(form.parent_email);
   const canProceedStep2 = isUnder18 ? (parentFirstOk && parentLastOk && parentPhoneOk && parentEmailOk) : form.agreed_to_terms;
   const canFinish = form.agreed_to_terms;
 
@@ -60,6 +60,44 @@ export default function OnboardingModal({ user, onComplete }) {
       parent_email: form.parent_email || undefined,
       profile_setup_complete: true,
     });
+
+    // Notify parent/guardian via email if under 18
+    if (isUnder18 && form.parent_email) {
+      const childName = user?.full_name || user?.email || 'Your child';
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: form.parent_email,
+          subject: 'Your Child Has Signed Up for LC Training',
+          body: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+              <h2 style="color: #D4A843;">LC Training — Parent/Guardian Notification</h2>
+              <p>Hi ${form.parent_first_name},</p>
+              <p><strong>${childName}</strong> (age ${age}) has created an account on <strong>LC Training</strong>, a private soccer coaching platform.</p>
+              <h3 style="color: #D4A843;">What is LC Training?</h3>
+              <p>LC Training provides one-on-one and small group soccer coaching sessions for players of all ages and skill levels in Oakland, Macomb, and Wayne counties.</p>
+              <h3 style="color: #D4A843;">What your child can do on the platform:</h3>
+              <ul>
+                <li>Book private coaching sessions with certified coaches</li>
+                <li>Connect with other players their age through our matching system (first name and age only are visible)</li>
+                <li>Message matched players (all messages are monitored for safety)</li>
+              </ul>
+              <h3 style="color: #D4A843;">Your information on file:</h3>
+              <ul>
+                <li>Name: ${form.parent_first_name} ${form.parent_last_name}</li>
+                <li>Phone: ${form.parent_phone}</li>
+                <li>Email: ${form.parent_email}</li>
+              </ul>
+              <p>If you have any questions or did not authorize this, please contact us immediately at <a href="mailto:support@lctrainings.com" style="color: #D4A843;">support@lctrainings.com</a>.</p>
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
+              <p style="font-size: 12px; color: #999;">LC Training — Private Soccer Coaching<br/>${window.location.origin}</p>
+            </div>
+          `,
+        });
+      } catch {
+        // Email failure shouldn't block profile setup
+      }
+    }
+
     setSaving(false);
     onComplete();
   };
@@ -171,7 +209,7 @@ export default function OnboardingModal({ user, onComplete }) {
               )}
             </div>
             <div>
-              <Label>Parent Email (optional)</Label>
+              <Label>Parent Email <span className="text-destructive">*</span></Label>
               <Input
                 value={form.parent_email}
                 onChange={e => setForm({ ...form, parent_email: e.target.value })}
