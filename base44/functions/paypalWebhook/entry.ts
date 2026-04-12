@@ -55,28 +55,30 @@ Deno.serve(async (req) => {
     if (captureCustomId) {
       const parts = captureCustomId.split('|');
       if (parts.length >= 4) {
-        const [clientEmail, packageId, packageName, packageSessionsStr] = parts;
+        const [clientEmail, packageId, packageName, packageSessionsStr, durationMinutesStr] = parts;
         const packageSessions = parseInt(packageSessionsStr) || 1;
+        const durationHours = (parseInt(durationMinutesStr) || 60) / 60;
+        // Total credit hours = number of sessions × hours per session
+        const totalCreditHours = packageSessions * durationHours;
 
-        // Check if credit already exists (idempotent)
+        // Use the capture ID for idempotency instead of checking credit balance
+        const captureId = payload.resource?.id;
         const existing = await base44.asServiceRole.entities.SessionCredit.filter({
           client_email: clientEmail,
-          package_id: packageId,
+          package_id: captureId || packageId,
         });
 
-        // Only create if there's no active credit for this package
-        const hasActive = existing.some(c => c.used_credits < c.total_credits);
-        if (!hasActive) {
+        if (existing.length === 0) {
           await base44.asServiceRole.entities.SessionCredit.create({
             client_email: clientEmail,
             client_name: clientEmail,
-            package_id: packageId,
+            package_id: captureId || packageId,
             package_name: packageName,
-            total_credits: packageSessions,
+            total_credits: totalCreditHours,
             used_credits: 0,
             per_session_base_price: 0,
           });
-          console.log(`Credits created for ${clientEmail}, package ${packageName}`);
+          console.log(`Credits created for ${clientEmail}, package ${packageName}, ${totalCreditHours} hours`);
         }
       }
     }
