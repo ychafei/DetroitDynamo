@@ -77,28 +77,32 @@ export default function Dashboard() {
   }, [user, isCoach]);
 
   const handleCancel = async (session) => {
-    if (!isCoach) {
-      alert('Only your coach can cancel or reschedule sessions. Please contact your coach directly or email support@lctrainings.com.');
-      return;
-    }
     const now = new Date();
     const sessionTime = new Date(`${session.date}T${session.start_time}`);
     const isLateCancel = isBefore(sessionTime, addHours(now, 24));
+    const cancelledBy = isCoach ? 'coach' : 'client';
 
-    const msg = isLateCancel
-      ? 'This session is within 24 hours. Cancel anyway? The client will need to contact support to get credits back.'
-      : 'Cancel this session? Credits will be refunded to the client automatically.';
+    let msg;
+    if (isCoach) {
+      msg = isLateCancel
+        ? 'This session is within 24 hours. Cancel anyway? The client will need to contact support to get their session back.'
+        : 'Cancel this session? The session will be returned to the client automatically.';
+    } else {
+      msg = isLateCancel
+        ? 'This session is within 24 hours. Cancelling now means you will NOT get this session back. Are you sure?'
+        : 'Cancel this session? Your session will be returned so you can reschedule when you\'re ready.';
+    }
     const ok = confirm(msg);
     if (!ok) return;
 
-    await base44.entities.Session.update(session.id, { status: 'cancelled', cancellation_reason: 'Cancelled by coach' });
+    await base44.entities.Session.update(session.id, { status: 'cancelled', cancellation_reason: `Cancelled by ${cancelledBy}` });
     setSessions(prev => prev.map(s => s.id === session.id ? { ...s, status: 'cancelled' } : s));
 
-    // Refund 1 session credit if paid with credits/electronic and not a late cancel
+    // Refund 1 session if not a late cancel and session was paid with credits/electronic
     // Cash sessions don't have credit records, so skip those
     if (!isLateCancel && session.payment_method !== 'cash' && (session.payment_method === 'credits' || session.payment_status === 'paid')) {
-      const clientCredits = await base44.entities.SessionCredit.filter({ client_email: session.client_email });
-      // Find the most recently used credit record (highest used_credits) to refund 1 session to
+      const clientEmail = isCoach ? session.client_email : user.email;
+      const clientCredits = await base44.entities.SessionCredit.filter({ client_email: clientEmail });
       const activeCredit = clientCredits
         .filter(c => c.used_credits > 0)
         .sort((a, b) => b.used_credits - a.used_credits)[0];
@@ -106,7 +110,15 @@ export default function Dashboard() {
         await base44.entities.SessionCredit.update(activeCredit.id, {
           used_credits: Math.max(0, activeCredit.used_credits - 1)
         });
+        // Refresh credits display for clients
+        if (!isCoach) {
+          const updated = await base44.entities.SessionCredit.filter({ client_email: user.email });
+          setCredits(updated);
+        }
       }
+      toast.success(isLateCancel ? 'Session cancelled.' : 'Session cancelled. Your session has been returned — schedule again whenever you\'re ready.');
+    } else {
+      toast.success('Session cancelled.');
     }
   };
 
@@ -233,7 +245,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Credits Balance (clients only) */}
+        {/* Available Sessions (clients only) */}
         {!isCoach && (() => {
           const activeCredits = credits.filter(c => (c.total_credits - c.used_credits) > 0);
           if (activeCredits.length === 0) return null;
@@ -241,28 +253,26 @@ export default function Dashboard() {
             <div className="mb-6 space-y-3">
               {activeCredits.map(credit => {
                 const remaining = credit.total_credits - credit.used_credits;
-                const durationLabel = credit.session_duration_minutes ? `${credit.session_duration_minutes} min` : '';
+                const durationLabel = credit.session_duration_minutes
+                  ? `${credit.session_duration_minutes >= 60 ? `${credit.session_duration_minutes / 60} hr${credit.session_duration_minutes > 60 ? 's' : ''}` : `${credit.session_duration_minutes} min`} each`
+                  : '';
                 return (
-                  <div key={credit.id} className="bg-accent/10 border border-accent/30 rounded-lg p-4 flex items-center justify-between">
+                  <div key={credit.id} className="bg-accent/10 border border-accent/30 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <Zap className="w-5 h-5 text-accent" />
+                      <Zap className="w-5 h-5 text-accent flex-shrink-0" />
                       <div>
-                        <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground">
-                          {credit.package_name || 'Sessions'}
+                        <p className="font-oswald text-lg font-bold text-foreground tracking-wider">
+                          {credit.package_name || 'Session'}
                         </p>
-                        <p className="font-oswald text-2xl font-bold text-accent">
-                          {remaining} session{remaining !== 1 ? 's' : ''} remaining
+                        <p className="text-sm text-muted-foreground">
+                          {remaining} session{remaining !== 1 ? 's' : ''} available to schedule{durationLabel ? ` · ${durationLabel}` : ''}
                         </p>
-                        {durationLabel && (
-                          <p className="text-xs text-muted-foreground">{durationLabel} per session</p>
-                        )}
                       </div>
                     </div>
-                    <Link
-                      to={`/book?credit_id=${credit.id}`}
-                      className="text-xs font-oswald tracking-wider uppercase text-accent hover:underline"
-                    >
-                      Schedule Session →
+                    <Link to={`/book?credit_id=${credit.id}`}>
+                      <Button className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase text-xs hover:bg-accent/90 whitespace-nowrap">
+                        Schedule {credit.package_name || ''} Session
+                      </Button>
                     </Link>
                   </div>
                 );
@@ -416,20 +426,34 @@ export default function Dashboard() {
                           )}
                           {!isCoach && (() => {
                             const sessionDateTime = new Date(`${session.date}T${session.start_time}`);
-                            const canReschedule = !isBefore(sessionDateTime, addHours(new Date(), 24));
-                            return canReschedule ? (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleStartReschedule(session)}
-                                className="font-oswald tracking-wider uppercase text-xs"
-                              >
-                                <CalendarClock className="w-3 h-3 mr-1" /> Reschedule
-                              </Button>
-                            ) : (
-                              <p className="text-xs text-muted-foreground/60">
-                                Within 24 hours — contact your coach to reschedule or email <span className="text-accent">support@lctrainings.com</span>.
-                              </p>
+                            const isOver24Hours = !isBefore(sessionDateTime, addHours(new Date(), 24));
+                            return (
+                              <div className="flex gap-2 items-center">
+                                {isOver24Hours ? (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => handleStartReschedule(session)}
+                                      className="font-oswald tracking-wider uppercase text-xs"
+                                    >
+                                      <CalendarClock className="w-3 h-3 mr-1" /> Reschedule
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => handleCancel(session)}
+                                      className="font-oswald tracking-wider uppercase text-xs text-destructive hover:text-destructive"
+                                    >
+                                      <XCircle className="w-3 h-3 mr-1" /> Cancel
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <p className="text-xs text-muted-foreground/60">
+                                    Within 24 hours — contact your coach to make changes or email <span className="text-accent">support@lctrainings.com</span>.
+                                  </p>
+                                )}
+                              </div>
                             );
                           })()}
                         </div>
