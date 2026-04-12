@@ -102,21 +102,34 @@ export default function Dashboard() {
     // Cash sessions don't have credit records, so skip those
     if (!isLateCancel && session.payment_method !== 'cash' && (session.payment_method === 'credits' || session.payment_status === 'paid')) {
       const clientEmail = isCoach ? session.client_email : user.email;
-      const clientCredits = await base44.entities.SessionCredit.filter({ client_email: clientEmail });
-      const activeCredit = clientCredits
-        .filter(c => c.used_credits > 0)
-        .sort((a, b) => b.used_credits - a.used_credits)[0];
-      if (activeCredit) {
-        await base44.entities.SessionCredit.update(activeCredit.id, {
-          used_credits: Math.max(0, activeCredit.used_credits - 1)
-        });
-        // Refresh credits display for clients
-        if (!isCoach) {
-          const updated = await base44.entities.SessionCredit.filter({ client_email: user.email });
-          setCredits(updated);
-        }
+      let creditToRefund = null;
+
+      // If the session has a credit_id, refund to that specific credit record
+      if (session.credit_id) {
+        const clientCredits = await base44.entities.SessionCredit.filter({ client_email: clientEmail });
+        creditToRefund = clientCredits.find(c => c.id === session.credit_id && c.used_credits > 0);
       }
-      toast.success(isLateCancel ? 'Session cancelled.' : 'Session cancelled. Your session has been returned — schedule again whenever you\'re ready.');
+
+      // Fallback: find the most recently used credit record
+      if (!creditToRefund) {
+        const clientCredits = await base44.entities.SessionCredit.filter({ client_email: clientEmail });
+        creditToRefund = clientCredits
+          .filter(c => c.used_credits > 0)
+          .sort((a, b) => b.used_credits - a.used_credits)[0];
+      }
+
+      if (creditToRefund) {
+        await base44.entities.SessionCredit.update(creditToRefund.id, {
+          used_credits: Math.max(0, creditToRefund.used_credits - 1)
+        });
+      }
+
+      // Refresh credits display for clients
+      if (!isCoach) {
+        const updated = await base44.entities.SessionCredit.filter({ client_email: user.email });
+        setCredits(updated);
+      }
+      toast.success('Session cancelled. Your session has been returned — schedule again whenever you\'re ready.');
     } else {
       toast.success('Session cancelled.');
     }
