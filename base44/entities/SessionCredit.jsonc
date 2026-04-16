@@ -29,6 +29,11 @@
     },
     "per_session_base_price": {
       "type": "number"
+    },
+    "payment_processor": {
+      "type": "string",
+      "enum": ["paypal", "stripe", "admin_grant"],
+      "description": "Which payment processor was used to create this credit"
     }
   },
   "required": [

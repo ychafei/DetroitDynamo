@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight, MapPin, User, Clock, Timer, CheckCircle2, Packag
 import { format, isBefore, startOfDay, parseISO, isWithinInterval } from 'date-fns';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import PayPalCheckout from '@/components/PayPalCheckout';
+import StripeCheckout from '@/components/StripeCheckout';
 import OnboardingModal from '@/components/OnboardingModal';
 
 const DURATIONS = [
@@ -39,6 +40,7 @@ export default function Book() {
   const urlParams = new URLSearchParams(window.location.search);
   const preCounty = urlParams.get('county');
   const preCreditId = urlParams.get('credit_id');
+  const stripeSuccess = urlParams.get('stripe_success');
   const { user, refetch } = useCurrentUser();
   const [showProfileGate, setShowProfileGate] = useState(false);
 
@@ -121,6 +123,33 @@ export default function Book() {
       });
     }
   }, [user]);
+
+  // Detect Stripe Checkout success redirect
+  useEffect(() => {
+    if (stripeSuccess === '1' && user) {
+      // Stripe webhook already created the SessionCredit on the server.
+      // Advance the UI to the "Payment Confirmed" screen.
+      // Clean the URL so refreshing doesn't re-trigger
+      const url = new URL(window.location.href);
+      url.searchParams.delete('stripe_success');
+      url.searchParams.delete('session_id');
+      window.history.replaceState({}, '', url.pathname);
+
+      // Reload credits to pick up the webhook-created record, then advance
+      base44.entities.SessionCredit.filter({ client_email: user.email }).then(credits => {
+        const active = credits.find(c => (c.total_credits - c.used_credits) > 0);
+        if (active) {
+          setExistingCredit(active);
+          setCreditRecord(active);
+          if (active.session_duration_minutes) {
+            const creditDur = DURATIONS.find(d => d.minutes === active.session_duration_minutes);
+            if (creditDur) setDuration(creditDur);
+          }
+        }
+        setPaymentConfirmed(true);
+      });
+    }
+  }, [stripeSuccess, user]);
 
   const isDateBlocked = (date) => {
     const d = startOfDay(date);
@@ -660,6 +689,17 @@ export default function Book() {
                     <div>
                       <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pay Online</p>
                       <PayPalCheckout
+                        amount={sessionPrice * (selectedPackage?.sessions || 1)}
+                        packageId={selectedPackage?.id}
+                        packageName={selectedPackage?.name}
+                        packageSessions={selectedPackage?.sessions || 1}
+                        sessionDurationMinutes={duration?.minutes}
+                        onSuccess={() => handlePaymentConfirmed('electronic')}
+                      />
+                    </div>
+                    <div className="border-t border-border pt-4">
+                      <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pay with Card</p>
+                      <StripeCheckout
                         amount={sessionPrice * (selectedPackage?.sessions || 1)}
                         packageId={selectedPackage?.id}
                         packageName={selectedPackage?.name}

@@ -76,6 +76,7 @@ Deno.serve(async (req) => {
             used_credits: 0,
             session_duration_minutes: durationMinutes,
             per_session_base_price: 0,
+            payment_processor: 'paypal',
           });
           console.log(`Credits created for ${clientEmail}, package ${packageName}, ${packageSessions} sessions × ${durationMinutes} min`);
         }
