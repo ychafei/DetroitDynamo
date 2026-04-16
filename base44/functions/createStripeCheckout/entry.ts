@@ -44,6 +44,7 @@ Deno.serve(async (req) => {
     const fetchHeaders = {
       'Authorization': 'Bearer ' + secretKey,
       'Content-Type': 'application/x-www-form-urlencoded',
+      'Stripe-Version': '2024-12-18.acacia',
     };
 
     // Only add Stripe-Account for org-level keys
