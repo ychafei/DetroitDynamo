@@ -33,11 +33,15 @@ Deno.serve(async (req) => {
     params.append('metadata[package_sessions]', String(packageSessions || 1));
     params.append('metadata[session_duration_minutes]', String(sessionDurationMinutes || 60));
 
+    // Stripe-Account header required for organization-level keys (sk_org_...)
+    const stripeAccountId = Deno.env.get('STRIPE_ACCOUNT_ID') || 'acct_1P5lEAClCNOrs1rW';
+
     const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${secretKey}`,
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Stripe-Account': stripeAccountId,
       },
       body: params.toString(),
     });
