@@ -98,9 +98,8 @@ export default function Dashboard() {
     await base44.entities.Session.update(session.id, { status: 'cancelled', cancellation_reason: `Cancelled by ${cancelledBy}` });
     setSessions(prev => prev.map(s => s.id === session.id ? { ...s, status: 'cancelled' } : s));
 
-    // Refund 1 session if not a late cancel and session was paid with credits/electronic
-    // Cash sessions don't have credit records, so skip those
-    if (!isLateCancel && session.payment_method !== 'cash' && (session.payment_method === 'credits' || session.payment_status === 'paid')) {
+    // Refund 1 credit if not a late cancel and session is linked to a credit record
+    if (!isLateCancel && session.credit_id) {
       const clientEmail = isCoach ? session.client_email : user.email;
       let creditToRefund = null;
 
