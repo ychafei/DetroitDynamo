@@ -18,11 +18,13 @@ export default function StripeCheckout({ amount, packageId, packageName, package
         packageSessions,
         sessionDurationMinutes,
       });
+      console.log('Stripe response:', JSON.stringify(res.data));
       if (res.data?.url) {
-        // Redirect to Stripe's hosted checkout page
         window.location.href = res.data.url;
       } else {
-        setError('Could not start checkout. Please try again.');
+        const diag = res.data?.diagnostics?.join(' | ') || '';
+        const errMsg = res.data?.error || 'No URL returned';
+        setError(`Stripe error: ${errMsg}${diag ? ' — Debug: ' + diag : ''}`);
       }
     } catch (err) {
       const detail = err?.response?.data?.stripe_error || err?.response?.data?.error || err?.message || 'Unknown error';
