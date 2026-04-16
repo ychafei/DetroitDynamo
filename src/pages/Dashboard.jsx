@@ -85,12 +85,12 @@ export default function Dashboard() {
     let msg;
     if (isCoach) {
       msg = isLateCancel
-        ? 'This session is within 24 hours. Cancel anyway? The client will need to contact support to get their session back.'
-        : 'Cancel this session? The session will be returned to the client automatically.';
+        ? '⚠️ LATE CANCELLATION (Within 24 Hours)\n\nThis session is within 24 hours of the scheduled time. Cancel anyway?\n\nThe client\'s session credit will NOT be returned. They will need to contact support if they believe an exception should be made.'
+        : 'Cancel this session?\n\nThe session credit will be returned to the client automatically so they can reschedule.';
     } else {
       msg = isLateCancel
-        ? 'This session is within 24 hours. Cancelling now means you will NOT get this session back. Are you sure?'
-        : 'Cancel this session? Your session will be returned so you can reschedule when you\'re ready.';
+        ? '⚠️ LATE CANCELLATION WARNING\n\nYou are canceling within 24 hours of your scheduled session.\n\nThis session is non-refundable and the credit will NOT be returned.\n\nAre you sure you want to cancel?'
+        : 'Cancel this session?\n\nYour session credit will be returned to your account and you can reschedule whenever you\'re ready.';
     }
     const ok = confirm(msg);
     if (!ok) return;
@@ -129,7 +129,9 @@ export default function Dashboard() {
         const updated = await base44.entities.SessionCredit.filter({ client_email: user.email });
         setCredits(updated);
       }
-      toast.success('Session cancelled. Your session has been returned — schedule again whenever you\'re ready.');
+      toast.success('Session cancelled. Your credit has been returned — schedule again whenever you\'re ready.');
+    } else if (isLateCancel) {
+      toast('Session cancelled. This was a late cancellation — no credit was returned.', { icon: '⚠️' });
     } else {
       toast.success('Session cancelled.');
     }
@@ -278,7 +280,7 @@ export default function Dashboard() {
                           {credit.package_name || 'Session'}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {remaining} session{remaining !== 1 ? 's' : ''} available to schedule{durationLabel ? ` · ${durationLabel}` : ''}
+                          {remaining} of {credit.total_credits} session{credit.total_credits !== 1 ? 's' : ''} remaining{durationLabel ? ` · ${durationLabel}` : ''}
                         </p>
                       </div>
                     </div>
@@ -441,9 +443,9 @@ export default function Dashboard() {
                             const sessionDateTime = new Date(`${session.date}T${session.start_time}`);
                             const isOver24Hours = !isBefore(sessionDateTime, addHours(new Date(), 24));
                             return (
-                              <div className="flex gap-2 items-center">
-                                {isOver24Hours ? (
-                                  <>
+                              <div className="flex flex-col gap-2">
+                                <div className="flex gap-2 items-center">
+                                  {isOver24Hours && (
                                     <Button
                                       size="sm"
                                       variant="outline"
@@ -452,18 +454,19 @@ export default function Dashboard() {
                                     >
                                       <CalendarClock className="w-3 h-3 mr-1" /> Reschedule
                                     </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => handleCancel(session)}
-                                      className="font-oswald tracking-wider uppercase text-xs text-destructive hover:text-destructive"
-                                    >
-                                      <XCircle className="w-3 h-3 mr-1" /> Cancel
-                                    </Button>
-                                  </>
-                                ) : (
-                                  <p className="text-xs text-muted-foreground/60">
-                                    Within 24 hours — contact your coach to make changes or email <span className="text-accent">support@lctrainings.com</span>.
+                                  )}
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleCancel(session)}
+                                    className="font-oswald tracking-wider uppercase text-xs text-destructive hover:text-destructive"
+                                  >
+                                    <XCircle className="w-3 h-3 mr-1" /> Cancel
+                                  </Button>
+                                </div>
+                                {!isOver24Hours && (
+                                  <p className="text-xs text-destructive/70">
+                                    Within 24 hours — cancellation is non-refundable. Credit will not be returned.
                                   </p>
                                 )}
                               </div>

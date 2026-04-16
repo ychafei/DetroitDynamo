@@ -201,26 +201,29 @@ export default function Book() {
     sessionStorage.removeItem('lc_booking');
     setSubmitting(true);
 
-    let credit;
+    const clientFullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.full_name || user.email;
+
     if (useExistingCredit && existingCredit) {
-      // Check that remaining sessions are sufficient
-      const remaining = existingCredit.total_credits - existingCredit.used_credits;
-      if (remaining < 1) {
-        setSubmitting(false);
-        alert('No sessions remaining on this credit package.');
-        return;
+      // Using existing credits — don't deduct here, deduct when session is actually booked
+      setCreditRecord(existingCredit);
+    } else if (method === 'electronic') {
+      // Electronic payments (PayPal/Stripe): webhook creates the credit.
+      // Poll briefly to pick it up, but don't create a duplicate.
+      let found = null;
+      for (let i = 0; i < 5; i++) {
+        await new Promise(r => setTimeout(r, 1500));
+        const credits = await base44.entities.SessionCredit.filter({ client_email: user.email });
+        found = credits.find(c => (c.total_credits - c.used_credits) > 0 && !creditRecord?.id?.includes?.(c.id));
+        if (found) break;
       }
-      const updatedUsed = existingCredit.used_credits + 1;
-      credit = await base44.entities.SessionCredit.update(existingCredit.id, {
-        used_credits: updatedUsed
-      });
-      setCreditRecord({ ...existingCredit, used_credits: updatedUsed });
-      setExistingCredit((existingCredit.total_credits - updatedUsed) > 0 ? { ...existingCredit, used_credits: updatedUsed } : null);
-    } else if (method !== 'cash') {
-      // Only create credit record for electronic payments, NOT cash
-      // total_credits = number of sessions, session_duration_minutes = duration per session
-      const clientFullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.full_name || user.email;
-      credit = await base44.entities.SessionCredit.create({
+      if (found) {
+        setCreditRecord(found);
+        setExistingCredit(found);
+      }
+      // If webhook hasn't fired yet, user can still proceed — credit will appear on Dashboard
+    } else if (method === 'cash') {
+      // Cash: create credit record on frontend (no webhook for cash)
+      const credit = await base44.entities.SessionCredit.create({
         client_email: user.email,
         client_name: clientFullName,
         package_id: selectedPackage.id,
@@ -229,8 +232,10 @@ export default function Book() {
         used_credits: 0,
         session_duration_minutes: duration?.minutes ?? 60,
         per_session_base_price: Math.round(selectedPackage.price / (selectedPackage.sessions || 1)),
+        payment_processor: 'admin_grant',
       });
       setCreditRecord(credit);
+      setExistingCredit(credit);
     }
 
     setPaymentMethod(method);
@@ -247,20 +252,22 @@ export default function Book() {
     const durationMinutes = duration?.minutes ?? 60;
     const clientAge = user.dob ? Math.floor((Date.now() - new Date(user.dob)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
 
-    // Deduct 1 session when using the "Use Existing Credits → Schedule Now" direct path
-    // (normal credit path deducts in handlePaymentConfirmed)
-    if (useExistingCredit && skipToSchedule && existingCredit) {
-      const remaining = existingCredit.total_credits - existingCredit.used_credits;
+    // Deduct 1 credit from the active credit record (all paths — existing credits, new purchase, cash)
+    const activeCredit = creditRecord || existingCredit;
+    if (activeCredit) {
+      const remaining = activeCredit.total_credits - activeCredit.used_credits;
       if (remaining < 1) {
         setSubmitting(false);
         alert('No sessions remaining on this credit package.');
         return;
       }
-      const updatedUsed = existingCredit.used_credits + 1;
-      await base44.entities.SessionCredit.update(existingCredit.id, {
-        used_credits: updatedUsed
+      const updatedUsed = activeCredit.used_credits + 1;
+      await base44.entities.SessionCredit.update(activeCredit.id, {
+        used_credits: updatedUsed,
       });
-      setExistingCredit((existingCredit.total_credits - updatedUsed) > 0 ? { ...existingCredit, used_credits: updatedUsed } : null);
+      const updatedCredit = { ...activeCredit, used_credits: updatedUsed };
+      setCreditRecord(updatedCredit);
+      setExistingCredit((activeCredit.total_credits - updatedUsed) > 0 ? updatedCredit : null);
     }
 
     const clientFullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.full_name || user.email;
@@ -278,7 +285,7 @@ export default function Book() {
       county,
       session_goals: sessionGoals,
       total_price: sessionPrice ?? 0,
-      credit_id: existingCredit?.id || null,
+      credit_id: activeCredit?.id || null,
     });
 
     await base44.functions.invoke('sendBookingEmails', {
@@ -294,13 +301,29 @@ export default function Book() {
       origin: window.location.origin,
     });
 
+    // Reload coach availability so time slots update for next booking
+    if (coach) {
+      const res = await base44.functions.invoke('getCoachAvailability', { coach_id: coach.id });
+      setBlocks(res.data.blocks || []);
+      setExistingSessions(res.data.sessions || []);
+    }
+
     setSubmitting(false);
     setSessionBooked(true);
+    setSelectedDate(null);
+    setSelectedTime('');
   };
 
   // ── Payment confirmed screen ──────────────────────────────────────────────
   if (paymentConfirmed || skipToSchedule) {
     if (sessionBooked) {
+      const remainingOnCredit = creditRecord ? creditRecord.total_credits - creditRecord.used_credits : 0;
+      const handleScheduleAnother = () => {
+        setSessionBooked(false);
+        setSelectedDate(null);
+        setSelectedTime('');
+        setScheduling(true);
+      };
       return (
         <div className="min-h-[80vh] flex items-center justify-center px-4">
           <div className="max-w-md w-full text-center">
@@ -309,12 +332,34 @@ export default function Book() {
             </div>
             <h1 className="font-oswald text-3xl font-bold tracking-tight mb-4">SESSION BOOKED!</h1>
             <p className="text-muted-foreground mb-2">
-              {format(selectedDate, 'EEEE, MMMM d')} at {selectedTime} with {coach.first_name} {coach.last_name}
+              Your session has been confirmed with {coach.first_name} {coach.last_name}.
             </p>
-            <p className="text-sm text-muted-foreground mb-8">A confirmation email has been sent.</p>
-            <Button onClick={() => window.location.href = '/dashboard'} className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase">
-              Go to Dashboard
-            </Button>
+            <p className="text-sm text-muted-foreground mb-6">A confirmation email has been sent.</p>
+
+            {remainingOnCredit > 0 && (
+              <div className="bg-accent/10 border border-accent/30 rounded-lg p-4 mb-6">
+                <p className="font-oswald text-sm font-bold tracking-wider text-accent uppercase mb-1">
+                  {remainingOnCredit} session{remainingOnCredit !== 1 ? 's' : ''} remaining
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {creditRecord.package_name}{creditRecord.session_duration_minutes ? ` · ${creditRecord.session_duration_minutes / 60} hr${creditRecord.session_duration_minutes > 60 ? 's' : ''} each` : ''}
+                </p>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3">
+              {remainingOnCredit > 0 && (
+                <Button onClick={handleScheduleAnother}
+                  className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
+                  Schedule Another Session
+                </Button>
+              )}
+              <Button variant={remainingOnCredit > 0 ? 'outline' : 'default'}
+                onClick={() => window.location.href = '/dashboard'}
+                className={remainingOnCredit > 0 ? 'font-oswald tracking-wider uppercase' : 'bg-accent text-accent-foreground font-oswald tracking-wider uppercase'}>
+                Go to Dashboard
+              </Button>
+            </div>
           </div>
         </div>
       );
@@ -369,6 +414,9 @@ export default function Book() {
     }
 
     // Payment confirmed — choose to schedule now or later
+    const confirmedCredit = creditRecord || existingCredit;
+    const confirmedRemaining = confirmedCredit ? confirmedCredit.total_credits - confirmedCredit.used_credits : (selectedPackage?.sessions || 1);
+    const confirmedDuration = confirmedCredit?.session_duration_minutes || duration?.minutes || 60;
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
@@ -376,9 +424,15 @@ export default function Book() {
             <CheckCircle2 className="w-8 h-8 text-green-400" />
           </div>
           <h1 className="font-oswald text-3xl font-bold tracking-tight mb-4">PAYMENT CONFIRMED!</h1>
-          <p className="text-muted-foreground mb-8">
-            Your <strong>{selectedPackage?.name}</strong> package is active.
-          </p>
+          <div className="bg-card border border-border rounded-lg p-4 mb-8">
+            <p className="font-oswald text-lg font-bold tracking-wider mb-1">
+              {confirmedCredit?.package_name || selectedPackage?.name}
+            </p>
+            <p className="text-muted-foreground text-sm">
+              {confirmedRemaining} session{confirmedRemaining !== 1 ? 's' : ''} available
+              {confirmedDuration ? ` · ${confirmedDuration / 60} hr${confirmedDuration > 60 ? 's' : ''} each` : ''}
+            </p>
+          </div>
           <div className="flex flex-col gap-3">
             <Button onClick={() => setScheduling(true)}
               className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
