@@ -622,7 +622,7 @@ export default function Book() {
                 const perSession = Math.round(pkg.price / (pkg.sessions || 1));
                 const isSelected = selectedPackage?.id === pkg.id;
                 return (
-                  <button key={pkg.id} onClick={() => setSelectedPackage(pkg)}
+                  <button key={pkg.id} onClick={() => { setSelectedPackage(pkg); setUseExistingCredit(false); }}
                     className={`p-6 rounded-lg border text-left transition-all relative ${isSelected ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/30'}`}>
                     {pkg.badge && (
                       <span className="absolute top-3 right-3 text-xs font-oswald tracking-wide bg-accent text-accent-foreground px-2 py-0.5 rounded">{pkg.badge}</span>
