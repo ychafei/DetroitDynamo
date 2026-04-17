@@ -8,15 +8,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import { Trash2, Pencil, Zap } from 'lucide-react';
 import { toast } from 'sonner';
+import { useConfirm } from '@/components/ui/confirm-dialog';
+import { DataTable } from '@/components/ui/data-table';
 
 export default function AdminCredits() {
   const { isAdmin } = useCurrentUser();
   const [credits, setCredits] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
   const [editDialog, setEditDialog] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [saving, setSaving] = useState(false);
+  const { confirm, dialog: confirmDialog } = useConfirm();
 
   const loadCredits = async () => {
     const all = await base44.entities.SessionCredit.list();
@@ -27,7 +29,18 @@ export default function AdminCredits() {
   useEffect(() => { loadCredits(); }, []);
 
   const handleDelete = async (credit) => {
-    const ok = confirm(`Delete credit record "${credit.package_name || 'Unknown'}" for ${credit.client_email}? This cannot be undone.`);
+    const remaining = (credit.total_credits || 0) - (credit.used_credits || 0);
+    const ok = await confirm({
+      title: 'Delete credit record?',
+      description: `${credit.client_name || credit.client_email} · ${credit.package_name || 'Unknown package'}`,
+      consequences: [
+        `${remaining} session${remaining === 1 ? '' : 's'} remaining will be forfeited.`,
+        `${credit.used_credits || 0} used / ${credit.total_credits || 0} total.`,
+        'This cannot be undone.',
+      ],
+      confirmLabel: 'Delete record',
+      variant: 'destructive',
+    });
     if (!ok) return;
     await base44.entities.SessionCredit.delete(credit.id);
     setCredits(prev => prev.filter(c => c.id !== credit.id));
@@ -58,12 +71,62 @@ export default function AdminCredits() {
     loadCredits();
   };
 
-  const filtered = credits.filter(c =>
-    !search ||
-    c.client_email?.toLowerCase().includes(search.toLowerCase()) ||
-    c.client_name?.toLowerCase().includes(search.toLowerCase()) ||
-    c.package_name?.toLowerCase().includes(search.toLowerCase())
-  );
+  const rows = credits.map(c => {
+    const total = c.total_credits || 0;
+    const used = c.used_credits || 0;
+    const remaining = total - used;
+    const duration = c.session_duration_minutes;
+    const durationLabel = duration ? (duration >= 60 ? `${duration / 60} hr${duration > 60 ? 's' : ''}` : `${duration} min`) : 'N/A';
+    return { ...c, _remaining: remaining, _durationLabel: durationLabel };
+  });
+
+  const columns = [
+    {
+      key: 'client',
+      header: 'Client',
+      sortable: true,
+      sortAccessor: (r) => r.client_name || r.client_email,
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <Zap className={`w-4 h-4 flex-shrink-0 ${row._remaining > 0 ? 'text-accent' : 'text-muted-foreground'}`} />
+          <div>
+            <p className="font-oswald tracking-wider text-foreground text-sm">{row.client_name || row.client_email}</p>
+            <p className="text-xs text-muted-foreground">{row.client_email}</p>
+          </div>
+        </div>
+      ),
+    },
+    { key: 'package_name', header: 'Package', sortable: true, cell: (r) => r.package_name || '—' },
+    {
+      key: 'sessions',
+      header: 'Used / Total',
+      sortable: true,
+      sortAccessor: 'used_credits',
+      cell: (r) => <span className="text-sm">{r.used_credits || 0} / {r.total_credits || 0}</span>,
+    },
+    {
+      key: 'remaining',
+      header: 'Remaining',
+      sortable: true,
+      sortAccessor: '_remaining',
+      cell: (r) => <span className={`text-sm font-medium ${r._remaining > 0 ? 'text-accent' : 'text-destructive'}`}>{r._remaining}</span>,
+    },
+    { key: 'duration', header: 'Duration', sortable: true, sortAccessor: 'session_duration_minutes', cell: (r) => r._durationLabel },
+    {
+      key: 'actions',
+      header: '',
+      cell: (row) => (
+        <div className="flex items-center gap-2 justify-end">
+          <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => openEdit(row)}>
+            <Pencil className="w-3 h-3 mr-1" /> Edit
+          </Button>
+          <Button size="sm" variant="outline" className="text-xs h-8 text-destructive hover:text-destructive" onClick={() => handleDelete(row)}>
+            <Trash2 className="w-3 h-3 mr-1" /> Delete
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   if (!isAdmin) return <div className="py-24 text-center text-muted-foreground">Access denied.</div>;
 
@@ -73,62 +136,16 @@ export default function AdminCredits() {
         <h1 className="font-oswald text-3xl font-bold tracking-tight text-foreground mb-2">SESSION CREDITS</h1>
         <p className="text-muted-foreground text-sm mb-6">View, edit, or delete client session credit records.</p>
 
-        <Input
-          placeholder="Search by email, name, or package..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="bg-secondary border-border mb-6 max-w-sm"
-        />
-
         {loading ? (
           <div className="text-center py-12"><div className="w-8 h-8 border-4 border-muted border-t-accent rounded-full animate-spin mx-auto" /></div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">No credit records found.</div>
         ) : (
-          <div className="space-y-3">
-            {filtered.map(credit => {
-              const remaining = credit.total_credits - credit.used_credits;
-              const duration = credit.session_duration_minutes;
-              const durationLabel = duration ? (duration >= 60 ? `${duration / 60} hr${duration > 60 ? 's' : ''}` : `${duration} min`) : 'N/A';
-              return (
-                <div key={credit.id} className="bg-card border border-border rounded-lg p-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-start gap-3">
-                      <Zap className={`w-5 h-5 mt-0.5 flex-shrink-0 ${remaining > 0 ? 'text-accent' : 'text-muted-foreground'}`} />
-                      <div>
-                        <p className="font-oswald tracking-wider text-foreground">
-                          {credit.client_name || credit.client_email}
-                        </p>
-                        <p className="text-xs text-muted-foreground">{credit.client_email}</p>
-                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs">
-                          <span className="text-muted-foreground">
-                            Package: <span className="text-foreground font-medium">{credit.package_name || '—'}</span>
-                          </span>
-                          <span className="text-muted-foreground">
-                            Sessions: <span className="text-foreground font-medium">{credit.used_credits}/{credit.total_credits} used</span>
-                          </span>
-                          <span className="text-muted-foreground">
-                            Remaining: <span className={`font-medium ${remaining > 0 ? 'text-accent' : 'text-destructive'}`}>{remaining}</span>
-                          </span>
-                          <span className="text-muted-foreground">
-                            Duration: <span className="text-foreground font-medium">{durationLabel}</span>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => openEdit(credit)}>
-                        <Pencil className="w-3 h-3 mr-1" /> Edit
-                      </Button>
-                      <Button size="sm" variant="outline" className="text-xs h-8 text-destructive hover:text-destructive" onClick={() => handleDelete(credit)}>
-                        <Trash2 className="w-3 h-3 mr-1" /> Delete
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <DataTable
+            columns={columns}
+            data={rows}
+            searchFields={['client_email', 'client_name', 'package_name']}
+            searchPlaceholder="Search by email, name, or package…"
+            emptyMessage="No credit records found."
+          />
         )}
       </div>
 
@@ -200,6 +217,7 @@ export default function AdminCredits() {
           </Button>
         </DialogContent>
       </Dialog>
+      {confirmDialog}
     </div>
   );
 }

@@ -782,37 +782,67 @@ export default function Book() {
                 ) : (
                   <div className="space-y-4">
                     <div>
-                      <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pay Online</p>
-                      <PayPalCheckout
-                        amount={sessionPrice * (selectedPackage?.sessions || 1)}
-                        packageId={selectedPackage?.id}
-                        packageName={selectedPackage?.name}
-                        packageSessions={selectedPackage?.sessions || 1}
-                        sessionDurationMinutes={duration?.minutes}
-                        onSuccess={() => handlePaymentConfirmed('electronic')}
-                      />
+                      <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Choose Payment Method</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { id: 'paypal', label: 'PayPal', icon: '🅿️' },
+                          { id: 'card', label: 'Card', icon: '💳' },
+                          { id: 'cash', label: 'Cash', icon: '💵' },
+                        ].map(opt => (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            onClick={() => setPaymentMethod(opt.id)}
+                            className={`p-3 rounded-lg border text-center transition-all ${paymentMethod === opt.id ? 'border-accent bg-accent/10 text-accent' : 'border-border text-muted-foreground hover:border-accent/30'}`}
+                          >
+                            <div className="text-xl mb-1">{opt.icon}</div>
+                            <div className="text-xs font-oswald tracking-wider uppercase">{opt.label}</div>
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    <div className="border-t border-border pt-4">
-                      <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pay with Card</p>
-                      <StripeCheckout
-                        amount={sessionPrice * (selectedPackage?.sessions || 1)}
-                        packageId={selectedPackage?.id}
-                        packageName={selectedPackage?.name}
-                        packageSessions={selectedPackage?.sessions || 1}
-                        sessionDurationMinutes={duration?.minutes}
-                        onSuccess={() => handlePaymentConfirmed('electronic')}
-                      />
-                    </div>
-                    <div className="border-t border-border pt-4">
-                      <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pay with Cash</p>
-                      <p className="text-xs text-muted-foreground mb-3">Bring exact cash to your session. Your coach will collect payment at the time of training.</p>
-                      <Button
-                        onClick={() => handlePaymentConfirmed('cash')}
-                        className="w-full bg-secondary border border-border text-foreground font-oswald tracking-wider uppercase hover:bg-secondary/80 h-12"
-                      >
-                        💵 Pay with Cash at Session
-                      </Button>
-                    </div>
+
+                    {paymentMethod === 'paypal' && (
+                      <div className="border-t border-border pt-4">
+                        <PayPalCheckout
+                          amount={sessionPrice * (selectedPackage?.sessions || 1)}
+                          packageId={selectedPackage?.id}
+                          packageName={selectedPackage?.name}
+                          packageSessions={selectedPackage?.sessions || 1}
+                          sessionDurationMinutes={duration?.minutes}
+                          onSuccess={() => handlePaymentConfirmed('electronic')}
+                        />
+                      </div>
+                    )}
+
+                    {paymentMethod === 'card' && (
+                      <div className="border-t border-border pt-4">
+                        <StripeCheckout
+                          amount={sessionPrice * (selectedPackage?.sessions || 1)}
+                          packageId={selectedPackage?.id}
+                          packageName={selectedPackage?.name}
+                          packageSessions={selectedPackage?.sessions || 1}
+                          sessionDurationMinutes={duration?.minutes}
+                          onSuccess={() => handlePaymentConfirmed('electronic')}
+                        />
+                      </div>
+                    )}
+
+                    {paymentMethod === 'cash' && (
+                      <div className="border-t border-border pt-4">
+                        <div className="bg-secondary/50 border border-border rounded-lg p-3 mb-3">
+                          <p className="text-xs text-muted-foreground">
+                            Bring <strong className="text-foreground">${sessionPrice * (selectedPackage?.sessions || 1)}</strong> in exact cash to your session. Your coach collects payment directly — LC Training is not involved in the cash transaction.
+                          </p>
+                        </div>
+                        <Button
+                          onClick={() => handlePaymentConfirmed('cash')}
+                          className="w-full bg-secondary border border-border text-foreground font-oswald tracking-wider uppercase hover:bg-secondary/80 h-12"
+                        >
+                          I Understand — Reserve My Sessions
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

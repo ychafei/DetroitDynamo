@@ -20,6 +20,7 @@ import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
 import Unsubscribe from '@/pages/Unsubscribe';
 import Pay from '@/pages/Pay';
+import ParentConsent from '@/pages/ParentConsent';
 
 // Authenticated pages
 import Dashboard from '@/pages/Dashboard';
@@ -74,6 +75,7 @@ const AuthenticatedApp = () => {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/pay" element={<Pay />} />
+        <Route path="/parent-consent" element={<ParentConsent />} />
 
         {/* Authenticated routes */}
         <Route path="/dashboard" element={<Dashboard />} />

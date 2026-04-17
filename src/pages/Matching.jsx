@@ -3,20 +3,40 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Users, Send, Check, X, MessageSquare } from 'lucide-react';
+import { Users, Send, Check, X, MessageSquare, MailCheck, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
+function calcAge(dob) {
+  if (!dob) return null;
+  const birth = new Date(dob);
+  if (isNaN(birth.getTime())) return null;
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
+
+function generateToken() {
+  const bytes = new Uint8Array(24);
+  (window.crypto || window.msCrypto).getRandomValues(bytes);
+  return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export default function Matching() {
-  const { user, isCoach, isAdmin } = useCurrentUser();
+  const { user, isCoach, isAdmin, refetch } = useCurrentUser();
   const [clients, setClients] = useState([]);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [parentConsent, setParentConsent] = useState(false);
+  const [parentEmailInput, setParentEmailInput] = useState('');
+  const [sendingConsent, setSendingConsent] = useState(false);
 
-  const userAge = user?.dob ? Math.floor((Date.now() - new Date(user.dob)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
+  const userAge = calcAge(user?.dob);
   const isMinor = userAge !== null && userAge < 18;
+  const consentVerified = !!user?.parent_consent_verified_at;
+  const consentPending = !!user?.parent_consent_sent_at && !consentVerified;
 
   useEffect(() => {
     if (!user) return;
@@ -101,33 +121,93 @@ export default function Matching() {
     );
   }
 
-  // Parental consent gate for minors
-  if (isMinor && !parentConsent) {
+  // Parental consent gate for minors — emailed verification
+  if (isMinor && !consentVerified) {
+    const defaultEmail = user?.parent_email || '';
+    const emailToUse = parentEmailInput || defaultEmail;
+
+    const sendConsentEmail = async () => {
+      if (!emailToUse || !/^\S+@\S+\.\S+$/.test(emailToUse)) {
+        toast.error('Please enter a valid parent/guardian email.');
+        return;
+      }
+      setSendingConsent(true);
+      try {
+        const token = generateToken();
+        await base44.entities.User.update(user.id, {
+          parent_consent_token: token,
+          parent_consent_sent_at: new Date().toISOString(),
+          parent_consent_email: emailToUse,
+        });
+        const childName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email;
+        const consentUrl = `${window.location.origin}/parent-consent?token=${token}`;
+        await base44.integrations.Core.SendEmail({
+          to: emailToUse,
+          subject: `Consent Requested: ${childName} wants to use LC Training Player Matching`,
+          body: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+              <h2 style="color: #D4A843;">LC Training — Parent/Guardian Consent</h2>
+              <p>Hi,</p>
+              <p><strong>${childName}</strong>${userAge ? ` (age ${userAge})` : ''} has requested your consent to use the Player Matching feature on LC Training.</p>
+              <p>Player Matching lets your child connect with other players in the Oakland, Macomb, and Wayne county areas. Only first name and age are visible to other players, and all messages are monitored for safety.</p>
+              <p style="margin: 24px 0;">
+                <a href="${consentUrl}" style="background:#D4A843; color:#000; padding:12px 20px; text-decoration:none; border-radius:6px; font-weight:bold;">Review &amp; Respond</a>
+              </p>
+              <p style="font-size: 12px; color: #666;">Or copy this link into your browser:<br/>${consentUrl}</p>
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
+              <p style="font-size: 12px; color: #999;">If you did not expect this email, you can ignore it. Questions? <a href="mailto:support@lctrainings.com" style="color: #D4A843;">support@lctrainings.com</a></p>
+            </div>
+          `,
+        });
+        toast.success(`Consent email sent to ${emailToUse}.`);
+        if (refetch) await refetch();
+      } catch {
+        toast.error('Could not send consent email. Please try again.');
+      } finally {
+        setSendingConsent(false);
+      }
+    };
+
     return (
       <div className="py-24 max-w-md mx-auto px-4">
-        <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-        <h1 className="font-oswald text-2xl font-bold tracking-tight text-foreground mb-2">PLAYER MATCHING</h1>
-        <p className="text-muted-foreground text-sm mb-6">
-          Because you are under 18, a parent or guardian must consent to you using the player matching feature.
+        <ShieldCheck className="w-12 h-12 text-accent mx-auto mb-4" />
+        <h1 className="font-oswald text-2xl font-bold tracking-tight text-foreground mb-2 text-center">PARENT CONSENT REQUIRED</h1>
+        <p className="text-muted-foreground text-sm mb-6 text-center">
+          Because you are under 18, a parent or guardian must consent before you can use Player Matching.
         </p>
+
+        {consentPending && (
+          <div className="bg-accent/10 border border-accent/30 rounded-lg p-4 mb-4 flex gap-3 items-start">
+            <MailCheck className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-oswald tracking-wider text-accent text-sm uppercase">Consent email sent</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                We sent a link to <strong className="text-foreground">{user.parent_consent_email}</strong>. Ask them to click it to unlock Player Matching. You can resend below if needed.
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="bg-card border border-border rounded-lg p-5 space-y-4">
-          <p className="text-sm font-oswald tracking-wider text-foreground">Parent / Guardian Consent</p>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            By checking the box below, you (the parent or guardian) confirm that you have reviewed the LC Training{' '}
-            <a href="/terms" target="_blank" className="text-accent underline">Terms of Service</a> and consent to your child participating in the player matching feature. You understand that this feature allows other players to see your child's first name and age.
-          </p>
-          <div className="flex items-start gap-3">
-            <Checkbox id="parent-consent" checked={parentConsent} onCheckedChange={v => setParentConsent(!!v)} />
-            <Label htmlFor="parent-consent" className="text-sm cursor-pointer leading-snug">
-              I am the parent/guardian and I consent to my child using Player Matching.
-            </Label>
+          <div>
+            <Label className="font-oswald tracking-wider uppercase text-xs">Parent / Guardian Email</Label>
+            <Input
+              type="email"
+              value={parentEmailInput || defaultEmail}
+              onChange={e => setParentEmailInput(e.target.value)}
+              placeholder="parent@example.com"
+              className="bg-secondary border-border mt-1"
+            />
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              We'll email a secure link. Your parent clicks it to review and consent. Only first name and age are shown to other players.
+            </p>
           </div>
           <Button
-            disabled={!parentConsent}
-            onClick={() => setParentConsent(true)}
+            disabled={sendingConsent}
+            onClick={sendConsentEmail}
             className="w-full bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90"
           >
-            Continue to Matching
+            {sendingConsent ? 'Sending...' : consentPending ? 'Resend Consent Email' : 'Send Consent Email'}
           </Button>
         </div>
       </div>

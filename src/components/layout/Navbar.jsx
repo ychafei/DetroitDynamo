@@ -51,6 +51,11 @@ export default function Navbar() {
 
   const navLinks = getNavLinks();
 
+  const isActive = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -71,7 +76,7 @@ export default function Navbar() {
                 key={link.path}
                 to={link.path}
                 className={`px-4 py-2 text-sm font-oswald tracking-wide uppercase transition-colors ${
-                  location.pathname === link.path
+                  isActive(link.path)
                     ? 'text-accent'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
@@ -147,7 +152,7 @@ export default function Navbar() {
                 to={link.path}
                 onClick={() => setMobileOpen(false)}
                 className={`block px-4 py-3 text-sm font-oswald tracking-wide uppercase rounded-md transition-colors ${
-                  location.pathname === link.path
+                  isActive(link.path)
                     ? 'text-accent bg-secondary'
                     : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                 }`}

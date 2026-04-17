@@ -9,6 +9,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { format, isBefore, addHours, startOfDay, parseISO, isWithinInterval } from 'date-fns';
 import PaymentHandles from '@/components/shared/PaymentHandles';
 import { toast } from 'sonner';
+import { useConfirm } from '@/components/ui/confirm-dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { formatTimeET, formatLongDateET } from '@/lib/formatInET';
 
 export default function Dashboard() {
   const { user, isAdmin, isCoach } = useCurrentUser();
@@ -23,6 +26,7 @@ export default function Dashboard() {
   const [rescheduleBlocks, setRescheduleBlocks] = useState([]);
   const [rescheduleExistingSessions, setRescheduleExistingSessions] = useState([]);
   const [rescheduling, setRescheduling] = useState(false);
+  const { confirm, dialog: confirmDialog } = useConfirm();
 
   const TIME_SLOTS = [];
   for (let h = 8; h <= 20; h++) {
@@ -42,13 +46,19 @@ export default function Dashboard() {
         allSessions = await base44.entities.Session.filter({ client_email: user.email }, '-date');
       }
 
-      // Auto-complete past sessions
+      // Auto-complete past sessions (once per day per user, client-side gate)
       const now = new Date();
-      for (const s of allSessions) {
-        if ((s.status === 'pending' || s.status === 'confirmed') && new Date(`${s.date}T${s.start_time}`) < now) {
-          await base44.entities.Session.update(s.id, { status: 'completed' });
-          s.status = 'completed';
+      const todayKey = `autocomplete_${user.email}_${now.toISOString().slice(0, 10)}`;
+      if (!localStorage.getItem(todayKey)) {
+        const overdue = allSessions.filter(s =>
+          (s.status === 'pending' || s.status === 'confirmed') &&
+          new Date(`${s.date}T${s.start_time}`) < now
+        );
+        if (overdue.length > 0) {
+          await Promise.all(overdue.map(s => base44.entities.Session.update(s.id, { status: 'completed' })));
+          overdue.forEach(s => { s.status = 'completed'; });
         }
+        try { localStorage.setItem(todayKey, '1'); } catch {}
       }
 
       setSessions(allSessions);
@@ -82,17 +92,26 @@ export default function Dashboard() {
     const isLateCancel = isBefore(sessionTime, addHours(now, 24));
     const cancelledBy = isCoach ? 'coach' : 'client';
 
-    let msg;
-    if (isCoach) {
-      msg = isLateCancel
-        ? '⚠️ LATE CANCELLATION (Within 24 Hours)\n\nThis session is within 24 hours of the scheduled time. Cancel anyway?\n\nThe client\'s session credit will NOT be returned. They will need to contact support if they believe an exception should be made.'
-        : 'Cancel this session?\n\nThe session credit will be returned to the client automatically so they can reschedule.';
-    } else {
-      msg = isLateCancel
-        ? '⚠️ LATE CANCELLATION WARNING\n\nYou are canceling within 24 hours of your scheduled session.\n\nThis session is non-refundable and the credit will NOT be returned.\n\nAre you sure you want to cancel?'
-        : 'Cancel this session?\n\nYour session credit will be returned to your account and you can reschedule whenever you\'re ready.';
-    }
-    const ok = confirm(msg);
+    const title = isLateCancel ? 'Late cancellation — within 24 hours' : 'Cancel this session?';
+    const description = isLateCancel
+      ? 'This session is within 24 hours of the scheduled start time.'
+      : 'The session will be cancelled.';
+    const consequences = isCoach
+      ? (isLateCancel
+          ? ["The client's session credit will NOT be returned.", 'They will need to contact support for an exception.']
+          : ['The session credit will be returned to the client automatically.', 'They can reschedule whenever they are ready.'])
+      : (isLateCancel
+          ? ['This session is non-refundable.', 'Your credit will NOT be returned.']
+          : ['Your session credit will be returned to your account.', 'You can reschedule whenever you are ready.']);
+
+    const ok = await confirm({
+      title,
+      description,
+      consequences,
+      confirmLabel: isLateCancel ? 'Cancel anyway' : 'Cancel session',
+      cancelLabel: 'Keep session',
+      variant: 'destructive',
+    });
     if (!ok) return;
 
     await base44.entities.Session.update(session.id, { status: 'cancelled', cancellation_reason: `Cancelled by ${cancelledBy}` });
@@ -378,10 +397,10 @@ export default function Dashboard() {
                         <div className="flex justify-between items-start">
                           <div>
                             <h3 className="font-oswald text-lg font-bold tracking-wider">
-                              {format(new Date(session.date + 'T00:00:00'), 'EEEE, MMMM d')}
+                              {formatLongDateET(session.date)}
                             </h3>
                             <p className="text-sm text-muted-foreground">
-                              {session.start_time} · {session.duration_minutes} min · {session.county}
+                              {formatTimeET(session.date, session.start_time)} · {session.duration_minutes} min · {session.county}
                             </p>
                             {isCoach ? (
                               <div>
@@ -391,9 +410,6 @@ export default function Dashboard() {
                             ) : coach ? (
                               <p className="text-sm text-muted-foreground mt-1">Coach: {coach.first_name} {coach.last_name}</p>
                             ) : null}
-                            {isCoach && session.session_goals && (
-                              <p className="text-xs text-muted-foreground mt-1">Goals: {session.session_goals}</p>
-                            )}
                             {!isCoach && session.payment_method && (
                               <span className={`inline-block mt-1 text-xs px-2 py-0.5 rounded font-oswald tracking-wide uppercase ${
                                 session.payment_method === 'cash' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' :
@@ -492,7 +508,7 @@ export default function Dashboard() {
                         <div className="flex justify-between items-center">
                           <div>
                             <p className="font-oswald tracking-wider text-sm">
-                               {format(new Date(session.date + 'T00:00:00'), 'MMM d, yyyy')} · {session.start_time} · {session.duration_minutes} min
+                               {format(new Date(session.date + 'T00:00:00'), 'MMM d, yyyy')} · {formatTimeET(session.date, session.start_time)} · {session.duration_minutes} min
                             </p>
                             <p className="text-xs text-muted-foreground">
                               {isCoach ? session.client_name : coach ? `${coach.first_name} ${coach.last_name}` : ''}
@@ -544,76 +560,83 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Reschedule Modal */}
-        {rescheduleSession && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-            <div className="bg-card border border-border rounded-lg w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
-              <h2 className="font-oswald text-2xl font-bold tracking-tight mb-2">RESCHEDULE SESSION</h2>
-              <p className="text-muted-foreground text-sm mb-6">
-                Pick a new date and time with {coaches[rescheduleSession.coach_id]?.first_name} {coaches[rescheduleSession.coach_id]?.last_name}.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pick a Date</p>
-                  <Calendar
-                    mode="single"
-                    selected={rescheduleDate}
-                    onSelect={setRescheduleDate}
-                    disabled={(date) => isBefore(date, startOfDay(new Date())) || isRescheduleDateBlocked(date)}
-                    className="rounded-lg border border-border bg-card p-4"
-                  />
-                </div>
-                {rescheduleDate && (
-                  <div>
-                    <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pick a Time</p>
-                    <div className="grid grid-cols-3 gap-2">
-                      {TIME_SLOTS.map((time) => {
-                        const taken = isRescheduleTimeSlotTaken(time);
-                        const outside = isRescheduleTimeOutsideAvailability(time);
-                        const disabled = taken || outside;
-                        return (
-                          <button
-                            key={time}
-                            onClick={() => !disabled && setRescheduleTime(time)}
-                            disabled={disabled}
-                            className={`p-2 rounded-md border text-xs font-oswald tracking-wide transition-all ${
-                              disabled
-                                ? 'border-border bg-secondary/50 text-muted-foreground/40 line-through cursor-not-allowed'
-                                : rescheduleTime === time
-                                  ? 'border-accent bg-accent/10 text-accent'
-                                  : 'border-border bg-card hover:border-accent/30'
-                            }`}
-                          >
-                            {time}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => setRescheduleSession(null)}
-                  className="font-oswald tracking-wider uppercase"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleConfirmReschedule}
-                  disabled={!rescheduleDate || !rescheduleTime || rescheduling}
-                  className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90"
-                >
-                  {rescheduling ? 'Rescheduling...' : 'Confirm Reschedule'}
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Reschedule Modal */}
+      <Dialog open={!!rescheduleSession} onOpenChange={(open) => { if (!open) setRescheduleSession(null); }}>
+        <DialogContent className="bg-card border-border max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-oswald text-2xl font-bold tracking-tight uppercase">Reschedule Session</DialogTitle>
+            {rescheduleSession && (
+              <DialogDescription>
+                Pick a new date and time with {coaches[rescheduleSession.coach_id]?.first_name} {coaches[rescheduleSession.coach_id]?.last_name}. All times shown in ET.
+              </DialogDescription>
+            )}
+          </DialogHeader>
+
+          {rescheduleSession && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pick a Date</p>
+                <Calendar
+                  mode="single"
+                  selected={rescheduleDate}
+                  onSelect={setRescheduleDate}
+                  disabled={(date) => isBefore(date, startOfDay(new Date())) || isRescheduleDateBlocked(date)}
+                  className="rounded-lg border border-border bg-card p-4"
+                />
+              </div>
+              {rescheduleDate && (
+                <div>
+                  <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-3">Pick a Time (ET)</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {TIME_SLOTS.map((time) => {
+                      const taken = isRescheduleTimeSlotTaken(time);
+                      const outside = isRescheduleTimeOutsideAvailability(time);
+                      const disabled = taken || outside;
+                      return (
+                        <button
+                          key={time}
+                          onClick={() => !disabled && setRescheduleTime(time)}
+                          disabled={disabled}
+                          className={`p-2 rounded-md border text-xs font-oswald tracking-wide transition-all ${
+                            disabled
+                              ? 'border-border bg-secondary/50 text-muted-foreground/40 line-through cursor-not-allowed'
+                              : rescheduleTime === time
+                                ? 'border-accent bg-accent/10 text-accent'
+                                : 'border-border bg-card hover:border-accent/30'
+                          }`}
+                        >
+                          {time}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setRescheduleSession(null)}
+              className="font-oswald tracking-wider uppercase"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmReschedule}
+              disabled={!rescheduleDate || !rescheduleTime || rescheduling}
+              className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90"
+            >
+              {rescheduling ? 'Rescheduling...' : 'Confirm Reschedule'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {confirmDialog}
     </div>
   );
 }

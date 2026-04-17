@@ -30,8 +30,7 @@ export default function Settings() {
         parent_phone: user.parent_phone || '',
         parent_relationship: user.parent_relationship || '',
         matching_opted_in: user.matching_opted_in || false,
-        matching_age_min: user.matching_age_min || 5,
-        matching_age_max: user.matching_age_max || 18,
+        matching_age_group: user.matching_age_group || '',
       });
 
       if (user.coach_id) {

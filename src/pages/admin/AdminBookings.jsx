@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { Clock, CheckCircle2, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useConfirm } from '@/components/ui/confirm-dialog';
+import { DataTable } from '@/components/ui/data-table';
+import { formatSessionDateTimeET } from '@/lib/formatInET';
 
 const statusConfig = {
   pending: { icon: Clock, color: 'bg-accent/10 text-accent border-accent/20' },
@@ -21,6 +23,7 @@ export default function AdminBookings() {
   const [coaches, setCoaches] = useState({});
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const { confirm, dialog: confirmDialog } = useConfirm();
 
   useEffect(() => {
     const load = async () => {
@@ -35,13 +38,114 @@ export default function AdminBookings() {
     load();
   }, []);
 
-  const updateStatus = async (id, status) => {
-    await base44.entities.Session.update(id, { status });
-    setSessions(prev => prev.map(s => s.id === id ? { ...s, status } : s));
+  const updateStatus = async (session, status) => {
+    if (status === session.status) return;
+    if (status === 'cancelled') {
+      const ok = await confirm({
+        title: 'Cancel this booking?',
+        description: `${session.client_name} · ${format(new Date(session.date), 'MMM d, yyyy')} at ${session.start_time}`,
+        consequences: [
+          'Status will be set to "cancelled".',
+          'No automatic credit refund is issued from this panel — handle refunds in the Credits page.',
+        ],
+        confirmLabel: 'Cancel booking',
+        variant: 'destructive',
+      });
+      if (!ok) return;
+    }
+    await base44.entities.Session.update(session.id, { status });
+    setSessions(prev => prev.map(s => s.id === session.id ? { ...s, status } : s));
     toast.success('Status updated');
   };
 
-  const filtered = filter === 'all' ? sessions : sessions.filter(s => s.status === filter);
+  const enriched = useMemo(() => sessions.map(s => {
+    const coach = coaches[s.coach_id];
+    return {
+      ...s,
+      coach_name: coach ? `${coach.first_name} ${coach.last_name}` : 'Unknown',
+      when_sort: `${s.date} ${s.start_time || '00:00'}`,
+    };
+  }), [sessions, coaches]);
+
+  const filtered = filter === 'all' ? enriched : enriched.filter(s => s.status === filter);
+
+  const columns = [
+    {
+      key: 'when',
+      header: 'When',
+      sortable: true,
+      sortAccessor: 'when_sort',
+      cell: (row) => (
+        <div>
+          <p className="font-oswald tracking-wider text-foreground text-sm">{formatSessionDateTimeET(row.date, row.start_time)}</p>
+          <p className="text-xs text-muted-foreground">{row.duration_minutes} min · {row.county}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'client',
+      header: 'Client',
+      sortable: true,
+      sortAccessor: 'client_name',
+      cell: (row) => (
+        <div>
+          <p className="text-sm text-foreground">{row.client_name}</p>
+          <p className="text-xs text-muted-foreground">{row.client_email}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'coach',
+      header: 'Coach',
+      sortable: true,
+      sortAccessor: 'coach_name',
+      cell: (row) => <span className="text-sm">{row.coach_name}</span>,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      sortable: true,
+      sortAccessor: 'status',
+      cell: (row) => {
+        const sc = statusConfig[row.status] || statusConfig.pending;
+        const Icon = sc.icon;
+        return (
+          <Badge className={`${sc.color} border text-xs`}>
+            <Icon className="w-3 h-3 mr-1" />
+            {row.status}
+          </Badge>
+        );
+      },
+    },
+    {
+      key: 'payment',
+      header: 'Payment',
+      sortable: true,
+      sortAccessor: 'payment_status',
+      cell: (row) => (
+        <Badge className={row.payment_status === 'paid' ? 'bg-green-500/10 text-green-400 border-green-500/20 border text-xs' : 'bg-muted text-muted-foreground border text-xs'}>
+          {row.payment_status || '—'}
+        </Badge>
+      ),
+    },
+    {
+      key: 'action',
+      header: 'Change',
+      cell: (row) => (
+        <Select value={row.status} onValueChange={v => updateStatus(row, v)}>
+          <SelectTrigger className="w-32 h-7 text-xs bg-secondary border-border">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="confirmed">Confirmed</SelectItem>
+            <SelectItem value="completed">Completed</SelectItem>
+            <SelectItem value="cancelled">Cancelled</SelectItem>
+          </SelectContent>
+        </Select>
+      ),
+    },
+  ];
 
   if (!isAdmin) return <div className="py-24 text-center text-muted-foreground">Access denied.</div>;
 
@@ -67,48 +171,16 @@ export default function AdminBookings() {
         {loading ? (
           <div className="text-center py-12"><div className="w-8 h-8 border-4 border-muted border-t-accent rounded-full animate-spin mx-auto" /></div>
         ) : (
-          <div className="space-y-3">
-            {filtered.map(session => {
-              const coach = coaches[session.coach_id];
-              const sc = statusConfig[session.status] || statusConfig.pending;
-              const Icon = sc.icon;
-              return (
-                <div key={session.id} className="bg-card border border-border rounded-lg p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                      <p className="font-oswald tracking-wider text-foreground">
-                        {format(new Date(session.date), 'MMM d, yyyy')} · {session.start_time} · {session.duration_minutes}min
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Client: {session.client_name} ({session.client_email}) · Coach: {coach ? `${coach.first_name} ${coach.last_name}` : 'Unknown'} · {session.county}
-                      </p>
-                      {session.notes && <p className="text-xs text-muted-foreground mt-0.5 italic">"{session.notes}"</p>}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge className={`${sc.color} border text-xs`}><Icon className="w-3 h-3 mr-1" />{session.status}</Badge>
-                      <Badge className={session.payment_status === 'paid' ? 'bg-green-500/10 text-green-400 border-green-500/20 border text-xs' : 'bg-muted text-muted-foreground border text-xs'}>
-                        {session.payment_status}
-                      </Badge>
-                      <Select value={session.status} onValueChange={v => updateStatus(session.id, v)}>
-                        <SelectTrigger className="w-32 h-7 text-xs bg-secondary border-border">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="confirmed">Confirmed</SelectItem>
-                          <SelectItem value="completed">Completed</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-            {filtered.length === 0 && <p className="text-center text-muted-foreground py-8">No bookings found.</p>}
-          </div>
+          <DataTable
+            columns={columns}
+            data={filtered}
+            searchFields={['client_name', 'client_email', 'coach_name', 'county']}
+            searchPlaceholder="Search by client, coach, or county…"
+            emptyMessage="No bookings found."
+          />
         )}
       </div>
+      {confirmDialog}
     </div>
   );
 }

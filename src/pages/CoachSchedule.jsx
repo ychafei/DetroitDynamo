@@ -8,7 +8,8 @@ import { Switch } from '@/components/ui/switch';
 import { Calendar, Plus, Trash2, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import WeeklyAvailabilityEditor from '@/components/coach/WeeklyAvailabilityEditor';
+import WeeklyAvailabilityEditor, { hasAvailabilityErrors } from '@/components/coach/WeeklyAvailabilityEditor';
+import { useConfirm } from '@/components/ui/confirm-dialog';
 
 export default function CoachSchedule() {
   const { user, isCoach, isAdmin } = useCurrentUser();
@@ -18,6 +19,7 @@ export default function CoachSchedule() {
   const [newBlock, setNewBlock] = useState({ label: '', start_date: '', end_date: '', block_all_day: true, blocked_start_time: '', blocked_end_time: '' });
   const [availability, setAvailability] = useState({});
   const [savingAvail, setSavingAvail] = useState(false);
+  const { confirm, dialog: confirmDialog } = useConfirm();
 
   useEffect(() => {
     if (!user) return;
@@ -43,24 +45,62 @@ export default function CoachSchedule() {
       toast.error('Please select start and end dates.');
       return;
     }
-    const block = { ...newBlock, coach_id: user.coach_id, is_active: true };
-    await base44.entities.CoachBlock.create(block);
-    toast.success('Block added');
-    const b = await base44.entities.CoachBlock.filter({ coach_id: user.coach_id, is_active: true }, '-start_date');
-    setBlocks(b);
-    setNewBlock({ label: '', start_date: '', end_date: '', block_all_day: true, blocked_start_time: '', blocked_end_time: '' });
+    if (newBlock.end_date < newBlock.start_date) {
+      toast.error('End date must be on or after start date.');
+      return;
+    }
+    if (!newBlock.block_all_day) {
+      if (!newBlock.blocked_start_time || !newBlock.blocked_end_time) {
+        toast.error('Please set both start and end times, or turn on "Block All Day".');
+        return;
+      }
+      if (newBlock.blocked_start_time >= newBlock.blocked_end_time) {
+        toast.error('Block end time must be after start time.');
+        return;
+      }
+    }
+    try {
+      const block = { ...newBlock, coach_id: user.coach_id, is_active: true };
+      await base44.entities.CoachBlock.create(block);
+      toast.success('Block added');
+      const b = await base44.entities.CoachBlock.filter({ coach_id: user.coach_id, is_active: true }, '-start_date');
+      setBlocks(b);
+      setNewBlock({ label: '', start_date: '', end_date: '', block_all_day: true, blocked_start_time: '', blocked_end_time: '' });
+    } catch (err) {
+      toast.error('Could not save block. Please try again.');
+    }
   };
 
   const saveAvailability = async () => {
+    if (hasAvailabilityErrors(availability)) {
+      toast.error('Fix the highlighted availability rows before saving.');
+      return;
+    }
     setSavingAvail(true);
-    await base44.entities.Coach.update(coach.id, { availability });
-    toast.success('Availability saved');
-    setSavingAvail(false);
+    try {
+      await base44.entities.Coach.update(coach.id, { availability });
+      toast.success('Availability saved');
+    } catch (err) {
+      toast.error('Could not save availability. Please try again.');
+    } finally {
+      setSavingAvail(false);
+    }
   };
 
-  const removeBlock = async (id) => {
-    await base44.entities.CoachBlock.update(id, { is_active: false });
-    setBlocks(prev => prev.filter(b => b.id !== id));
+  const removeBlock = async (block) => {
+    const ok = await confirm({
+      title: 'Remove this block?',
+      description: block.label ? `"${block.label}"` : 'This unavailability block will be removed.',
+      consequences: [
+        `${format(new Date(block.start_date), 'MMM d')} — ${format(new Date(block.end_date), 'MMM d, yyyy')}${block.block_all_day ? ' · All day' : ` · ${block.blocked_start_time}–${block.blocked_end_time}`}`,
+        'Clients will be able to book during this range again.',
+      ],
+      confirmLabel: 'Remove block',
+      variant: 'destructive',
+    });
+    if (!ok) return;
+    await base44.entities.CoachBlock.update(block.id, { is_active: false });
+    setBlocks(prev => prev.filter(b => b.id !== block.id));
     toast.success('Block removed');
   };
 
@@ -99,7 +139,7 @@ export default function CoachSchedule() {
           </h2>
           <p className="text-xs text-muted-foreground mb-4">Set which days and hours you're available for bookings.</p>
           <WeeklyAvailabilityEditor availability={availability} onChange={setAvailability} />
-          <Button onClick={saveAvailability} disabled={savingAvail} className="mt-4 bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
+          <Button onClick={saveAvailability} disabled={savingAvail || hasAvailabilityErrors(availability)} className="mt-4 bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
             {savingAvail ? 'Saving...' : 'Save Availability'}
           </Button>
         </div>
@@ -166,7 +206,7 @@ export default function CoachSchedule() {
                     {block.block_all_day && ' · All Day'}
                   </p>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => removeBlock(block.id)} className="text-destructive hover:text-destructive">
+                <Button size="sm" variant="ghost" onClick={() => removeBlock(block)} className="text-destructive hover:text-destructive">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -174,6 +214,7 @@ export default function CoachSchedule() {
           </div>
         )}
       </div>
+      {confirmDialog}
     </div>
   );
 }

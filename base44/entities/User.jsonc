@@ -89,11 +89,28 @@
       "type": "boolean",
       "default": false
     },
-    "matching_age_min": {
-      "type": "number"
+    "matching_age_group": {
+      "type": "string",
+      "enum": ["5-8", "9-12", "13+"],
+      "description": "Client-selected age bucket for player matching"
     },
-    "matching_age_max": {
-      "type": "number"
+    "parent_consent_token": {
+      "type": "string",
+      "description": "One-time token sent to parent for verifying consent (minors only)"
+    },
+    "parent_consent_sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the parent consent email was last sent"
+    },
+    "parent_consent_verified_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the parent clicked the consent link — gates matching for minors"
+    },
+    "parent_consent_email": {
+      "type": "string",
+      "description": "Parent email the consent link was delivered to (audit trail)"
     },
     "terms_accepted": {
       "type": "boolean",
