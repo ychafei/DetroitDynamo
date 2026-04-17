@@ -11,7 +11,7 @@ import PaymentHandles from '@/components/shared/PaymentHandles';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/ui/confirm-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { formatTimeET, formatLongDateET } from '@/lib/formatInET';
+import { formatTimeET, formatLongDateET, formatSessionRangeET } from '@/lib/formatInET';
 
 export default function Dashboard() {
   const { user, isAdmin, isCoach } = useCurrentUser();
@@ -117,6 +117,7 @@ export default function Dashboard() {
     await base44.entities.Session.update(session.id, { status: 'cancelled', cancellation_reason: `Cancelled by ${cancelledBy}` });
     setSessions(prev => prev.map(s => s.id === session.id ? { ...s, status: 'cancelled' } : s));
 
+    let creditRefunded = false;
     // Refund 1 credit if not a late cancel and session is linked to a credit record
     if (!isLateCancel && session.credit_id) {
       const clientEmail = isCoach ? session.client_email : user.email;
@@ -140,6 +141,7 @@ export default function Dashboard() {
         await base44.entities.SessionCredit.update(creditToRefund.id, {
           used_credits: Math.max(0, creditToRefund.used_credits - 1)
         });
+        creditRefunded = true;
       }
 
       // Refresh credits display for clients
@@ -147,6 +149,72 @@ export default function Dashboard() {
         const updated = await base44.entities.SessionCredit.filter({ client_email: user.email });
         setCredits(updated);
       }
+    }
+
+    // Notify coach + client by email
+    try {
+      const coach = coaches[session.coach_id];
+      const dateLabel = formatLongDateET(session.date);
+      const timeRange = formatSessionRangeET(session.date, session.start_time, session.duration_minutes);
+      const durLabel = session.duration_minutes >= 60
+        ? `${session.duration_minutes / 60} hour${session.duration_minutes === 60 ? '' : 's'}`
+        : `${session.duration_minutes} min`;
+      const coachFullName = coach ? `${coach.first_name} ${coach.last_name}` : 'your coach';
+      const clientFullName = session.client_name || session.client_email;
+      const cancelledByLabel = cancelledBy === 'coach' ? 'the coach' : 'the client';
+
+      const emails = [];
+
+      // Client email
+      emails.push(base44.integrations.Core.SendEmail({
+        to: session.client_email,
+        subject: `Session Cancelled — ${dateLabel}`,
+        body: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+            <h2 style="color: #D4A843;">Session Cancelled</h2>
+            <p>Hi ${clientFullName},</p>
+            <p>Your ${durLabel} session with <strong>${coachFullName}</strong> on <strong>${dateLabel}</strong> (${timeRange}) has been successfully cancelled.</p>
+            ${creditRefunded
+              ? `<p style="padding:12px; background:#1f3a1f; border-left:4px solid #4ade80; color:#e5e7eb;"><strong>Good news:</strong> Your session credit has been returned to your account. You can reschedule whenever you're ready.</p>`
+              : (isLateCancel
+                  ? `<p style="padding:12px; background:#3a1f1f; border-left:4px solid #f87171; color:#e5e7eb;"><strong>Please note:</strong> This cancellation was within the 24-hour window, so no session credit was returned. Contact support if you believe this is an exception.</p>`
+                  : `<p>No credit was returned for this session.</p>`)
+            }
+            <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#D4A843; color:#000; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">Go to Dashboard</a></p>
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
+            <p style="font-size: 12px; color: #999;">LC Training — Private Soccer Coaching<br/>${window.location.origin}</p>
+          </div>
+        `,
+      }));
+
+      // Coach email
+      if (coach?.email) {
+        emails.push(base44.integrations.Core.SendEmail({
+          to: coach.email,
+          subject: `Session Cancelled — ${clientFullName} on ${dateLabel}`,
+          body: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+              <h2 style="color: #D4A843;">Session Cancelled</h2>
+              <p>Hi ${coach.first_name},</p>
+              <p>The ${durLabel} session with <strong>${clientFullName}</strong> on <strong>${dateLabel}</strong> (${timeRange}) in ${session.county} County was cancelled by ${cancelledByLabel}.</p>
+              ${creditRefunded
+                ? `<p>The client's session credit has been returned automatically.</p>`
+                : (isLateCancel ? `<p>This was a late cancellation (within 24 hours) — no credit was returned to the client.</p>` : '')
+              }
+              <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#D4A843; color:#000; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">View Dashboard</a></p>
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
+              <p style="font-size: 12px; color: #999;">LC Training — Coach Portal<br/>${window.location.origin}</p>
+            </div>
+          `,
+        }));
+      }
+
+      await Promise.all(emails);
+    } catch {
+      // Email failure shouldn't block the cancellation
+    }
+
+    if (creditRefunded) {
       toast.success('Session cancelled. Your credit has been returned — schedule again whenever you\'re ready.');
     } else if (isLateCancel) {
       toast('Session cancelled. This was a late cancellation — no credit was returned.', { icon: '⚠️' });
@@ -167,30 +235,98 @@ export default function Dashboard() {
   const handleConfirmReschedule = async () => {
     if (!rescheduleSession || !rescheduleDate || !rescheduleTime) return;
     setRescheduling(true);
+    const oldDate = rescheduleSession.date;
+    const oldTime = rescheduleSession.start_time;
     const newDate = format(rescheduleDate, 'yyyy-MM-dd');
     await base44.entities.Session.update(rescheduleSession.id, {
       date: newDate,
       start_time: rescheduleTime,
     });
-    const coach = coaches[rescheduleSession.coach_id];
-    if (coach) {
-      await base44.functions.invoke('sendBookingEmails', {
-        clientEmail: rescheduleSession.client_email,
-        clientName: rescheduleSession.client_name,
-        coachEmail: coach.email,
-        coachName: `${coach.first_name} ${coach.last_name}`,
-        dateStr: format(rescheduleDate, 'EEEE, MMMM d, yyyy'),
-        time: rescheduleTime,
-        durationLabel: `${rescheduleSession.duration_minutes} min`,
-        county: rescheduleSession.county,
-        sessionGoals: rescheduleSession.session_goals || '',
-        origin: window.location.origin,
-      });
+
+    try {
+      const coach = coaches[rescheduleSession.coach_id];
+      const durationMinutes = rescheduleSession.duration_minutes;
+      const durLabel = durationMinutes >= 60
+        ? `${durationMinutes / 60} hour${durationMinutes === 60 ? '' : 's'}`
+        : `${durationMinutes} min`;
+      const coachFullName = coach ? `${coach.first_name} ${coach.last_name}` : 'your coach';
+      const clientFullName = rescheduleSession.client_name || rescheduleSession.client_email;
+      const oldWhen = `${formatLongDateET(oldDate)} · ${formatSessionRangeET(oldDate, oldTime, durationMinutes)}`;
+      const newWhen = `${formatLongDateET(newDate)} · ${formatSessionRangeET(newDate, rescheduleTime, durationMinutes)}`;
+
+      const emails = [];
+
+      // Client email
+      emails.push(base44.integrations.Core.SendEmail({
+        to: rescheduleSession.client_email,
+        subject: `Session Rescheduled — ${formatLongDateET(newDate)}`,
+        body: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+            <h2 style="color: #D4A843;">Session Rescheduled</h2>
+            <p>Hi ${clientFullName},</p>
+            <p>Your ${durLabel} session with <strong>${coachFullName}</strong> has been successfully rescheduled.</p>
+            <table style="width:100%; border-collapse:collapse; margin:16px 0;">
+              <tr>
+                <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8; width:40%;"><strong>Previous:</strong></td>
+                <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8; text-decoration:line-through; color:#888;">${oldWhen}</td>
+              </tr>
+              <tr>
+                <td style="padding:10px; border:1px solid #ddd;"><strong>New:</strong></td>
+                <td style="padding:10px; border:1px solid #ddd; color:#D4A843;"><strong>${newWhen}</strong></td>
+              </tr>
+              <tr>
+                <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8;"><strong>Location:</strong></td>
+                <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8;">${rescheduleSession.county} County</td>
+              </tr>
+            </table>
+            <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#D4A843; color:#000; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">View Session</a></p>
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
+            <p style="font-size: 12px; color: #999;">LC Training — Private Soccer Coaching<br/>${window.location.origin}</p>
+          </div>
+        `,
+      }));
+
+      // Coach email
+      if (coach?.email) {
+        emails.push(base44.integrations.Core.SendEmail({
+          to: coach.email,
+          subject: `Session Rescheduled — ${clientFullName}`,
+          body: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+              <h2 style="color: #D4A843;">Session Rescheduled</h2>
+              <p>Hi ${coach.first_name},</p>
+              <p><strong>${clientFullName}</strong> has rescheduled their ${durLabel} session.</p>
+              <table style="width:100%; border-collapse:collapse; margin:16px 0;">
+                <tr>
+                  <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8; width:40%;"><strong>Previous:</strong></td>
+                  <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8; text-decoration:line-through; color:#888;">${oldWhen}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px; border:1px solid #ddd;"><strong>New:</strong></td>
+                  <td style="padding:10px; border:1px solid #ddd; color:#D4A843;"><strong>${newWhen}</strong></td>
+                </tr>
+                <tr>
+                  <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8;"><strong>County:</strong></td>
+                  <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8;">${rescheduleSession.county}</td>
+                </tr>
+              </table>
+              <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#D4A843; color:#000; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">View Dashboard</a></p>
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
+              <p style="font-size: 12px; color: #999;">LC Training — Coach Portal<br/>${window.location.origin}</p>
+            </div>
+          `,
+        }));
+      }
+
+      await Promise.all(emails);
+    } catch {
+      // Email failure shouldn't block the reschedule
     }
+
     setSessions(prev => prev.map(s => s.id === rescheduleSession.id ? { ...s, date: newDate, start_time: rescheduleTime } : s));
     setRescheduleSession(null);
     setRescheduling(false);
-    toast.success('Session rescheduled! A confirmation email has been sent.');
+    toast.success('Session rescheduled! Confirmation emails have been sent.');
   };
 
   const isRescheduleDateBlocked = (date) => {

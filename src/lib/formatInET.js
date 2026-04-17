@@ -57,3 +57,11 @@ export function formatDateTimeET(date) {
   if (!d) return '';
   return `${dateTimeFmt.format(d)} ET`;
 }
+
+export function formatSessionRangeET(dateStr, startTime, durationMinutes) {
+  if (!dateStr || !startTime || !durationMinutes) return '';
+  const start = toDate(`${dateStr}T${startTime}:00`);
+  if (!start) return '';
+  const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
+  return `${timeFmt.format(start)}–${timeFmt.format(end)} ET`;
+}
