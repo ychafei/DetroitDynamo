@@ -20,6 +20,7 @@ export default function Settings() {
   const [expectedCode, setExpectedCode] = useState('');
   const [enteredCode, setEnteredCode] = useState('');
   const [emailFlow, setEmailFlow] = useState('idle'); // 'idle' | 'sending' | 'code_sent' | 'verifying'
+  const [emailStatus, setEmailStatus] = useState(null); // { kind: 'info'|'error'|'success', message }
 
   useEffect(() => {
     if (user) {
@@ -64,32 +65,80 @@ export default function Settings() {
 
   const sendVerificationCode = async () => {
     const email = pendingEmail.trim().toLowerCase();
+    setEmailStatus(null);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error('Enter a valid email address');
+      setEmailStatus({ kind: 'error', message: 'Enter a valid email address.' });
       return;
     }
     if (coach?.email_verified_at && email === (coach.email || '').toLowerCase()) {
-      toast.error('That email is already verified');
+      setEmailStatus({ kind: 'error', message: 'That email is already verified.' });
       return;
     }
     const code = String(Math.floor(100000 + Math.random() * 900000));
     setEmailFlow('sending');
+    console.log('[email-verify] sending code to', email);
+
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; background: #0A0E14; color: #F8FAFC;">
+        <h2 style="color: #F59E0B; margin: 0 0 16px;">Verify your LC Training coach email</h2>
+        <p style="color: #E2E8F0; line-height: 1.5;">Enter this 6-digit code in your Settings page to confirm <strong>${email}</strong> as your coach contact address.</p>
+        <div style="text-align:center; margin: 24px 0;">
+          <span style="display:inline-block; font-size: 32px; letter-spacing: 8px; font-weight: bold; color: #F59E0B; background:#1a1a1a; padding: 16px 24px; border-radius: 8px;">${code}</span>
+        </div>
+        <p style="color: #94A3B8; font-size: 12px;">If you didn't request this, you can ignore this email.</p>
+      </div>
+    `;
+
+    let serverFnError = null;
+    let coreError = null;
+    let delivered = false;
+
+    // Path 1: dedicated server function (Resend via support@lctrainings.com)
     try {
       const res = await base44.functions.invoke('sendCoachEmailVerification', { to: email, code });
+      console.log('[email-verify] server-fn response', res);
       if (res?.data?.error) throw new Error(res.data.error);
+      if (res?.error) throw new Error(typeof res.error === 'string' ? res.error : JSON.stringify(res.error));
+      if (res?.status && res.status >= 400) throw new Error(`Server function returned ${res.status}`);
+      delivered = true;
+    } catch (err) {
+      serverFnError = err?.message || String(err);
+      console.warn('[email-verify] server function failed:', serverFnError);
+    }
+
+    // Path 2: fallback to Base44 Core.SendEmail integration
+    if (!delivered) {
+      try {
+        const res = await base44.integrations.Core.SendEmail({
+          to: email,
+          subject: 'LC Training — Email Verification Code',
+          body: emailHtml,
+        });
+        console.log('[email-verify] Core.SendEmail response', res);
+        delivered = true;
+      } catch (err) {
+        coreError = err?.message || String(err);
+        console.error('[email-verify] Core.SendEmail failed:', coreError);
+      }
+    }
+
+    if (delivered) {
       setExpectedCode(code);
       setEnteredCode('');
       setEmailFlow('code_sent');
-      toast.success(`Code sent to ${email}`);
-    } catch (err) {
+      setEmailStatus({ kind: 'success', message: `Code sent to ${email}. Check your inbox (and spam folder).` });
+    } else {
       setEmailFlow('idle');
-      toast.error(err?.message || 'Could not send verification email. Try again.');
+      setEmailStatus({
+        kind: 'error',
+        message: `Could not send email. Server function: ${serverFnError || 'n/a'}. Core.SendEmail: ${coreError || 'n/a'}.`,
+      });
     }
   };
 
   const verifyAndSaveEmail = async () => {
     if (enteredCode.trim() !== expectedCode) {
-      toast.error('Incorrect code');
+      setEmailStatus({ kind: 'error', message: 'Incorrect code. Double-check the email we sent.' });
       return;
     }
     setEmailFlow('verifying');
@@ -108,10 +157,11 @@ export default function Settings() {
       setEnteredCode('');
       setExpectedCode('');
       setEmailFlow('idle');
+      setEmailStatus({ kind: 'success', message: 'Email verified and saved.' });
       toast.success('Email verified and saved');
-    } catch {
+    } catch (err) {
       setEmailFlow('code_sent');
-      toast.error('Could not save email. Try again.');
+      setEmailStatus({ kind: 'error', message: err?.message || 'Could not save email. Try again.' });
     }
   };
 
@@ -120,6 +170,7 @@ export default function Settings() {
     setExpectedCode('');
     setEnteredCode('');
     setPendingEmail('');
+    setEmailStatus(null);
   };
 
   return (
@@ -225,6 +276,20 @@ export default function Settings() {
                   <p className="text-sm text-foreground">Current: <span className="text-muted-foreground">{coach.email}</span></p>
                 )}
                 <p className="text-xs text-muted-foreground">Clients and admins use this address to reach you. Changes require a code sent to the new address.</p>
+
+                {emailStatus && (
+                  <div
+                    className={`text-xs rounded border p-3 break-words ${
+                      emailStatus.kind === 'error'
+                        ? 'border-destructive/40 bg-destructive/10 text-destructive'
+                        : emailStatus.kind === 'success'
+                        ? 'border-green-400/30 bg-green-400/10 text-green-300'
+                        : 'border-border bg-secondary/50 text-muted-foreground'
+                    }`}
+                  >
+                    {emailStatus.message}
+                  </div>
+                )}
 
                 {emailFlow === 'idle' && (
                   <div className="flex flex-col sm:flex-row gap-2">
