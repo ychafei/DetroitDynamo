@@ -97,13 +97,29 @@ export default function Settings() {
     try {
       const res = await base44.functions.invoke('sendCoachEmailVerification', { to: email, code });
       console.log('[email-verify] server-fn response', res);
-      if (res?.data?.error) throw new Error(res.data.error);
-      if (res?.error) throw new Error(typeof res.error === 'string' ? res.error : JSON.stringify(res.error));
-      if (res?.status && res.status >= 400) throw new Error(`Server function returned ${res.status}`);
+      const payload = res?.data ?? res;
+      if (payload?.error) {
+        throw new Error(typeof payload.error === 'string' ? payload.error : JSON.stringify(payload.error));
+      }
+      if (res?.status && res.status >= 400) {
+        throw new Error(`Server function returned ${res.status}${payload ? ': ' + JSON.stringify(payload) : ''}`);
+      }
       delivered = true;
     } catch (err) {
-      serverFnError = err?.message || String(err);
-      console.warn('[email-verify] server function failed:', serverFnError);
+      // invoke() may throw with a Response-ish object — try to pull JSON body
+      let detail = err?.message || String(err);
+      try {
+        if (err?.response?.json) {
+          const body = await err.response.json();
+          detail = body?.error || JSON.stringify(body);
+        } else if (err?.response?.data) {
+          detail = JSON.stringify(err.response.data);
+        } else if (err?.data) {
+          detail = typeof err.data === 'string' ? err.data : JSON.stringify(err.data);
+        }
+      } catch {}
+      serverFnError = detail;
+      console.warn('[email-verify] server function failed:', detail, err);
     }
 
     // Path 2: fallback to Base44 Core.SendEmail integration
