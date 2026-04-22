@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -12,6 +12,9 @@ import {
   RequireAdmin,
   RequireClient,
 } from '@/components/guards/RouteGuards';
+import CoachLayout from '@/components/coach-portal/CoachLayout';
+import CoachOverview from '@/pages/coach/CoachOverview';
+import CoachPlaceholder from '@/pages/coach/CoachPlaceholder';
 
 // Layouts
 import PublicLayout from '@/components/layout/PublicLayout';
@@ -35,7 +38,6 @@ import Messages from '@/pages/Messages';
 import Settings from '@/pages/Settings';
 import Matching from '@/pages/Matching';
 import CoachSchedule from '@/pages/CoachSchedule';
-import CoachSetupGuide from '@/pages/CoachSetupGuide';
 
 // Admin pages
 import AdminPanel from '@/pages/admin/AdminPanel';
@@ -93,14 +95,49 @@ const AuthenticatedApp = () => {
           <Route path="/matching" element={<Matching />} />
         </Route>
 
-        {/* Coach-only (must have linked coach_id) */}
-        <Route element={<RequireLinkedCoach />}>
-          <Route path="/coach-schedule" element={<CoachSchedule />} />
-        </Route>
-        {/* Coach-only (does not require coach_id yet) */}
+        {/* Coach portal — shell + nested pages. RequireCoach (admins also pass).
+            Individual pages handle the "no coach_id" state gracefully. */}
         <Route element={<RequireCoach />}>
-          <Route path="/coach-setup" element={<CoachSetupGuide />} />
+          <Route element={<CoachLayout />}>
+            <Route path="/coach" element={<CoachOverview />} />
+            <Route path="/coach/schedule" element={<CoachSchedule />} />
+            <Route path="/coach/messages" element={<Messages />} />
+            <Route
+              path="/coach/clients"
+              element={
+                <CoachPlaceholder
+                  title="My Clients"
+                  blurb="A dedicated client roster with session history, private notes, goals, and quick-open messages is coming next."
+                  phase="Phase 2 — up next"
+                />
+              }
+            />
+            <Route
+              path="/coach/earnings"
+              element={
+                <CoachPlaceholder
+                  title="Earnings"
+                  blurb="Gross revenue, pending cash, paid sessions, and a weekly trend — derived from your session history."
+                  phase="Phase 3"
+                />
+              }
+            />
+            <Route
+              path="/coach/profile"
+              element={
+                <CoachPlaceholder
+                  title="Coach Profile"
+                  blurb="A dedicated profile editor with a live preview of what clients see. Payment handles and the email verification flow move here."
+                  phase="Phase 4"
+                />
+              }
+            />
+          </Route>
         </Route>
+
+        {/* Legacy route redirects → coach portal */}
+        <Route path="/coach-schedule" element={<Navigate to="/coach/schedule" replace />} />
+        <Route path="/coach-setup" element={<Navigate to="/coach" replace />} />
 
         {/* Admin-only */}
         <Route element={<RequireAdmin />}>

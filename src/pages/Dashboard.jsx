@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
@@ -388,6 +388,10 @@ export default function Dashboard() {
     return slotMins < timeToMinutes(dayAvail.start) || slotMins >= timeToMinutes(dayAvail.end);
   };
 
+  // Coaches and admins use the dedicated Coach Portal.
+  // /dashboard is the client-only experience.
+  if (isCoach) return <Navigate to="/coach" replace />;
+
   if (loading) {
     return <div className="py-24 text-center"><div className="w-8 h-8 border-4 border-muted border-t-accent rounded-full animate-spin mx-auto" /></div>;
   }
@@ -493,13 +497,8 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Coach setup prompt */}
-        {isCoach && user?.coach_id && !user?.profile_setup_complete && (
-          <Link to="/coach-setup" className="block mb-8 p-4 bg-accent/10 border border-accent/20 rounded-lg hover:bg-accent/15 transition-colors">
-            <p className="text-accent font-oswald tracking-wider uppercase text-sm">Complete Your Coach Profile →</p>
-            <p className="text-xs text-muted-foreground mt-1">Set up your availability, payment handles, and bio.</p>
-          </Link>
-        )}
+        {/* Coach-role branches here are dead code — coaches redirect to /coach
+            before this renders. Kept only the client-facing sections below. */}
 
         {/* New user welcome prompt */}
         {!isCoach && !isAdmin && sessions.length === 0 && credits.length === 0 && (

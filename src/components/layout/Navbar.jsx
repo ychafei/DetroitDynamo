@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Shield } from 'lucide-react';
+import { Menu, X, Shield, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/AuthContext';
 
@@ -23,18 +23,21 @@ export default function Navbar() {
 
     const links = [];
 
+    // Client-only top nav items
     if (!isCoach && !isAdmin) {
       links.push({ label: 'Book', path: '/book' });
       links.push({ label: 'Matching', path: '/matching' });
+      links.push({ label: 'Dashboard', path: '/dashboard' });
+      links.push({ label: 'Messages', path: '/messages' });
     }
 
-    links.push({ label: 'Dashboard', path: '/dashboard' });
-
-    if (isCoach || isAdmin) {
-      links.push({ label: 'Schedule', path: '/coach-schedule' });
+    // Coach top nav collapses into a single "Coach Portal" entry —
+    // sub-nav (Schedule / Clients / Earnings / Profile / Messages) lives
+    // inside the portal shell, not the global navbar.
+    if (isCoach) {
+      links.push({ label: 'Coach Portal', path: '/coach', icon: Briefcase });
     }
 
-    links.push({ label: 'Messages', path: '/messages' });
     links.push({ label: 'Blog', path: '/blog' });
 
     if (isAdmin) {
