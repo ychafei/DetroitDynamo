@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { sessionRepo, coachRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -36,8 +36,8 @@ export default function AdminBookings() {
     const load = async () => {
       try {
         const [s, c] = await Promise.all([
-          base44.entities.Session.list('-date'),
-          base44.entities.Coach.list(),
+          sessionRepo.list('-date'),
+          coachRepo.list(),
         ]);
         if (cancelled) return;
         setSessions(s);
@@ -89,7 +89,7 @@ export default function AdminBookings() {
     });
     if (!ok) return;
 
-    const results = await Promise.allSettled(ids.map((id) => base44.entities.Session.delete(id)));
+    const results = await Promise.allSettled(ids.map((id) => sessionRepo.delete(id)));
     const failed = results.filter((r) => r.status === 'rejected').length;
     const deletedSet = new Set(ids.filter((_, i) => results[i].status === 'fulfilled'));
     setSessions((prev) => prev.filter((s) => !deletedSet.has(s.id)));
@@ -132,7 +132,7 @@ export default function AdminBookings() {
       start_time: session.start_time,
     };
     try {
-      await base44.entities.Session.delete(session.id);
+      await sessionRepo.delete(session.id);
       setSessions((prev) => prev.filter((s) => s.id !== session.id));
       await logAdminAction({
         actor: user,
@@ -170,7 +170,7 @@ export default function AdminBookings() {
     }
     const before = { status: session.status };
     try {
-      await base44.entities.Session.update(session.id, { status });
+      await sessionRepo.update(session.id, { status });
       setSessions((prev) => prev.map((s) => (s.id === session.id ? { ...s, status } : s)));
       await logAdminAction({
         actor: user,

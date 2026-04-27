@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { coachApplicationRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -21,12 +21,12 @@ export default function AdminApplications() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.CoachApplication.list('-created_date').then(data => { setApps(data); setLoading(false); });
+    coachApplicationRepo.list('-created_date').then(data => { setApps(data); setLoading(false); });
   }, []);
 
   const update = async (id, status) => {
     const previous = apps.find(a => a.id === id);
-    await base44.entities.CoachApplication.update(id, { status });
+    await coachApplicationRepo.update(id, { status });
     setApps(prev => prev.map(a => a.id === id ? { ...a, status } : a));
     await logAdminAction({
       actor: user,

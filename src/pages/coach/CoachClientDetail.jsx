@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { sessionRepo, sessionCreditRepo, profileRepo, conversationRepo } from '@/api/repo';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -42,7 +42,7 @@ function SessionNotesEditor({ session, onSaved }) {
   const save = async () => {
     setSaving(true);
     try {
-      await base44.entities.Session.update(session.id, { notes: value });
+      await sessionRepo.update(session.id, { notes: value });
       toast.success('Notes saved');
       setEditing(false);
       onSaved?.(session.id, value);
@@ -172,7 +172,7 @@ function CoachingPlan({ sessions, onSaved }) {
     try {
       const patch = {};
       PLAN_FIELDS.forEach(f => { patch[f.key] = draft[f.key] || ''; });
-      await base44.entities.Session.update(targetSession.id, patch);
+      await sessionRepo.update(targetSession.id, patch);
       onSaved?.(targetSession.id, patch);
       toast.success('Coaching plan saved');
     } catch (err) {
@@ -282,11 +282,11 @@ export default function CoachClientDetail() {
     (async () => {
       try {
         const [ssns, crds, users, convos] = await Promise.all([
-          base44.entities.Session.filter({ coach_id: user.coach_id, client_email: clientEmail }, '-date'),
-          base44.entities.SessionCredit.filter({ client_email: clientEmail }),
-          base44.entities.User.filter({ email: clientEmail }),
+          sessionRepo.filter({ coach_id: user.coach_id, client_email: clientEmail }, '-date'),
+          sessionCreditRepo.filter({ client_email: clientEmail }),
+          profileRepo.filter({ email: clientEmail }),
           // NOTE: broad-fetch limitation — narrowed client-side. See risks in plan.
-          base44.entities.Conversation.filter({}),
+          conversationRepo.filter({}),
         ]);
         if (cancelled) return;
         setSessions(ssns || []);
@@ -331,7 +331,7 @@ export default function CoachClientDetail() {
     setCreatingConvo(true);
     try {
       const coachFullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.full_name || user.email;
-      await base44.entities.Conversation.create({
+      await conversationRepo.create({
         type: 'coach_client',
         participant_emails: [String(user.email), String(clientEmail)],
         participant_names: [coachFullName, clientName],

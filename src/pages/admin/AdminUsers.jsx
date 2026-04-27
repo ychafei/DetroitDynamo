@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { profileRepo, userBanRepo, coachRepo, sessionCreditRepo } from '@/api/repo';
+import { auth } from '@/lib/auth';
+import { email as emailLib } from '@/lib/email';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -44,8 +46,8 @@ export default function AdminUsers() {
     const load = async () => {
       try {
         const [u, b] = await Promise.all([
-          base44.entities.User.list(),
-          base44.entities.UserBan.filter({ is_active: true }),
+          profileRepo.list(),
+          userBanRepo.filter({ is_active: true }),
         ]);
         if (cancelled) return;
         setUsers(u);
@@ -88,7 +90,7 @@ export default function AdminUsers() {
       return;
     }
     const before = { role: targetUser.role || 'user' };
-    await base44.entities.User.update(targetUser.id, { role });
+    await profileRepo.updateById(targetUser.id, { role });
     setUsers(prev => prev.map(u => u.id === targetUser.id ? { ...u, role } : u));
     await logAdminAction({
       actor: me,
@@ -104,7 +106,7 @@ export default function AdminUsers() {
 
   const banUser = async () => {
     if (!banReason.trim()) { toast.error('Please provide a reason'); return; }
-    const created = await base44.entities.UserBan.create({
+    const created = await userBanRepo.create({
       banned_email: banDialog.email,
       banned_by_email: me.email,
       reason: banReason,
@@ -123,14 +125,14 @@ export default function AdminUsers() {
     toast.success('User banned');
     setBanDialog(null);
     setBanReason('');
-    const b = await base44.entities.UserBan.filter({ is_active: true });
+    const b = await userBanRepo.filter({ is_active: true });
     setBans(b);
   };
 
   const unban = async (email) => {
     const ban = bans.find(b => b.banned_email === email);
     if (ban) {
-      await base44.entities.UserBan.update(ban.id, { is_active: false, unbanned_by_email: me.email, unbanned_at: new Date().toISOString() });
+      await userBanRepo.update(ban.id, { is_active: false, unbanned_by_email: me.email, unbanned_at: new Date().toISOString() });
       setBans(prev => prev.filter(b => b.id !== ban.id));
       await logAdminAction({
         actor: me,
@@ -153,9 +155,9 @@ export default function AdminUsers() {
     }
     setInviting(true);
     try {
-      await base44.users.inviteUser(inviteEmail.trim(), inviteRole);
+      await auth.inviteUser(inviteEmail.trim(), inviteRole);
       if (inviteRole === 'coach') {
-        await base44.entities.Coach.create({
+        await coachRepo.create({
           first_name: inviteEmail.split('@')[0],
           last_name: '',
           email: inviteEmail.trim(),
@@ -182,7 +184,7 @@ export default function AdminUsers() {
 
   const sendWarning = async () => {
     if (!warnMessage.trim()) { toast.error('Please enter a warning message'); return; }
-    await base44.integrations.Core.SendEmail({
+    await emailLib.send({
       to: warnDialog.email,
       subject: 'Account Warning — LC Training',
       body: `<p>Hi ${warnDialog.full_name || warnDialog.email},</p><p>${warnMessage}</p><p>If you have questions, reply to this email or contact support@lctrainings.com.</p><p>— LC Training Team</p>`,
@@ -413,7 +415,7 @@ export default function AdminUsers() {
             disabled={!creditSessions || parseInt(creditSessions) <= 0 || creditSaving}
             onClick={async () => {
               setCreditSaving(true);
-              const created = await base44.entities.SessionCredit.create({
+              const created = await sessionCreditRepo.create({
                 client_email: creditDialog.email,
                 client_name: creditDialog.full_name || creditDialog.email,
                 package_id: 'admin_grant',

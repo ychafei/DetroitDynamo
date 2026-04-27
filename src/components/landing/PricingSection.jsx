@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { pricingPackageRepo } from '@/api/repo';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Check, ArrowRight } from 'lucide-react';
@@ -8,7 +8,7 @@ export default function PricingSection() {
   const [packages, setPackages] = useState([]);
 
   useEffect(() => {
-    base44.entities.PricingPackage.filter({ is_visible: true }, 'display_order').then(setPackages);
+    pricingPackageRepo.filter({ is_visible: true }, 'display_order').then(setPackages);
   }, []);
 
   if (packages.length === 0) return null;

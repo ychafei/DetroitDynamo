@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { siteContentRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +21,7 @@ export default function AdminContent() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    base44.entities.SiteContent.list().then(data => {
+    siteContentRepo.list().then(data => {
       const vals = {};
       const idMap = {};
       data.forEach(d => { vals[d.key] = d.value; idMap[d.key] = d.id; });
@@ -34,9 +34,9 @@ export default function AdminContent() {
     setSaving(true);
     for (const { key } of DEFAULT_KEYS) {
       if (ids[key]) {
-        await base44.entities.SiteContent.update(ids[key], { value: items[key] || '' });
+        await siteContentRepo.update(ids[key], { value: items[key] || '' });
       } else {
-        const created = await base44.entities.SiteContent.create({ key, value: items[key] || '', content_type: 'text' });
+        const created = await siteContentRepo.create({ key, value: items[key] || '', content_type: 'text' });
         setIds(prev => ({ ...prev, [key]: created.id }));
       }
     }

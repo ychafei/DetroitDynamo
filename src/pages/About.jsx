@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { coachRepo, siteContentRepo } from '@/api/repo';
+import { storage } from '@/lib/storage';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Target, Users, Trophy, Upload } from 'lucide-react';
 import useCurrentUser from '@/hooks/useCurrentUser';
@@ -12,8 +13,8 @@ export default function About() {
   const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
-    base44.entities.Coach.filter({ is_active: true }, 'display_order').then(setCoaches);
-    base44.entities.SiteContent.filter({ key: 'founders_photo' }).then(results => {
+    coachRepo.filter({ is_active: true }, 'display_order').then(setCoaches);
+    siteContentRepo.filter({ key: 'founders_photo' }).then(results => {
       if (results.length > 0) setFoundersPhoto(results[0]);
     });
   }, []);
@@ -22,12 +23,12 @@ export default function About() {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { url: file_url } = await storage.uploadFile('site-content', file);
     if (foundersPhoto) {
-      await base44.entities.SiteContent.update(foundersPhoto.id, { value: file_url });
+      await siteContentRepo.update(foundersPhoto.id, { value: file_url });
       setFoundersPhoto({ ...foundersPhoto, value: file_url });
     } else {
-      const record = await base44.entities.SiteContent.create({ key: 'founders_photo', value: file_url, content_type: 'image' });
+      const record = await siteContentRepo.create({ key: 'founders_photo', value: file_url, content_type: 'image' });
       setFoundersPhoto(record);
     }
     setUploading(false);

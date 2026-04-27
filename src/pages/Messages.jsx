@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { coachRepo, conversationRepo, messageRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,7 +25,7 @@ export default function Messages() {
       return;
     }
     loadConversations();
-    base44.entities.Coach.filter({ is_active: true })
+    coachRepo.filter({ is_active: true })
       .then(data => setCoaches(data.filter(c => c.email)))
       .catch(() => setCoaches([]));
   }, [user]);
@@ -36,7 +36,7 @@ export default function Messages() {
       // fetch all conversations and narrow client-side. When conversation
       // volume grows this should move behind a server function that returns
       // only rows the caller participates in.
-      const all = await base44.entities.Conversation.filter({}, '-last_message_at');
+      const all = await conversationRepo.filter({}, '-last_message_at');
       const mine = all.filter(c => c.participant_emails?.includes(user.email) && !c.is_archived);
       setConversations(mine);
     } catch (err) {
@@ -49,25 +49,25 @@ export default function Messages() {
 
   const loadMessages = async (convo) => {
     setSelectedConvo(convo);
-    const msgs = await base44.entities.Message.filter({ conversation_id: convo.id }, 'created_date');
+    const msgs = await messageRepo.filter({ conversation_id: convo.id }, 'created_date');
     setMessages(msgs);
 
     // Mark as read
     const unread = msgs.filter(m => m.sender_email !== user.email && !m.read_by?.includes(user.email));
     for (const m of unread) {
-      await base44.entities.Message.update(m.id, { read_by: [...(m.read_by || []), user.email] });
+      await messageRepo.update(m.id, { read_by: [...(m.read_by || []), user.email] });
     }
     setTimeout(() => msgEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
   };
 
   useEffect(() => {
     if (!selectedConvo) return;
-    const unsub = base44.entities.Message.subscribe((event) => {
+    const unsub = messageRepo.subscribe((event) => {
       if (event.data?.conversation_id === selectedConvo.id) {
         if (event.type === 'create') {
           setMessages(prev => [...prev, event.data]);
           if (event.data.sender_email !== user.email) {
-            base44.entities.Message.update(event.data.id, { read_by: [...(event.data.read_by || []), user.email] });
+            messageRepo.update(event.data.id, { read_by: [...(event.data.read_by || []), user.email] });
           }
         }
       }
@@ -83,14 +83,14 @@ export default function Messages() {
     if (!newMsg.trim() || !selectedConvo) return;
     setSending(true);
     const senderFullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.full_name || user.email;
-    await base44.entities.Message.create({
+    await messageRepo.create({
       conversation_id: selectedConvo.id,
       sender_email: user.email,
       sender_name: senderFullName,
       content: newMsg.trim(),
       read_by: [user.email],
     });
-    await base44.entities.Conversation.update(selectedConvo.id, {
+    await conversationRepo.update(selectedConvo.id, {
       last_message: newMsg.trim(),
       last_message_at: new Date().toISOString(),
     });
@@ -105,7 +105,7 @@ export default function Messages() {
 
   const startConvoWithCoach = async (coach) => {
     if (!coach.email) return;
-    const all = await base44.entities.Conversation.filter({});
+    const all = await conversationRepo.filter({});
     let convo = all.find(c =>
       c.participant_emails?.includes(user.email) &&
       c.participant_emails?.includes(coach.email) &&
@@ -113,7 +113,7 @@ export default function Messages() {
     );
     if (!convo) {
       const userFullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.full_name || user.email;
-      convo = await base44.entities.Conversation.create({
+      convo = await conversationRepo.create({
         type: 'coach_client',
         participant_emails: [String(user.email), String(coach.email)],
         participant_names: [userFullName, `${coach.first_name} ${coach.last_name}`],

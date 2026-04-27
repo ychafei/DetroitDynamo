@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { coachApplicationRepo } from '@/api/repo';
+import { storage } from '@/lib/storage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -21,11 +22,11 @@ export default function Apply() {
     let resume_url = '';
     if (resumeFile) {
       setUploading(true);
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: resumeFile });
+      const { url: file_url } = await storage.uploadFile('coach-resumes', resumeFile);
       resume_url = file_url;
       setUploading(false);
     }
-    await base44.entities.CoachApplication.create({ ...form, resume_url });
+    await coachApplicationRepo.create({ ...form, resume_url });
     setSubmitting(false);
     setSubmitted(true);
   };

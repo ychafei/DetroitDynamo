@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { matchRequestRepo, conversationRepo, profileRepo } from '@/api/repo';
+import { rpc } from '@/lib/rpc';
+import { email as emailLib } from '@/lib/email';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,12 +50,12 @@ export default function Matching() {
 
   const loadData = async () => {
     try {
-      const res = await base44.functions.invoke('getMatchingPlayers', {});
+      const res = await rpc.invoke('getMatchingPlayers', {});
       setClients(res.data.players || []);
 
       // NOTE: MatchRequest has no participant query helper; we filter client-side.
       // This should move behind a server function once volume grows.
-      const reqs = await base44.entities.MatchRequest.filter({});
+      const reqs = await matchRequestRepo.filter({});
       setRequests(reqs.filter(r => r.requester_email === user.email || r.target_email === user.email));
     } catch (err) {
       console.error('Matching load failed', err);
@@ -74,7 +76,7 @@ export default function Matching() {
       return;
     }
 
-    await base44.entities.MatchRequest.create({
+    await matchRequestRepo.create({
       requester_email: user.email,
       requester_name: user.first_name || user.full_name?.split(' ')[0] || 'Player',
       requester_player_age: userAge,
@@ -89,16 +91,16 @@ export default function Matching() {
 
   const handleRequest = async (req, action) => {
     if (action === 'accepted') {
-      const convo = await base44.entities.Conversation.create({
+      const convo = await conversationRepo.create({
         type: 'client_match',
         participant_emails: [req.requester_email, req.target_email],
         participant_names: [req.requester_name, req.target_name],
         match_request_id: req.id,
       });
-      await base44.entities.MatchRequest.update(req.id, { status: 'accepted', conversation_id: convo.id });
+      await matchRequestRepo.update(req.id, { status: 'accepted', conversation_id: convo.id });
       toast.success('Match accepted! You can now message each other.');
     } else {
-      await base44.entities.MatchRequest.update(req.id, { status: 'declined' });
+      await matchRequestRepo.update(req.id, { status: 'declined' });
       toast.info('Request declined.');
     }
     loadData();
@@ -136,14 +138,14 @@ export default function Matching() {
       setSendingConsent(true);
       try {
         const token = generateToken();
-        await base44.entities.User.update(user.id, {
+        await profileRepo.updateById(user.id, {
           parent_consent_token: token,
           parent_consent_sent_at: new Date().toISOString(),
           parent_consent_email: emailToUse,
         });
         const childName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email;
         const consentUrl = `${window.location.origin}/parent-consent?token=${token}`;
-        await base44.integrations.Core.SendEmail({
+        await emailLib.send({
           to: emailToUse,
           subject: `Consent Requested: ${childName} wants to use LC Training Player Matching`,
           body: `

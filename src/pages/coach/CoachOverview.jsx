@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { coachRepo, sessionRepo, conversationRepo, messageRepo } from '@/api/repo';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -50,24 +50,24 @@ export default function CoachOverview() {
     const load = async () => {
       try {
         const coachRow = user.coach_id
-          ? (await base44.entities.Coach.filter({ id: user.coach_id }))[0]
+          ? (await coachRepo.filter({ id: user.coach_id }))[0]
           : null;
         if (cancelled) return;
         setCoach(coachRow || null);
 
         const ssns = user.coach_id
-          ? await base44.entities.Session.filter({ coach_id: user.coach_id }, '-date')
+          ? await sessionRepo.filter({ coach_id: user.coach_id }, '-date')
           : [];
         if (cancelled) return;
         setSessions(ssns);
 
         // Unread count: bounded by my conversations.
-        const convos = await base44.entities.Conversation.filter({});
+        const convos = await conversationRepo.filter({});
         const mine = convos.filter(c => c.participant_emails?.includes(user.email) && !c.is_archived);
         let unread = 0;
         if (mine.length > 0) {
           const batches = await Promise.all(
-            mine.map(c => base44.entities.Message.filter({ conversation_id: c.id }))
+            mine.map(c => messageRepo.filter({ conversation_id: c.id }))
           );
           batches.forEach(msgs => msgs.forEach(m => {
             if (m.sender_email !== user.email && !m.read_by?.includes(user.email)) unread++;
@@ -308,7 +308,7 @@ export default function CoachOverview() {
                     session={s}
                     onMarkCompleted={async () => {
                       try {
-                        await base44.entities.Session.update(s.id, { status: 'completed' });
+                        await sessionRepo.update(s.id, { status: 'completed' });
                         setSessions(prev => prev.map(x => x.id === s.id ? { ...x, status: 'completed' } : x));
                         toast.success('Session marked completed');
                       } catch (err) {
@@ -318,7 +318,7 @@ export default function CoachOverview() {
                     }}
                     onMarkPaid={async () => {
                       try {
-                        await base44.entities.Session.update(s.id, { payment_status: 'paid' });
+                        await sessionRepo.update(s.id, { payment_status: 'paid' });
                         setSessions(prev => prev.map(x => x.id === s.id ? { ...x, payment_status: 'paid' } : x));
                         toast.success('Marked as paid');
                       } catch (err) {

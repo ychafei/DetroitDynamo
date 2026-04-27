@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { profileRepo } from '@/api/repo';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, ShieldAlert, Users } from 'lucide-react';
 
@@ -15,7 +15,7 @@ export default function ParentConsent() {
       setStatus('invalid');
       return;
     }
-    base44.entities.User.filter({ parent_consent_token: token })
+    profileRepo.filter({ parent_consent_token: token })
       .then((users) => {
         if (!users || users.length === 0) {
           setStatus('invalid');
@@ -39,7 +39,7 @@ export default function ParentConsent() {
   const handleConsent = async () => {
     setSubmitting(true);
     try {
-      await base44.entities.User.update(child.id, {
+      await profileRepo.updateById(child.id, {
         parent_consent_verified_at: new Date().toISOString(),
         parent_consent_token: null,
       });
@@ -54,7 +54,7 @@ export default function ParentConsent() {
   const handleDecline = async () => {
     setSubmitting(true);
     try {
-      await base44.entities.User.update(child.id, { parent_consent_token: null });
+      await profileRepo.updateById(child.id, { parent_consent_token: null });
       setStatus('declined');
     } catch {
       setStatus('error');

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { sessionCreditRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -78,7 +78,7 @@ function AdjustDialog({ credit, mode, onClose, onSaved, actor }) {
 
     try {
       if (Object.keys(patch).length > 0) {
-        await base44.entities.SessionCredit.update(credit.id, patch);
+        await sessionCreditRepo.update(credit.id, patch);
       }
       await logAdminAction({
         actor,
@@ -233,7 +233,7 @@ function EditInfoDialog({ credit, onClose, onSaved, actor }) {
       session_duration_minutes: credit.session_duration_minutes || null,
     };
     try {
-      await base44.entities.SessionCredit.update(credit.id, patch);
+      await sessionCreditRepo.update(credit.id, patch);
       await logAdminAction({
         actor,
         action: 'credit.edit_info',
@@ -310,7 +310,7 @@ export default function AdminCredits() {
 
   const loadCredits = async () => {
     try {
-      const all = await base44.entities.SessionCredit.list();
+      const all = await sessionCreditRepo.list();
       setCredits(all);
     } catch (err) {
       console.error('AdminCredits load failed', err);
@@ -349,7 +349,7 @@ export default function AdminCredits() {
       package_name: credit.package_name,
     };
     try {
-      await base44.entities.SessionCredit.delete(credit.id);
+      await sessionCreditRepo.delete(credit.id);
       setCredits((prev) => prev.filter((c) => c.id !== credit.id));
       await logAdminAction({
         actor: user,
@@ -388,7 +388,7 @@ export default function AdminCredits() {
     if (!ok) return;
 
     const ids = credits.map((c) => c.id);
-    const results = await Promise.allSettled(ids.map((id) => base44.entities.SessionCredit.delete(id)));
+    const results = await Promise.allSettled(ids.map((id) => sessionCreditRepo.delete(id)));
     const failed = results.filter((r) => r.status === 'rejected').length;
     const deletedSet = new Set(ids.filter((_, i) => results[i].status === 'fulfilled'));
     setCredits((prev) => prev.filter((c) => !deletedSet.has(c.id)));

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { coachRepo, profileRepo } from '@/api/repo';
+import { storage } from '@/lib/storage';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,16 +31,16 @@ export default function AdminCoaches() {
     const file = e.target.files[0];
     if (!file) return;
     setUploadingPhoto(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { url: file_url } = await storage.uploadFile('coach-photos', file);
     setEditing(prev => ({ ...prev, photo_url: file_url }));
     setUploadingPhoto(false);
   };
 
   useEffect(() => {
     loadCoaches();
-    base44.entities.User.list().then(setUsers);
+    profileRepo.list().then(setUsers);
   }, []);
-  const loadCoaches = () => base44.entities.Coach.list('display_order').then(setCoaches);
+  const loadCoaches = () => coachRepo.list('display_order').then(setCoaches);
 
   const linkUser = async (userId) => {
     const targetUser = users.find(u => u.id === userId);
@@ -47,7 +48,7 @@ export default function AdminCoaches() {
     // Don't downgrade admins — only set role to 'coach' if not already admin
     if (targetUser?.role !== 'admin') updateData.role = 'coach';
     const before = { coach_id: targetUser?.coach_id || null, role: targetUser?.role || 'user' };
-    await base44.entities.User.update(userId, updateData);
+    await profileRepo.updateById(userId, updateData);
     setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updateData } : u));
     await logAdminAction({
       actor: user,
@@ -70,9 +71,9 @@ export default function AdminCoaches() {
     const isUpdate = !!editing.id;
     const previous = isUpdate ? coaches.find(c => c.id === editing.id) : null;
     if (isUpdate) {
-      await base44.entities.Coach.update(editing.id, editing);
+      await coachRepo.update(editing.id, editing);
     } else {
-      const created = await base44.entities.Coach.create(editing);
+      const created = await coachRepo.create(editing);
       // Capture the new id for audit metadata.
       if (created?.id) editing.id = created.id;
     }

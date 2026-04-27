@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { unsubscribeRepo } from '@/api/repo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,7 +15,7 @@ export default function Unsubscribe() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    await base44.entities.UnsubscribeRecord.create({ email, reason });
+    await unsubscribeRepo.create({ email, reason });
     setSubmitting(false);
     setDone(true);
   };

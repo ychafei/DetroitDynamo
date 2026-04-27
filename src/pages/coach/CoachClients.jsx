@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { rpc } from '@/lib/rpc';
 import { useAuth } from '@/lib/AuthContext';
 import { Badge } from '@/components/ui/badge';
 import { DataTable } from '@/components/ui/data-table';
@@ -32,7 +32,7 @@ export default function CoachClients() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await base44.functions.invoke('getCoachClients', {});
+        const res = await rpc.invoke('getCoachClients', {});
         if (cancelled) return;
         const payload = res?.data ?? res;
         if (payload?.error) throw new Error(payload.error);

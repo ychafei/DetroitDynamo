@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { siteContentRepo } from '@/api/repo';
 
 export default function CTABanner() {
   const [headline, setHeadline] = useState('READY TO TRAIN?');
   const [subtext, setSubtext] = useState('Book your first session today and experience the LC Training difference.');
 
   useEffect(() => {
-    base44.entities.SiteContent.filter({ key: 'cta_headline' }).then(res => {
+    siteContentRepo.filter({ key: 'cta_headline' }).then(res => {
       if (res.length > 0) setHeadline(res[0].value);
     });
-    base44.entities.SiteContent.filter({ key: 'cta_subtext' }).then(res => {
+    siteContentRepo.filter({ key: 'cta_subtext' }).then(res => {
       if (res.length > 0) setSubtext(res[0].value);
     });
   }, []);

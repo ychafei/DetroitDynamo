@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { siteContentRepo } from '@/api/repo';
 
 export default function HeroSection() {
   const [headline, setHeadline] = useState('DOMINATE THE PITCH');
   const [subtext, setSubtext] = useState('Elite soccer training across Metro Detroit. Three counties. World-class coaching. Your next level starts here.');
 
   useEffect(() => {
-    base44.entities.SiteContent.filter({ key: 'hero_headline' }).then(res => {
+    siteContentRepo.filter({ key: 'hero_headline' }).then(res => {
       if (res.length > 0) setHeadline(res[0].value);
     });
-    base44.entities.SiteContent.filter({ key: 'hero_subtext' }).then(res => {
+    siteContentRepo.filter({ key: 'hero_subtext' }).then(res => {
       if (res.length > 0) setSubtext(res[0].value);
     });
   }, []);

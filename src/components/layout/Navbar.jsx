@@ -180,7 +180,7 @@ export default function Navbar() {
               ) : (
                 <Button
                   className="w-full bg-accent text-accent-foreground font-oswald tracking-wide uppercase text-xs"
-                  onClick={() => base44.auth.redirectToLogin()}
+                  onClick={() => navigateToLogin()}
                 >
                   Sign In / Sign Up
                 </Button>

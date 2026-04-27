@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { coachRepo, coachBlockRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,13 +30,13 @@ export default function CoachSchedule() {
     let cancelled = false;
     const load = async () => {
       try {
-        const coaches = await base44.entities.Coach.filter({ id: user.coach_id });
+        const coaches = await coachRepo.filter({ id: user.coach_id });
         if (cancelled) return;
         if (coaches.length > 0) {
           setCoach(coaches[0]);
           setAvailability(coaches[0].availability || {});
         }
-        const b = await base44.entities.CoachBlock.filter({ coach_id: user.coach_id, is_active: true }, '-start_date');
+        const b = await coachBlockRepo.filter({ coach_id: user.coach_id, is_active: true }, '-start_date');
         if (!cancelled) setBlocks(b);
       } catch (err) {
         console.error('CoachSchedule load failed', err);
@@ -70,9 +70,9 @@ export default function CoachSchedule() {
     }
     try {
       const block = { ...newBlock, coach_id: user.coach_id, is_active: true };
-      await base44.entities.CoachBlock.create(block);
+      await coachBlockRepo.create(block);
       toast.success('Block added');
-      const b = await base44.entities.CoachBlock.filter({ coach_id: user.coach_id, is_active: true }, '-start_date');
+      const b = await coachBlockRepo.filter({ coach_id: user.coach_id, is_active: true }, '-start_date');
       setBlocks(b);
       setNewBlock({ label: '', start_date: '', end_date: '', block_all_day: true, blocked_start_time: '', blocked_end_time: '' });
     } catch (err) {
@@ -87,7 +87,7 @@ export default function CoachSchedule() {
     }
     setSavingAvail(true);
     try {
-      await base44.entities.Coach.update(coach.id, { availability });
+      await coachRepo.update(coach.id, { availability });
       toast.success('Availability saved');
     } catch (err) {
       toast.error('Could not save availability. Please try again.');
@@ -108,7 +108,7 @@ export default function CoachSchedule() {
       variant: 'destructive',
     });
     if (!ok) return;
-    await base44.entities.CoachBlock.update(block.id, { is_active: false });
+    await coachBlockRepo.update(block.id, { is_active: false });
     setBlocks(prev => prev.filter(b => b.id !== block.id));
     toast.success('Block removed');
   };

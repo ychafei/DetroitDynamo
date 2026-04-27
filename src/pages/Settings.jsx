@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { auth } from '@/lib/auth';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,7 +38,7 @@ export default function Settings() {
 
   const saveProfile = async () => {
     setSaving(true);
-    await base44.auth.updateMe(profile);
+    await auth.updateCurrentUser(profile);
     await refetch();
     setSaving(false);
     toast.success('Profile saved');

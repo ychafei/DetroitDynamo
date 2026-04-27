@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { blogPostRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,14 +27,14 @@ export default function AdminBlog() {
   const [tagInput, setTagInput] = useState('');
 
   useEffect(() => { load(); }, []);
-  const load = () => base44.entities.BlogPost.list('-created_date').then(setPosts);
+  const load = () => blogPostRepo.list('-created_date').then(setPosts);
 
   const save = async () => {
     if (!editing.title || !editing.slug) { toast.error('Title and slug are required'); return; }
     if (editing.id) {
-      await base44.entities.BlogPost.update(editing.id, editing);
+      await blogPostRepo.update(editing.id, editing);
     } else {
-      await base44.entities.BlogPost.create(editing);
+      await blogPostRepo.create(editing);
     }
     toast.success('Post saved');
     setOpen(false);
@@ -42,7 +42,7 @@ export default function AdminBlog() {
   };
 
   const remove = async (id) => {
-    await base44.entities.BlogPost.delete(id);
+    await blogPostRepo.delete(id);
     toast.success('Post deleted');
     load();
   };

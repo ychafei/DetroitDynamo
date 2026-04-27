@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { sessionRepo, sessionCreditRepo, pricingPackageRepo } from '@/api/repo';
+import { auth } from '@/lib/auth';
+import { rpc } from '@/lib/rpc';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
@@ -73,8 +75,8 @@ export default function Book() {
   const [sessionBooked, setSessionBooked]     = useState(false);
 
   useEffect(() => {
-    base44.functions.invoke('getPublicCoaches', {}).then(res => setCoaches(res.data.coaches || []));
-    base44.entities.PricingPackage.filter({ is_visible: true }, 'display_order').then(setPackages);
+    rpc.invoke('getPublicCoaches', {}).then(res => setCoaches(res.data.coaches || []));
+    pricingPackageRepo.filter({ is_visible: true }, 'display_order').then(setPackages);
   }, []);
 
   // One-shot: pre-select coach from /coaches/:id "Book with this coach" link.
@@ -100,7 +102,7 @@ export default function Book() {
 
   useEffect(() => {
     if (coach) {
-      base44.functions.invoke('getCoachAvailability', { coach_id: coach.id }).then(res => {
+      rpc.invoke('getCoachAvailability', { coach_id: coach.id }).then(res => {
         setBlocks(res.data.blocks || []);
         setExistingSessions(res.data.sessions || []);
       });
@@ -109,7 +111,7 @@ export default function Book() {
 
   useEffect(() => {
     if (user) {
-      base44.entities.SessionCredit.filter({ client_email: user.email }).then(credits => {
+      sessionCreditRepo.filter({ client_email: user.email }).then(credits => {
         // If coming from Dashboard with a specific credit_id, use that one
         let active;
         if (preCreditId) {
@@ -150,7 +152,7 @@ export default function Book() {
       window.history.replaceState({}, '', url.pathname);
 
       // Reload credits to pick up the webhook-created record, then advance
-      base44.entities.SessionCredit.filter({ client_email: user.email }).then(credits => {
+      sessionCreditRepo.filter({ client_email: user.email }).then(credits => {
         const active = credits.find(c => (c.total_credits - c.used_credits) > 0);
         if (active) {
           setExistingCredit(active);
@@ -209,7 +211,7 @@ export default function Book() {
   const handlePaymentConfirmed = async (method) => {
     if (!user) {
       sessionStorage.setItem('lc_booking', JSON.stringify({ step, county, coach, selectedPackage, duration, goals, selectedTags }));
-      base44.auth.redirectToLogin(window.location.href);
+      auth.signIn(window.location.href);
       return;
     }
     sessionStorage.removeItem('lc_booking');
@@ -226,7 +228,7 @@ export default function Book() {
       let found = null;
       for (let i = 0; i < 5; i++) {
         await new Promise(r => setTimeout(r, 1500));
-        const credits = await base44.entities.SessionCredit.filter({ client_email: user.email });
+        const credits = await sessionCreditRepo.filter({ client_email: user.email });
         found = credits.find(c => (c.total_credits - c.used_credits) > 0 && !creditRecord?.id?.includes?.(c.id));
         if (found) break;
       }
@@ -239,7 +241,7 @@ export default function Book() {
       // Cash: create credit record on frontend (no webhook for cash).
       // Credits are usable immediately — client pays coach directly at the session.
       // Processor = 'cash_pending' so admin/coach views can distinguish from fully-paid ones.
-      const credit = await base44.entities.SessionCredit.create({
+      const credit = await sessionCreditRepo.create({
         client_email: user.email,
         client_name: clientFullName,
         package_id: selectedPackage.id,
@@ -278,7 +280,7 @@ export default function Book() {
         return;
       }
       const updatedUsed = activeCredit.used_credits + 1;
-      await base44.entities.SessionCredit.update(activeCredit.id, {
+      await sessionCreditRepo.update(activeCredit.id, {
         used_credits: updatedUsed,
       });
       const updatedCredit = { ...activeCredit, used_credits: updatedUsed };
@@ -287,7 +289,7 @@ export default function Book() {
     }
 
     const clientFullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.full_name || user.email;
-    await base44.entities.Session.create({
+    await sessionRepo.create({
       coach_id: coach.id,
       client_email: user.email,
       client_name: clientFullName,
@@ -304,7 +306,7 @@ export default function Book() {
       credit_id: activeCredit?.id || null,
     });
 
-    await base44.functions.invoke('sendBookingEmails', {
+    await rpc.invoke('sendBookingEmails', {
       clientEmail: user.email,
       clientName: clientFullName,
       coachEmail: coach.email,
@@ -319,7 +321,7 @@ export default function Book() {
 
     // Reload coach availability so time slots update for next booking
     if (coach) {
-      const res = await base44.functions.invoke('getCoachAvailability', { coach_id: coach.id });
+      const res = await rpc.invoke('getCoachAvailability', { coach_id: coach.id });
       setBlocks(res.data.blocks || []);
       setExistingSessions(res.data.sessions || []);
     }
@@ -804,7 +806,7 @@ export default function Book() {
                       className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90"
                       onClick={() => {
                         sessionStorage.setItem('lc_booking', JSON.stringify({ step, county, coach, selectedPackage, duration, goals, selectedTags }));
-                        base44.auth.redirectToLogin(window.location.href);
+                        auth.signIn(window.location.href);
                       }}
                     >
                       Sign In to Pay

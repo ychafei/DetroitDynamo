@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { blogPostRepo } from '@/api/repo';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
@@ -10,7 +10,7 @@ export default function Blog() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.BlogPost.filter({ status: 'published' }, '-created_date').then(res => {
+    blogPostRepo.filter({ status: 'published' }, '-created_date').then(res => {
       setPosts(res);
       setLoading(false);
     });

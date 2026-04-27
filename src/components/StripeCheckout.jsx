@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { rpc } from '@/lib/rpc';
 import { Button } from '@/components/ui/button';
 import { CreditCard } from 'lucide-react';
 
@@ -11,7 +11,7 @@ export default function StripeCheckout({ amount, packageId, packageName, package
     setLoading(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke('createStripeCheckout', {
+      const res = await rpc.invoke('createStripeCheckout', {
         amount,
         packageId,
         packageName,

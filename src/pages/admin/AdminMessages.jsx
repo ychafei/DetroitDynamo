@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { conversationRepo, messageRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
@@ -13,7 +13,7 @@ export default function AdminMessages() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.Conversation.list('-last_message_at').then(data => {
+    conversationRepo.list('-last_message_at').then(data => {
       setConversations(data);
       setLoading(false);
     });
@@ -21,7 +21,7 @@ export default function AdminMessages() {
 
   const openConvo = async (convo) => {
     setSelected(convo);
-    const msgs = await base44.entities.Message.filter({ conversation_id: convo.id }, 'created_date');
+    const msgs = await messageRepo.filter({ conversation_id: convo.id }, 'created_date');
     setMessages(msgs);
   };
 

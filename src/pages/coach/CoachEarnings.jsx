@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { coachRepo, sessionRepo } from '@/api/repo';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,7 +58,7 @@ export default function CoachEarnings() {
     (async () => {
       try {
         const coachRow = user.coach_id
-          ? (await base44.entities.Coach.filter({ id: user.coach_id }))[0]
+          ? (await coachRepo.filter({ id: user.coach_id }))[0]
           : null;
         if (cancelled) return;
         setCoach(coachRow || null);
@@ -72,7 +72,7 @@ export default function CoachEarnings() {
           });
         }
         const ssns = user.coach_id
-          ? await base44.entities.Session.filter({ coach_id: user.coach_id }, '-date')
+          ? await sessionRepo.filter({ coach_id: user.coach_id }, '-date')
           : [];
         if (!cancelled) setSessions(ssns);
       } catch (err) {
@@ -93,7 +93,7 @@ export default function CoachEarnings() {
 
   const markPaid = async (sessionId) => {
     try {
-      await base44.entities.Session.update(sessionId, { payment_status: 'paid' });
+      await sessionRepo.update(sessionId, { payment_status: 'paid' });
       setSessions(prev => prev.map(s => s.id === sessionId ? { ...s, payment_status: 'paid' } : s));
       toast.success('Marked as paid');
     } catch (err) {
@@ -115,7 +115,7 @@ export default function CoachEarnings() {
     if (!coach || !handlesDirty) return;
     setSavingHandles(true);
     try {
-      await base44.entities.Coach.update(coach.id, draftHandles);
+      await coachRepo.update(coach.id, draftHandles);
       setCoach(prev => prev ? { ...prev, ...draftHandles } : prev);
       toast.success('Payment handles saved');
     } catch (err) {

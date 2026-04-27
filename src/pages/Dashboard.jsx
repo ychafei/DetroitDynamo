@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { sessionRepo, sessionCreditRepo, coachRepo, conversationRepo, messageRepo } from '@/api/repo';
+import { rpc } from '@/lib/rpc';
+import { email as emailLib } from '@/lib/email';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -50,9 +52,9 @@ export default function Dashboard() {
       try {
         let allSessions;
         if (isCoach && user.coach_id) {
-          allSessions = await base44.entities.Session.filter({ coach_id: user.coach_id }, '-date');
+          allSessions = await sessionRepo.filter({ coach_id: user.coach_id }, '-date');
         } else {
-          allSessions = await base44.entities.Session.filter({ client_email: user.email }, '-date');
+          allSessions = await sessionRepo.filter({ client_email: user.email }, '-date');
         }
 
         // Auto-complete past sessions (once per day per user, client-side gate).
@@ -64,7 +66,7 @@ export default function Dashboard() {
             isSessionPast(s.date, s.start_time)
           );
           if (overdue.length > 0) {
-            await Promise.all(overdue.map(s => base44.entities.Session.update(s.id, { status: 'completed' })));
+            await Promise.all(overdue.map(s => sessionRepo.update(s.id, { status: 'completed' })));
             overdue.forEach(s => { s.status = 'completed'; });
           }
           try { localStorage.setItem(todayKey, '1'); } catch {}
@@ -73,26 +75,26 @@ export default function Dashboard() {
         if (cancelled) return;
         setSessions(allSessions);
 
-        const coachList = await base44.entities.Coach.list();
+        const coachList = await coachRepo.list();
         if (cancelled) return;
         const map = {};
         coachList.forEach(c => { map[c.id] = c; });
         setCoaches(map);
 
-        const userCredits = await base44.entities.SessionCredit.filter({ client_email: user.email });
+        const userCredits = await sessionCreditRepo.filter({ client_email: user.email });
         if (cancelled) return;
         setCredits(userCredits);
 
         // Targeted unread count — only my conversations and their messages.
         // NOTE: Base44 SDK doesn't expose an OR filter on arrays, so we fetch
         // conversations where I'm a participant by scanning; see risks section.
-        const convos = await base44.entities.Conversation.filter({});
+        const convos = await conversationRepo.filter({});
         const myConvos = convos.filter(c => c.participant_emails?.includes(user.email));
         let unread = 0;
         if (myConvos.length > 0) {
           // One query per conversation is bounded by myConvos.length, usually small.
           const msgBatches = await Promise.all(
-            myConvos.map(c => base44.entities.Message.filter({ conversation_id: c.id }))
+            myConvos.map(c => messageRepo.filter({ conversation_id: c.id }))
           );
           msgBatches.forEach(msgs => {
             msgs.forEach(m => {
@@ -139,7 +141,7 @@ export default function Dashboard() {
     });
     if (!ok) return;
 
-    await base44.entities.Session.update(session.id, { status: 'cancelled', cancellation_reason: `Cancelled by ${cancelledBy}` });
+    await sessionRepo.update(session.id, { status: 'cancelled', cancellation_reason: `Cancelled by ${cancelledBy}` });
     setSessions(prev => prev.map(s => s.id === session.id ? { ...s, status: 'cancelled' } : s));
 
     let creditRefunded = false;
@@ -150,20 +152,20 @@ export default function Dashboard() {
 
       // If the session has a credit_id, refund to that specific credit record
       if (session.credit_id) {
-        const clientCredits = await base44.entities.SessionCredit.filter({ client_email: clientEmail });
+        const clientCredits = await sessionCreditRepo.filter({ client_email: clientEmail });
         creditToRefund = clientCredits.find(c => c.id === session.credit_id && c.used_credits > 0);
       }
 
       // Fallback: find the most recently used credit record
       if (!creditToRefund) {
-        const clientCredits = await base44.entities.SessionCredit.filter({ client_email: clientEmail });
+        const clientCredits = await sessionCreditRepo.filter({ client_email: clientEmail });
         creditToRefund = clientCredits
           .filter(c => c.used_credits > 0)
           .sort((a, b) => b.used_credits - a.used_credits)[0];
       }
 
       if (creditToRefund) {
-        await base44.entities.SessionCredit.update(creditToRefund.id, {
+        await sessionCreditRepo.update(creditToRefund.id, {
           used_credits: Math.max(0, creditToRefund.used_credits - 1)
         });
         creditRefunded = true;
@@ -171,7 +173,7 @@ export default function Dashboard() {
 
       // Refresh credits display for clients
       if (!isCoach) {
-        const updated = await base44.entities.SessionCredit.filter({ client_email: user.email });
+        const updated = await sessionCreditRepo.filter({ client_email: user.email });
         setCredits(updated);
       }
     }
@@ -191,7 +193,7 @@ export default function Dashboard() {
       const emails = [];
 
       // Client email
-      emails.push(base44.integrations.Core.SendEmail({
+      emails.push(emailLib.send({
         to: session.client_email,
         subject: `Session Cancelled — ${dateLabel}`,
         body: `
@@ -214,7 +216,7 @@ export default function Dashboard() {
 
       // Coach email
       if (coach?.email) {
-        emails.push(base44.integrations.Core.SendEmail({
+        emails.push(emailLib.send({
           to: coach.email,
           subject: `Session Cancelled — ${clientFullName} on ${dateLabel}`,
           body: `
@@ -252,7 +254,7 @@ export default function Dashboard() {
     setRescheduleSession(session);
     setRescheduleDate(null);
     setRescheduleTime('');
-    const res = await base44.functions.invoke('getCoachAvailability', { coach_id: session.coach_id });
+    const res = await rpc.invoke('getCoachAvailability', { coach_id: session.coach_id });
     setRescheduleBlocks(res.data.blocks || []);
     setRescheduleExistingSessions(res.data.sessions || []);
   };
@@ -263,7 +265,7 @@ export default function Dashboard() {
     const oldDate = rescheduleSession.date;
     const oldTime = rescheduleSession.start_time;
     const newDate = format(rescheduleDate, 'yyyy-MM-dd');
-    await base44.entities.Session.update(rescheduleSession.id, {
+    await sessionRepo.update(rescheduleSession.id, {
       date: newDate,
       start_time: rescheduleTime,
     });
@@ -282,7 +284,7 @@ export default function Dashboard() {
       const emails = [];
 
       // Client email
-      emails.push(base44.integrations.Core.SendEmail({
+      emails.push(emailLib.send({
         to: rescheduleSession.client_email,
         subject: `Session Rescheduled — ${formatLongDateET(newDate)}`,
         body: `
@@ -313,7 +315,7 @@ export default function Dashboard() {
 
       // Coach email
       if (coach?.email) {
-        emails.push(base44.integrations.Core.SendEmail({
+        emails.push(emailLib.send({
           to: coach.email,
           subject: `Session Rescheduled — ${clientFullName}`,
           body: `
@@ -793,7 +795,7 @@ export default function Dashboard() {
                                 <Button
                                   size="sm"
                                   onClick={async () => {
-                                    await base44.entities.Session.update(session.id, { payment_status: 'paid' });
+                                    await sessionRepo.update(session.id, { payment_status: 'paid' });
                                     setSessions(prev => prev.map(s => s.id === session.id ? { ...s, payment_status: 'paid' } : s));
                                   }}
                                   className="bg-green-600 text-white font-oswald tracking-wider uppercase text-xs hover:bg-green-700"

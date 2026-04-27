@@ -1,4 +1,4 @@
-import { base44 } from '@/api/base44Client';
+import { auditLogRepo } from '@/api/repo';
 
 export async function logAdminAction({
   actor,
@@ -25,7 +25,7 @@ export async function logAdminAction({
   if (metadata !== undefined) payload.metadata = metadata;
 
   try {
-    await base44.entities.AuditLog.create(payload);
+    await auditLogRepo.create(payload);
   } catch (err) {
     // Audit logging must never break the action it's annotating.
     console.error('audit log failed', { action, entityId }, err);

@@ -1,6 +1,6 @@
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { rpc } from '@/lib/rpc';
 
 const PAYPAL_CLIENT_ID = 'Adz5wY73h9nEH2eSHIOxR6GA_vD6bI7TykK_0dRsL3g5T7zBcQ1rbbF7naBDgd56ehUnfJi-U2fD-RfN';
 
@@ -10,7 +10,7 @@ export default function PayPalCheckout({ amount, packageId, packageName, package
 
   const createOrder = async () => {
     setError(null);
-    const res = await base44.functions.invoke('createPaypalOrder', {
+    const res = await rpc.invoke('createPaypalOrder', {
       amount,
       packageId,
       packageName,
@@ -24,7 +24,7 @@ export default function PayPalCheckout({ amount, packageId, packageName, package
   const onApprove = async (data) => {
     setProcessing(true);
     setError(null);
-    await base44.functions.invoke('capturePaypalOrder', { orderId: data.orderID });
+    await rpc.invoke('capturePaypalOrder', { orderId: data.orderID });
     await onSuccess();
     setProcessing(false);
   };

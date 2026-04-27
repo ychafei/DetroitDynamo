@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
+import { auth } from '@/lib/auth';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   const checkUserAuth = async () => {
     try {
       setIsLoadingAuth(true);
-      const currentUser = await base44.auth.me();
+      const currentUser = await auth.getCurrentUser();
       // Backfill first_name / last_name in-memory from legacy full_name
       if (currentUser && (!currentUser.first_name || !currentUser.last_name) && currentUser.full_name) {
         const parts = currentUser.full_name.trim().split(/\s+/);
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
 
   const refetchUser = useCallback(async () => {
     try {
-      const fresh = await base44.auth.me();
+      const fresh = await auth.getCurrentUser();
       if (fresh && (!fresh.first_name || !fresh.last_name) && fresh.full_name) {
         const parts = fresh.full_name.trim().split(/\s+/);
         if (!fresh.first_name) fresh.first_name = parts[0] || '';
@@ -110,12 +110,12 @@ export const AuthProvider = ({ children }) => {
   const logout = (shouldRedirect = true) => {
     setUser(null);
     setIsAuthenticated(false);
-    if (shouldRedirect) base44.auth.logout(window.location.href);
-    else base44.auth.logout();
+    if (shouldRedirect) auth.signOut(window.location.href);
+    else auth.signOut();
   };
 
   const navigateToLogin = (returnUrl = window.location.href) => {
-    base44.auth.redirectToLogin(returnUrl);
+    auth.signIn(returnUrl);
   };
 
   // Derived role flags — single source of truth

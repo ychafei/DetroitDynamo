@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { unsubscribeRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
@@ -12,7 +12,7 @@ export default function AdminUnsubscribes() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.UnsubscribeRecord.list('-created_date').then(data => { setRecords(data); setLoading(false); });
+    unsubscribeRepo.list('-created_date').then(data => { setRecords(data); setLoading(false); });
   }, []);
 
   const columns = [

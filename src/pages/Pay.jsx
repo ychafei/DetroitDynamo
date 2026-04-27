@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { sessionRepo, coachRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
@@ -14,10 +14,10 @@ export default function Pay() {
   useEffect(() => {
     if (!user) return;
     const load = async () => {
-      const allSessions = await base44.entities.Session.filter({ client_email: user.email }, '-created_date');
+      const allSessions = await sessionRepo.filter({ client_email: user.email }, '-created_date');
       const pending = allSessions.filter(s => s.payment_status === 'unpaid' && s.status !== 'cancelled');
       setSessions(pending);
-      const coachList = await base44.entities.Coach.list();
+      const coachList = await coachRepo.list();
       const map = {};
       coachList.forEach(c => { map[c.id] = c; });
       setCoaches(map);

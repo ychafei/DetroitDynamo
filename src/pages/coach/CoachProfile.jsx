@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { coachRepo } from '@/api/repo';
+import { storage } from '@/lib/storage';
+import { rpc } from '@/lib/rpc';
+import { email as emailLib } from '@/lib/email';
 import { useAuth } from '@/lib/AuthContext';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -59,7 +62,7 @@ export default function CoachProfile() {
     let cancelled = false;
     (async () => {
       try {
-        const rows = await base44.entities.Coach.filter({ id: user.coach_id });
+        const rows = await coachRepo.filter({ id: user.coach_id });
         if (cancelled) return;
         const row = rows[0] || null;
         setCoach(row);
@@ -93,7 +96,7 @@ export default function CoachProfile() {
     if (!coach || !dirty) return;
     setSaving(true);
     try {
-      await base44.entities.Coach.update(coach.id, draft);
+      await coachRepo.update(coach.id, draft);
       setCoach(prev => prev ? { ...prev, ...draft } : prev);
       toast.success('Profile saved');
     } catch (err) {
@@ -112,8 +115,8 @@ export default function CoachProfile() {
     if (!file || !coach) return;
     setUploadingPhoto(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      await base44.entities.Coach.update(coach.id, { photo_url: file_url });
+      const { url: file_url } = await storage.uploadFile('coach-photos', file);
+      await coachRepo.update(coach.id, { photo_url: file_url });
       setCoach(prev => prev ? { ...prev, photo_url: file_url } : prev);
       toast.success('Photo updated');
     } catch (err) {
@@ -155,7 +158,7 @@ export default function CoachProfile() {
     let delivered = false;
 
     try {
-      const res = await base44.functions.invoke('sendCoachEmailVerification', { to: email, code });
+      const res = await rpc.invoke('sendCoachEmailVerification', { to: email, code });
       const payload = res?.data ?? res;
       if (payload?.error) throw new Error(typeof payload.error === 'string' ? payload.error : JSON.stringify(payload.error));
       if (res?.status && res.status >= 400) throw new Error(`Server function returned ${res.status}`);
@@ -172,7 +175,7 @@ export default function CoachProfile() {
 
     if (!delivered) {
       try {
-        await base44.integrations.Core.SendEmail({ to: email, subject: 'LC Training — Email Verification Code', body: emailHtml });
+        await emailLib.send({ to: email, subject: 'LC Training — Email Verification Code', body: emailHtml });
         delivered = true;
       } catch (err) {
         coreError = err?.message || String(err);
@@ -202,7 +205,7 @@ export default function CoachProfile() {
     try {
       const newEmail = pendingEmail.trim().toLowerCase();
       const verifiedAt = new Date().toISOString();
-      await base44.entities.Coach.update(coach.id, { email: newEmail, email_verified_at: verifiedAt });
+      await coachRepo.update(coach.id, { email: newEmail, email_verified_at: verifiedAt });
       setCoach(prev => prev ? { ...prev, email: newEmail, email_verified_at: verifiedAt } : prev);
       setPendingEmail('');
       setEnteredCode('');

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { pricingPackageRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +24,7 @@ export default function AdminPricing() {
   const { confirm, dialog: confirmDialog } = useConfirm();
 
   useEffect(() => { load(); }, []);
-  const load = () => base44.entities.PricingPackage.list('display_order').then(setPackages);
+  const load = () => pricingPackageRepo.list('display_order').then(setPackages);
 
   const save = async () => {
     const data = { ...editing, sessions: Number(editing.sessions), price: Number(editing.price), display_order: Number(editing.display_order) };
@@ -32,9 +32,9 @@ export default function AdminPricing() {
     const previous = isUpdate ? packages.find(p => p.id === editing.id) : null;
     let savedId = editing.id;
     if (isUpdate) {
-      await base44.entities.PricingPackage.update(editing.id, data);
+      await pricingPackageRepo.update(editing.id, data);
     } else {
-      const created = await base44.entities.PricingPackage.create(data);
+      const created = await pricingPackageRepo.create(data);
       savedId = created?.id;
     }
     await logAdminAction({
@@ -75,7 +75,7 @@ export default function AdminPricing() {
       requireTyped: 'DELETE',
     });
     if (!ok) return;
-    await base44.entities.PricingPackage.delete(pkg.id);
+    await pricingPackageRepo.delete(pkg.id);
     await logAdminAction({
       actor: user,
       action: 'pricing.delete',

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { blogPostRepo } from '@/api/repo';
 import ReactMarkdown from 'react-markdown';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
@@ -14,7 +14,7 @@ export default function BlogPost() {
 
   useEffect(() => {
     if (!slug) return;
-    base44.entities.BlogPost.filter({ slug }).then(res => {
+    blogPostRepo.filter({ slug }).then(res => {
       if (res.length > 0) {
         setPost(res[0]);
         // Inject SEO meta tags

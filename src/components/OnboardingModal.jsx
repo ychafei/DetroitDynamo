@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { auth } from '@/lib/auth';
+import { email as emailLib } from '@/lib/email';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -59,7 +60,7 @@ export default function OnboardingModal({ user, onComplete }) {
     setSaving(true);
     const firstName = form.first_name.trim();
     const lastName = form.last_name.trim();
-    await base44.auth.updateMe({
+    await auth.updateCurrentUser({
       first_name: firstName,
       last_name: lastName,
       full_name: `${firstName} ${lastName}`,
@@ -78,7 +79,7 @@ export default function OnboardingModal({ user, onComplete }) {
     if (isUnder18 && form.parent_email) {
       const childName = `${firstName} ${lastName}`.trim() || user?.email || 'Your child';
       try {
-        await base44.integrations.Core.SendEmail({
+        await emailLib.send({
           to: form.parent_email,
           subject: 'Your Child Has Signed Up for LC Training',
           body: `

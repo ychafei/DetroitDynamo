@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { format, startOfDay, parseISO, isBefore, isWithinInterval } from 'date-fns';
-import { base44 } from '@/api/base44Client';
+import { coachRepo, sessionRepo, sessionCreditRepo } from '@/api/repo';
+import { rpc } from '@/lib/rpc';
+import { email as emailLib } from '@/lib/email';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -120,8 +122,8 @@ export default function CoachSessions() {
     (async () => {
       try {
         const [coachRow, ssns] = await Promise.all([
-          base44.entities.Coach.filter({ id: user.coach_id }).then(r => r[0] || null),
-          base44.entities.Session.filter({ coach_id: user.coach_id }, '-date'),
+          coachRepo.filter({ id: user.coach_id }).then(r => r[0] || null),
+          sessionRepo.filter({ coach_id: user.coach_id }, '-date'),
         ]);
         if (cancelled) return;
         setCoach(coachRow);
@@ -208,7 +210,7 @@ export default function CoachSessions() {
 
   const markCompleted = async (s) => {
     try {
-      await base44.entities.Session.update(s.id, { status: 'completed' });
+      await sessionRepo.update(s.id, { status: 'completed' });
       patchSession(s.id, { status: 'completed' });
       toast.success('Session marked completed');
     } catch (err) {
@@ -232,7 +234,7 @@ export default function CoachSessions() {
     if (!ok) return;
     try {
       const reason = `${NO_SHOW_PREFIX} — marked by coach`;
-      await base44.entities.Session.update(s.id, { status: 'cancelled', cancellation_reason: reason });
+      await sessionRepo.update(s.id, { status: 'cancelled', cancellation_reason: reason });
       patchSession(s.id, { status: 'cancelled', cancellation_reason: reason });
       toast.success('Marked as no-show');
     } catch (err) {
@@ -243,7 +245,7 @@ export default function CoachSessions() {
 
   const markPaid = async (s) => {
     try {
-      await base44.entities.Session.update(s.id, { payment_status: 'paid' });
+      await sessionRepo.update(s.id, { payment_status: 'paid' });
       patchSession(s.id, { payment_status: 'paid' });
       toast.success('Marked as paid');
     } catch (err) {
@@ -267,16 +269,16 @@ export default function CoachSessions() {
     if (!ok) return;
 
     try {
-      await base44.entities.Session.update(s.id, { status: 'cancelled', cancellation_reason: 'Cancelled by coach' });
+      await sessionRepo.update(s.id, { status: 'cancelled', cancellation_reason: 'Cancelled by coach' });
       patchSession(s.id, { status: 'cancelled', cancellation_reason: 'Cancelled by coach' });
 
       // Refund credit if not late and a credit is linked.
       if (!isLate && s.credit_id) {
         try {
-          const credits = await base44.entities.SessionCredit.filter({ id: s.credit_id });
+          const credits = await sessionCreditRepo.filter({ id: s.credit_id });
           const credit = credits[0];
           if (credit && credit.used_credits > 0) {
-            await base44.entities.SessionCredit.update(credit.id, {
+            await sessionCreditRepo.update(credit.id, {
               used_credits: Math.max(0, credit.used_credits - 1),
             });
           }
@@ -298,7 +300,7 @@ export default function CoachSessions() {
     setRescheduleDate(null);
     setRescheduleTime('');
     try {
-      const res = await base44.functions.invoke('getCoachAvailability', { coach_id: s.coach_id });
+      const res = await rpc.invoke('getCoachAvailability', { coach_id: s.coach_id });
       const data = res?.data ?? res;
       setRescheduleBlocks(data?.blocks || []);
       setRescheduleExisting(data?.sessions || []);
@@ -347,7 +349,7 @@ export default function CoachSessions() {
     setRescheduling(true);
     try {
       const newDate = format(rescheduleDate, 'yyyy-MM-dd');
-      await base44.entities.Session.update(rescheduleSession.id, {
+      await sessionRepo.update(rescheduleSession.id, {
         date: newDate,
         start_time: rescheduleTime,
       });
@@ -359,7 +361,7 @@ export default function CoachSessions() {
         const oldWhen = `${formatLongDateET(rescheduleSession.date)} · ${formatSessionRangeET(rescheduleSession.date, rescheduleSession.start_time, dur)}`;
         const newWhen = `${formatLongDateET(newDate)} · ${formatSessionRangeET(newDate, rescheduleTime, dur)}`;
         const coachName = coach ? `${coach.first_name} ${coach.last_name}` : 'your coach';
-        await base44.integrations.Core.SendEmail({
+        await emailLib.send({
           to: rescheduleSession.client_email,
           subject: `Session rescheduled — ${formatLongDateET(newDate)}`,
           body: `

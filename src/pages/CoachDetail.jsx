@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { rpc } from '@/lib/rpc';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ArrowRight, MapPin, Star, BadgeCheck, ShieldCheck, Calendar } from 'lucide-react';
@@ -19,7 +19,7 @@ export default function CoachDetail() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await base44.functions.invoke('getPublicCoaches', {});
+        const res = await rpc.invoke('getPublicCoaches', {});
         if (cancelled) return;
         const list = res?.data?.coaches || res?.coaches || [];
         const match = list.find(c => c.id === coachId);

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { sessionRepo, coachRepo, profileRepo, coachApplicationRepo, sessionCreditRepo, auditLogRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import {
   Users, Calendar, FileText, DollarSign, Briefcase, PenTool, MessageSquare,
@@ -114,16 +114,16 @@ export default function AdminPanel() {
     const load = async () => {
       try {
         const [sessions, coaches, users, pendingApps, credits] = await Promise.all([
-          base44.entities.Session.list('-date').catch((err) => { console.error('sessions load', err); return []; }),
-          base44.entities.Coach.list().catch((err) => { console.error('coaches load', err); return []; }),
-          base44.entities.User.list().catch((err) => { console.error('users load', err); return []; }),
-          base44.entities.CoachApplication.filter({ status: 'pending' }).catch(() => []),
-          base44.entities.SessionCredit.list().catch(() => []),
+          sessionRepo.list('-date').catch((err) => { console.error('sessions load', err); return []; }),
+          coachRepo.list().catch((err) => { console.error('coaches load', err); return []; }),
+          profileRepo.list().catch((err) => { console.error('users load', err); return []; }),
+          coachApplicationRepo.filter({ status: 'pending' }).catch(() => []),
+          sessionCreditRepo.list().catch(() => []),
         ]);
         if (cancelled) return;
         setData({ sessions, coaches, users, pendingApps, credits });
         try {
-          const audit = await base44.entities.AuditLog.list('-created_date');
+          const audit = await auditLogRepo.list('-created_date');
           if (!cancelled) {
             setAuditLog(Array.isArray(audit) ? audit.slice(0, 10) : []);
             setAuditLogAvailable(true);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { coachRepo } from '@/api/repo';
 import { ArrowRight, MapPin, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -8,7 +8,7 @@ export default function CoachShowcase() {
   const [coaches, setCoaches] = useState([]);
 
   useEffect(() => {
-    base44.entities.Coach.filter({ is_active: true }, 'display_order').then(setCoaches);
+    coachRepo.filter({ is_active: true }, 'display_order').then(setCoaches);
   }, []);
 
   if (coaches.length === 0) return null;
