@@ -1,12 +1,11 @@
 import { Client, Account, Databases, Storage, Functions, Query, ID } from 'appwrite';
 
-const ENDPOINT = import.meta.env.VITE_APPWRITE_ENDPOINT;
-const PROJECT  = import.meta.env.VITE_APPWRITE_PROJECT_ID;
-
-if (!ENDPOINT || !PROJECT) {
-  // Surfaces during dev if env is missing — easier than a silent 401 storm.
-  console.error('[appwrite] Missing VITE_APPWRITE_ENDPOINT or VITE_APPWRITE_PROJECT_ID');
-}
+// Hardcoded fallbacks. Both values are public-by-design (Appwrite project IDs
+// ship in every browser request anyway), so embedding them protects against
+// the exact failure mode where a Vercel build runs without env vars and bakes
+// `setProject(undefined)` into the bundle.
+const ENDPOINT = import.meta.env.VITE_APPWRITE_ENDPOINT || 'https://nyc.cloud.appwrite.io/v1';
+const PROJECT  = import.meta.env.VITE_APPWRITE_PROJECT_ID || '69efb263000fe1c34344';
 
 export const client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT);
 export const account   = new Account(client);
