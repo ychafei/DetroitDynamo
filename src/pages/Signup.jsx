@@ -32,6 +32,8 @@ export default function Signup() {
 
     try {
       setSubmitting(true);
+      // Drop any stale session before the new account's session is created.
+      await auth.signOut();
       await auth.signUp(email, password);
       await refetchUser();
       navigate('/dashboard', { replace: true });
