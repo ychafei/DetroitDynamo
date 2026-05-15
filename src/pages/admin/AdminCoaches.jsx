@@ -33,6 +33,8 @@ export default function AdminCoaches() {
   const [linkDialog, setLinkDialog] = useState(null);
   const [linkSearch, setLinkSearch] = useState('');
   const [linkShowAll, setLinkShowAll] = useState(false);
+  const [linkEmail, setLinkEmail] = useState('');
+  const [linkingEmail, setLinkingEmail] = useState(false);
   const [specInput, setSpecInput] = useState('');
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [typeFilter, setTypeFilter] = useState('all');
@@ -80,6 +82,31 @@ export default function AdminCoaches() {
     });
     toast.success('User linked as coach');
     setLinkDialog(null);
+  };
+
+  // Manual link: admin types an email, we find that profile (even if it's
+  // beyond the 500-row list cap) and link it. Requires the person to already
+  // have an account — the browser SDK can't create accounts.
+  const linkByEmail = async () => {
+    const raw = linkEmail.trim();
+    if (!raw) return;
+    setLinkingEmail(true);
+    try {
+      const lower = raw.toLowerCase();
+      let u = users.find((x) => (x.email || '').toLowerCase() === lower);
+      if (!u) {
+        const found = await profileRepo.filter({ email: raw }).catch(() => []);
+        u = found[0] || (await profileRepo.filter({ email: lower }).catch(() => []))[0];
+      }
+      if (!u) {
+        toast.error('No account found with that email. They must create an account first, then you can link it.');
+        return;
+      }
+      await linkUser(u.id);
+      setLinkEmail('');
+    } finally {
+      setLinkingEmail(false);
+    }
   };
 
   const save = async () => {
@@ -437,7 +464,7 @@ export default function AdminCoaches() {
 
       <Dialog
         open={!!linkDialog}
-        onOpenChange={(o) => { if (!o) { setLinkDialog(null); setLinkSearch(''); setLinkShowAll(false); } }}
+        onOpenChange={(o) => { if (!o) { setLinkDialog(null); setLinkSearch(''); setLinkShowAll(false); setLinkEmail(''); } }}
       >
         <DialogContent className="bg-card border-border">
           <DialogHeader><DialogTitle className="font-oswald tracking-wider">LINK USER TO {linkDialog?.first_name?.toUpperCase()} {linkDialog?.last_name?.toUpperCase()}</DialogTitle></DialogHeader>
@@ -493,6 +520,33 @@ export default function AdminCoaches() {
               </div>
             );
           })()}
+
+          <div className="border-t border-border mt-4 pt-4">
+            <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground mb-2">
+              Or link manually by email
+            </p>
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                value={linkEmail}
+                onChange={(e) => setLinkEmail(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') linkByEmail(); }}
+                placeholder="coach@example.com"
+                className="bg-secondary border-border"
+              />
+              <Button
+                onClick={linkByEmail}
+                disabled={linkingEmail || !linkEmail.trim()}
+                className="bg-accent text-accent-foreground font-oswald tracking-wider uppercase text-xs shrink-0"
+              >
+                {linkingEmail ? 'Linking…' : 'Link'}
+              </Button>
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-2">
+              The email must belong to an existing account. It's matched against the
+              account's profile email.
+            </p>
+          </div>
         </DialogContent>
       </Dialog>
       {confirmDialog}
