@@ -19,10 +19,10 @@ export default function Team() {
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/10" />
         <div className="absolute top-20 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
         <img
-          src="/logo.png"
+          src="/logo-shield.png"
           alt=""
           aria-hidden="true"
-          className="hidden md:block absolute right-[-4%] top-1/2 -translate-y-1/2 w-[50%] max-w-[640px] opacity-[0.08] pointer-events-none select-none"
+          className="pointer-events-none select-none absolute right-[-140px] top-1/2 -translate-y-1/2 w-[640px] opacity-[0.10] mix-blend-screen hidden lg:block"
         />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

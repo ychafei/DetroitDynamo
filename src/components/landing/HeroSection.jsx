@@ -26,15 +26,12 @@ export default function HeroSection() {
       <div className="absolute top-20 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
       
-      {/* Diagonal accent line */}
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-accent/5 to-transparent skew-x-[-15deg] translate-x-20" />
-
-      {/* Logo watermark — right side */}
+      {/* Shield watermark — right side */}
       <img
-        src="/logo.png"
+        src="/logo-shield.png"
         alt=""
         aria-hidden="true"
-        className="hidden md:block absolute right-[-4%] top-1/2 -translate-y-1/2 w-[55%] max-w-[720px] opacity-[0.08] pointer-events-none select-none"
+        className="pointer-events-none select-none absolute right-[-140px] top-1/2 -translate-y-1/2 w-[720px] opacity-[0.10] mix-blend-screen hidden lg:block"
       />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
