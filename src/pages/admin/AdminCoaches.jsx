@@ -31,6 +31,8 @@ export default function AdminCoaches() {
   const [editing, setEditing] = useState(null);
   const [open, setOpen] = useState(false);
   const [linkDialog, setLinkDialog] = useState(null);
+  const [linkSearch, setLinkSearch] = useState('');
+  const [linkShowAll, setLinkShowAll] = useState(false);
   const [specInput, setSpecInput] = useState('');
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [typeFilter, setTypeFilter] = useState('all');
@@ -433,22 +435,64 @@ export default function AdminCoaches() {
         </div>
       </div>
 
-      <Dialog open={!!linkDialog} onOpenChange={() => setLinkDialog(null)}>
+      <Dialog
+        open={!!linkDialog}
+        onOpenChange={(o) => { if (!o) { setLinkDialog(null); setLinkSearch(''); setLinkShowAll(false); } }}
+      >
         <DialogContent className="bg-card border-border">
           <DialogHeader><DialogTitle className="font-oswald tracking-wider">LINK USER TO {linkDialog?.first_name?.toUpperCase()} {linkDialog?.last_name?.toUpperCase()}</DialogTitle></DialogHeader>
           <p className="text-sm text-muted-foreground mb-3">Select the user account that belongs to this coach. Their role will be set to "coach".</p>
-          <div className="space-y-2 max-h-72 overflow-y-auto">
-            {users.filter(u => !u.coach_id || u.coach_id === linkDialog?.id).map(u => (
-              <button
-                key={u.id}
-                onClick={() => linkUser(u.id)}
-                className="w-full text-left p-3 rounded-lg border border-border bg-secondary hover:border-accent/50 transition-all"
-              >
-                <p className="font-oswald tracking-wide text-sm text-foreground">{u.full_name}</p>
-                <p className="text-xs text-muted-foreground">{u.email}</p>
-              </button>
-            ))}
-          </div>
+          <Input
+            value={linkSearch}
+            onChange={(e) => setLinkSearch(e.target.value)}
+            placeholder="Search by name or email…"
+            className="bg-secondary border-border mb-2"
+          />
+          <label className="flex items-center gap-2 text-xs text-muted-foreground mb-3 cursor-pointer">
+            <input type="checkbox" checked={linkShowAll} onChange={(e) => setLinkShowAll(e.target.checked)} />
+            Show accounts already linked to a coach
+          </label>
+          {(() => {
+            const q = linkSearch.trim().toLowerCase();
+            const list = users
+              .filter((u) => linkShowAll || !u.coach_id || u.coach_id === linkDialog?.id)
+              .filter((u) => {
+                if (!q) return true;
+                const name = `${u.first_name || ''} ${u.last_name || ''}`.toLowerCase();
+                return name.includes(q) || (u.email || '').toLowerCase().includes(q);
+              });
+            return (
+              <div className="space-y-2 max-h-72 overflow-y-auto">
+                {list.length === 0 && (
+                  <p className="text-sm text-muted-foreground py-6 text-center">
+                    No matching accounts. Try “Show accounts already linked”.
+                  </p>
+                )}
+                {list.map((u) => {
+                  const name = [u.first_name, u.last_name].filter(Boolean).join(' ').trim();
+                  const linkedElsewhere = u.coach_id && u.coach_id !== linkDialog?.id;
+                  return (
+                    <button
+                      key={u.id}
+                      onClick={() => linkUser(u.id)}
+                      className="w-full text-left p-3 rounded-lg border border-border bg-secondary hover:border-accent/50 transition-all"
+                    >
+                      <p className="font-oswald tracking-wide text-sm text-foreground">
+                        {name || '(no name set)'}
+                        {u.role && u.role !== 'user' && (
+                          <span className="ml-2 text-[10px] uppercase text-accent">{u.role}</span>
+                        )}
+                        {linkedElsewhere && (
+                          <span className="ml-2 text-[10px] uppercase text-muted-foreground">already linked</span>
+                        )}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{u.email || 'no email on profile'}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </DialogContent>
       </Dialog>
       {confirmDialog}
