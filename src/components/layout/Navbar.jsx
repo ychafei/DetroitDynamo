@@ -41,6 +41,7 @@ export default function Navbar() {
         { label: 'Home', path: '/' },
         { label: 'Book', path: '/book' },
         { label: 'Team', path: '/team', items: TEAM_ITEMS },
+        { label: 'LCFC', path: '/lcfc' },
         { label: 'Apply', path: '/apply', items: APPLY_ITEMS },
         { label: 'Blog', path: '/blog' },
         { label: 'About', path: '/about' },
@@ -61,6 +62,7 @@ export default function Navbar() {
     }
 
     links.push({ label: 'Team', path: '/team', items: TEAM_ITEMS });
+    links.push({ label: 'LCFC', path: '/lcfc' });
     links.push({ label: 'Blog', path: '/blog' });
 
     if (isAdmin) {
@@ -142,10 +144,10 @@ export default function Navbar() {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`px-4 py-2 text-sm font-oswald tracking-wide uppercase transition-colors ${
+                  className={`px-4 py-2 text-sm font-oswald tracking-wide uppercase transition-colors border-b-2 ${
                     isActive(link.path)
-                      ? 'text-accent'
-                      : 'text-muted-foreground hover:text-foreground'
+                      ? 'text-accent border-accent'
+                      : 'text-muted-foreground border-transparent hover:text-foreground'
                   }`}
                 >
                   <span className="flex items-center gap-1.5">

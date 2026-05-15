@@ -38,6 +38,10 @@ export const COL = {
   Player:            'players',
   TeamMatch:         'team_matches',
   GalleryItem:       'gallery_items',
+  LcfcSettings:      'lcfc_settings',
+  LcfcStaff:         'lcfc_staff',
+  LcfcNews:          'lcfc_news',
+  LcfcSponsor:       'lcfc_sponsors',
 };
 
 // Field-name aliases between Base44 and Appwrite system fields.

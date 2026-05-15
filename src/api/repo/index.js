@@ -16,3 +16,7 @@ export { userBanRepo } from './userBanRepo';
 export { playerRepo } from './playerRepo';
 export { teamMatchRepo } from './teamMatchRepo';
 export { galleryItemRepo } from './galleryItemRepo';
+export { lcfcSettingsRepo } from './lcfcSettingsRepo';
+export { lcfcStaffRepo } from './lcfcStaffRepo';
+export { lcfcNewsRepo } from './lcfcNewsRepo';
+export { lcfcSponsorRepo } from './lcfcSponsorRepo';

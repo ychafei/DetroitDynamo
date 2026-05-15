@@ -27,6 +27,7 @@ import PublicLayout from '@/components/layout/PublicLayout';
 import Landing from '@/pages/Landing';
 import About from '@/pages/About';
 import Team from '@/pages/Team';
+import Lcfc from '@/pages/Lcfc';
 import TeamUPSL from '@/pages/team/TeamUPSL';
 import TeamRoster from '@/pages/team/TeamRoster';
 import TeamSchedule from '@/pages/team/TeamSchedule';
@@ -62,6 +63,7 @@ import CoachSchedule from '@/pages/CoachSchedule';
 import AdminPanel from '@/pages/admin/AdminPanel';
 import AdminCoaches from '@/pages/admin/AdminCoaches';
 import AdminTeam from '@/pages/admin/AdminTeam';
+import AdminLcfc from '@/pages/admin/AdminLcfc';
 import AdminBookings from '@/pages/admin/AdminBookings';
 import AdminContent from '@/pages/admin/AdminContent';
 import AdminPricing from '@/pages/admin/AdminPricing';
@@ -94,6 +96,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Landing />} />
         <Route path="/about" element={<About />} />
         <Route path="/team" element={<Team />} />
+        <Route path="/lcfc" element={<Lcfc />} />
         <Route path="/team/upsl" element={<TeamUPSL />} />
         <Route path="/team/roster" element={<TeamRoster />} />
         <Route path="/team/schedule" element={<TeamSchedule />} />
@@ -150,6 +153,7 @@ const AuthenticatedApp = () => {
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/admin/coaches" element={<AdminCoaches />} />
           <Route path="/admin/team" element={<AdminTeam />} />
+          <Route path="/admin/lcfc" element={<AdminLcfc />} />
           <Route path="/admin/bookings" element={<AdminBookings />} />
           <Route path="/admin/credits" element={<AdminCredits />} />
           <Route path="/admin/content" element={<AdminContent />} />
