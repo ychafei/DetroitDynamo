@@ -16,7 +16,13 @@ import { describeFee } from '@/lib/earnings';
 import { logAdminAction } from '@/lib/audit';
 import { useConfirm } from '@/components/ui/confirm-dialog';
 
-const emptyCoach = { first_name: '', last_name: '', email: '', phone: '', county: '', training_area: '', bio: '', quote: '', specializations: [], is_active: true, is_head_coach: false, venmo: '', zelle: '', cashapp: '', paypal: '', cash_accepted: false, platform_fee_type: 'none', platform_fee_value: 0 };
+const emptyCoach = { first_name: '', last_name: '', email: '', phone: '', county: '', training_area: '', bio: '', quote: '', specializations: [], is_active: true, is_head_coach: false, venmo: '', zelle: '', cashapp: '', paypal: '', cash_accepted: false, platform_fee_type: 'none', platform_fee_value: 0, coach_type: 'private_training', title: '' };
+
+const TYPE_TABS = [
+  { value: 'all', label: 'All' },
+  { value: 'private_training', label: 'Private Training' },
+  { value: 'team', label: 'LCFC / Team' },
+];
 
 export default function AdminCoaches() {
   const { user, isAdmin } = useCurrentUser();
@@ -27,7 +33,12 @@ export default function AdminCoaches() {
   const [linkDialog, setLinkDialog] = useState(null);
   const [specInput, setSpecInput] = useState('');
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [typeFilter, setTypeFilter] = useState('all');
   const { confirm, dialog: confirmDialog } = useConfirm();
+
+  const visibleCoaches = typeFilter === 'all'
+    ? coaches
+    : coaches.filter(c => (c.coach_type || 'private_training') === typeFilter);
 
   const handlePhotoUpload = async (e) => {
     const file = e.target.files[0];
@@ -213,6 +224,16 @@ export default function AdminCoaches() {
                       </Button>
                     </label>
                   </div>
+                  <div>
+                    <Label className="font-oswald tracking-wider uppercase text-xs">Coach Type</Label>
+                    <Select value={editing.coach_type || 'private_training'} onValueChange={v => setEditing({...editing, coach_type: v})}>
+                      <SelectTrigger className="bg-secondary border-border mt-1"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="private_training">Private Training (LC Training)</SelectItem>
+                        <SelectItem value="team">Team / LCFC</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label className="font-oswald tracking-wider uppercase text-xs">First Name</Label>
@@ -223,6 +244,17 @@ export default function AdminCoaches() {
                       <Input value={editing.last_name} onChange={e => setEditing({...editing, last_name: e.target.value})} className="bg-secondary border-border mt-1" />
                     </div>
                   </div>
+                  {editing.coach_type === 'team' && (
+                    <div>
+                      <Label className="font-oswald tracking-wider uppercase text-xs">Title</Label>
+                      <Input
+                        value={editing.title || ''}
+                        onChange={e => setEditing({...editing, title: e.target.value})}
+                        className="bg-secondary border-border mt-1"
+                        placeholder="Head Coach, Assistant, GK Coach…"
+                      />
+                    </div>
+                  )}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label className="font-oswald tracking-wider uppercase text-xs">Email</Label>
@@ -327,8 +359,32 @@ export default function AdminCoaches() {
           </Dialog>
         </div>
 
+        <div className="flex items-center gap-2 mb-4 border-b border-border">
+          {TYPE_TABS.map(t => {
+            const count = t.value === 'all'
+              ? coaches.length
+              : coaches.filter(c => (c.coach_type || 'private_training') === t.value).length;
+            const active = typeFilter === t.value;
+            return (
+              <button
+                key={t.value}
+                onClick={() => setTypeFilter(t.value)}
+                className={`px-4 py-2 text-xs font-oswald tracking-wider uppercase transition-colors border-b-2 -mb-px ${
+                  active
+                    ? 'border-accent text-accent'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {t.label} <span className="ml-1 text-muted-foreground">({count})</span>
+              </button>
+            );
+          })}
+        </div>
+
         <div className="space-y-3">
-          {coaches.map(coach => (
+          {visibleCoaches.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground text-sm">No coaches in this category yet.</div>
+          ) : visibleCoaches.map(coach => (
             <div key={coach.id} className="bg-card border border-border rounded-lg p-4 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
@@ -336,8 +392,13 @@ export default function AdminCoaches() {
                 </div>
                 <div>
                   <p className="font-oswald tracking-wider text-foreground">{coach.first_name} {coach.last_name}</p>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-accent flex items-center gap-1"><MapPin className="w-3 h-3" />{coach.county}</span>
+                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                    <Badge variant="outline" className="text-[10px] font-oswald tracking-widest uppercase">
+                      {(coach.coach_type || 'private_training') === 'team' ? 'LCFC' : 'Private'}
+                    </Badge>
+                    {coach.county && (
+                      <span className="text-xs text-accent flex items-center gap-1"><MapPin className="w-3 h-3" />{coach.county}</span>
+                    )}
                     {coach.is_head_coach && <Badge className="bg-accent/10 text-accent border-accent/20 text-xs">Head Coach</Badge>}
                     {!coach.is_active && <Badge variant="secondary" className="text-xs">Inactive</Badge>}
                   </div>

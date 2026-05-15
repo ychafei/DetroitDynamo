@@ -1,12 +1,36 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Shield, Briefcase } from 'lucide-react';
+import { Menu, X, Shield, Briefcase, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/lib/AuthContext';
 import { getBrandLabel } from '@/lib/brand';
 
+const TEAM_ITEMS = [
+  { label: 'LCFC Overview', path: '/team' },
+  { label: 'UPSL Team', path: '/team/upsl' },
+  { label: 'Roster', path: '/team/roster' },
+  { label: 'Schedule', path: '/team/schedule' },
+  { label: 'Tryouts', path: '/team/tryouts' },
+  { label: 'Coaches', path: '/team/coaches' },
+  { label: 'Gallery', path: '/team/gallery' },
+];
+
+const APPLY_ITEMS = [
+  { label: 'Apply as Team Player', path: '/apply/team-player' },
+  { label: 'Apply as Team Coach', path: '/apply/team-coach' },
+  { label: 'Apply as Private Training Coach', path: '/apply/private-training-coach' },
+  { label: 'General Application', path: '/apply' },
+];
+
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState({}); // { team: true, apply: false }
   const { user, isAuthenticated, isAdmin, isCoach, logout, navigateToLogin } = useAuth();
   const authenticated = isAuthenticated;
   const location = useLocation();
@@ -15,17 +39,16 @@ export default function Navbar() {
     if (!authenticated || !user) {
       return [
         { label: 'Home', path: '/' },
-        { label: 'About', path: '/about' },
-        { label: 'Team', path: '/team' },
         { label: 'Book', path: '/book' },
-        { label: 'Apply', path: '/apply' },
+        { label: 'Team', path: '/team', items: TEAM_ITEMS },
+        { label: 'Apply', path: '/apply', items: APPLY_ITEMS },
         { label: 'Blog', path: '/blog' },
+        { label: 'About', path: '/about' },
       ];
     }
 
     const links = [];
 
-    // Client-only top nav items
     if (!isCoach && !isAdmin) {
       links.push({ label: 'Book', path: '/book' });
       links.push({ label: 'Matching', path: '/matching' });
@@ -33,14 +56,11 @@ export default function Navbar() {
       links.push({ label: 'Messages', path: '/messages' });
     }
 
-    // Coach top nav collapses into a single "Coach Portal" entry —
-    // sub-nav (Schedule / Clients / Earnings / Profile / Messages) lives
-    // inside the portal shell, not the global navbar.
     if (isCoach) {
       links.push({ label: 'Coach Portal', path: '/coach', icon: Briefcase });
     }
 
-    links.push({ label: 'Team', path: '/team' });
+    links.push({ label: 'Team', path: '/team', items: TEAM_ITEMS });
     links.push({ label: 'Blog', path: '/blog' });
 
     if (isAdmin) {
@@ -55,6 +75,14 @@ export default function Navbar() {
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
+  const toggleMobileExpand = (key) =>
+    setMobileExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const closeMobile = () => {
+    setMobileOpen(false);
+    setMobileExpanded({});
   };
 
   return (
@@ -75,22 +103,58 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`px-4 py-2 text-sm font-oswald tracking-wide uppercase transition-colors ${
-                  isActive(link.path)
-                    ? 'text-accent'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <span className="flex items-center gap-1.5">
-                  {link.icon && <link.icon className="w-3.5 h-3.5" />}
-                  {link.label}
-                </span>
-              </Link>
-            ))}
+            {navLinks.map((link) =>
+              link.items ? (
+                <DropdownMenu key={link.path}>
+                  <DropdownMenuTrigger
+                    className={`px-4 py-2 text-sm font-oswald tracking-wide uppercase transition-colors outline-none focus:outline-none flex items-center gap-1.5 ${
+                      isActive(link.path)
+                        ? 'text-accent'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {link.icon && <link.icon className="w-3.5 h-3.5" />}
+                    {link.label}
+                    <ChevronDown className="w-3 h-3 opacity-70" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="start"
+                    sideOffset={8}
+                    className="bg-card border border-border min-w-[220px] p-1"
+                  >
+                    {link.items.map((item) => (
+                      <DropdownMenuItem key={item.path} asChild>
+                        <Link
+                          to={item.path}
+                          className={`px-3 py-2 text-sm font-oswald tracking-wide uppercase rounded-sm cursor-pointer w-full ${
+                            isActive(item.path)
+                              ? 'text-accent bg-accent/10'
+                              : 'text-foreground hover:text-accent focus:text-accent'
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`px-4 py-2 text-sm font-oswald tracking-wide uppercase transition-colors ${
+                    isActive(link.path)
+                      ? 'text-accent'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    {link.icon && <link.icon className="w-3.5 h-3.5" />}
+                    {link.label}
+                  </span>
+                </Link>
+              )
+            )}
             <div className="ml-4">
               {authenticated ? (
                 <div className="flex items-center gap-3">
@@ -149,28 +213,67 @@ export default function Navbar() {
       {/* Mobile Nav */}
       {mobileOpen && (
         <div className="md:hidden bg-background border-b border-border">
-          <div className="px-4 py-4 space-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setMobileOpen(false)}
-                className={`block px-4 py-3 text-sm font-oswald tracking-wide uppercase rounded-md transition-colors ${
-                  isActive(link.path)
-                    ? 'text-accent bg-secondary'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  {link.icon && <link.icon className="w-4 h-4" />}
-                  {link.label}
-                </span>
-              </Link>
-            ))}
+          <div className="px-4 py-4 space-y-1">
+            {navLinks.map((link) =>
+              link.items ? (
+                <div key={link.path}>
+                  <button
+                    onClick={() => toggleMobileExpand(link.path)}
+                    className={`w-full flex items-center justify-between px-4 py-3 text-sm font-oswald tracking-wide uppercase rounded-md transition-colors ${
+                      isActive(link.path)
+                        ? 'text-accent bg-secondary'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      {link.icon && <link.icon className="w-4 h-4" />}
+                      {link.label}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${mobileExpanded[link.path] ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                  {mobileExpanded[link.path] && (
+                    <div className="ml-4 pl-3 border-l border-border space-y-0.5 mt-1 mb-2">
+                      {link.items.map((item) => (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          onClick={closeMobile}
+                          className={`block px-4 py-2.5 text-xs font-oswald tracking-wide uppercase rounded-md transition-colors ${
+                            isActive(item.path)
+                              ? 'text-accent bg-secondary'
+                              : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={closeMobile}
+                  className={`block px-4 py-3 text-sm font-oswald tracking-wide uppercase rounded-md transition-colors ${
+                    isActive(link.path)
+                      ? 'text-accent bg-secondary'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {link.icon && <link.icon className="w-4 h-4" />}
+                    {link.label}
+                  </span>
+                </Link>
+              )
+            )}
             <div className="pt-2 border-t border-border space-y-2">
               {authenticated ? (
                 <>
-                  <Link to="/settings" onClick={() => setMobileOpen(false)}>
+                  <Link to="/settings" onClick={closeMobile}>
                     <Button variant="ghost" className="w-full justify-start font-oswald tracking-wide uppercase text-xs">
                       Settings
                     </Button>

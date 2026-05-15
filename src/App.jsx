@@ -27,11 +27,20 @@ import PublicLayout from '@/components/layout/PublicLayout';
 import Landing from '@/pages/Landing';
 import About from '@/pages/About';
 import Team from '@/pages/Team';
+import TeamUPSL from '@/pages/team/TeamUPSL';
+import TeamRoster from '@/pages/team/TeamRoster';
+import TeamSchedule from '@/pages/team/TeamSchedule';
+import TeamTryouts from '@/pages/team/TeamTryouts';
+import TeamCoaches from '@/pages/team/TeamCoaches';
+import TeamGallery from '@/pages/team/TeamGallery';
 import Book from '@/pages/Book';
 import CoachDetail from '@/pages/CoachDetail';
 import Blog from '@/pages/Blog';
 import BlogPostPage from '@/pages/BlogPost';
 import Apply from '@/pages/Apply';
+import ApplyTeamPlayer from '@/pages/apply/ApplyTeamPlayer';
+import ApplyTeamCoach from '@/pages/apply/ApplyTeamCoach';
+import ApplyPrivateTrainingCoach from '@/pages/apply/ApplyPrivateTrainingCoach';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
 import Unsubscribe from '@/pages/Unsubscribe';
@@ -52,6 +61,7 @@ import CoachSchedule from '@/pages/CoachSchedule';
 // Admin pages
 import AdminPanel from '@/pages/admin/AdminPanel';
 import AdminCoaches from '@/pages/admin/AdminCoaches';
+import AdminTeam from '@/pages/admin/AdminTeam';
 import AdminBookings from '@/pages/admin/AdminBookings';
 import AdminContent from '@/pages/admin/AdminContent';
 import AdminPricing from '@/pages/admin/AdminPricing';
@@ -84,11 +94,20 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Landing />} />
         <Route path="/about" element={<About />} />
         <Route path="/team" element={<Team />} />
+        <Route path="/team/upsl" element={<TeamUPSL />} />
+        <Route path="/team/roster" element={<TeamRoster />} />
+        <Route path="/team/schedule" element={<TeamSchedule />} />
+        <Route path="/team/tryouts" element={<TeamTryouts />} />
+        <Route path="/team/coaches" element={<TeamCoaches />} />
+        <Route path="/team/gallery" element={<TeamGallery />} />
         <Route path="/book" element={<Book />} />
         <Route path="/coaches/:coachId" element={<CoachDetail />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path="/apply" element={<Apply />} />
+        <Route path="/apply/team-player" element={<ApplyTeamPlayer />} />
+        <Route path="/apply/team-coach" element={<ApplyTeamCoach />} />
+        <Route path="/apply/private-training-coach" element={<ApplyPrivateTrainingCoach />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/unsubscribe" element={<Unsubscribe />} />
@@ -130,6 +149,7 @@ const AuthenticatedApp = () => {
         <Route element={<RequireAdmin />}>
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/admin/coaches" element={<AdminCoaches />} />
+          <Route path="/admin/team" element={<AdminTeam />} />
           <Route path="/admin/bookings" element={<AdminBookings />} />
           <Route path="/admin/credits" element={<AdminCredits />} />
           <Route path="/admin/content" element={<AdminContent />} />

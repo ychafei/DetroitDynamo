@@ -15,10 +15,33 @@ const statusColor = {
   rejected: 'bg-destructive/10 text-destructive border-destructive/20',
 };
 
+const TYPE_TABS = [
+  { value: 'all', label: 'All' },
+  { value: 'team_player', label: 'Team Player' },
+  { value: 'team_coach', label: 'Team Coach' },
+  { value: 'private_training_coach', label: 'Private Coach' },
+  { value: 'general', label: 'General' },
+];
+
+const typeBadge = {
+  team_player: 'bg-primary/10 text-primary border-primary/20',
+  team_coach: 'bg-accent/10 text-accent border-accent/20',
+  private_training_coach: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  general: 'bg-secondary text-muted-foreground border-border',
+};
+
+const typeLabel = {
+  team_player: 'Player',
+  team_coach: 'Team Coach',
+  private_training_coach: 'Private Coach',
+  general: 'General',
+};
+
 export default function AdminApplications() {
   const { user, isAdmin } = useCurrentUser();
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [typeFilter, setTypeFilter] = useState('all');
 
   useEffect(() => {
     coachApplicationRepo.list('-created_date').then(data => { setApps(data); setLoading(false); });
@@ -43,9 +66,14 @@ export default function AdminApplications() {
     toast.success('Status updated');
   };
 
-  const rows = apps.map(a => ({
+  const visible = typeFilter === 'all'
+    ? apps
+    : apps.filter(a => (a.application_type || 'general') === typeFilter);
+
+  const rows = visible.map(a => ({
     ...a,
     _name: `${a.first_name || ''} ${a.last_name || ''}`.trim(),
+    _type: a.application_type || 'general',
   }));
 
   const columns = [
@@ -60,6 +88,17 @@ export default function AdminApplications() {
           <p className="text-xs text-muted-foreground">{row.email}</p>
           {row.dob && <p className="text-xs text-muted-foreground">DOB: {format(new Date(row.dob), 'MMM d, yyyy')}</p>}
         </div>
+      ),
+    },
+    {
+      key: 'type',
+      header: 'Type',
+      sortable: true,
+      sortAccessor: '_type',
+      cell: (row) => (
+        <Badge className={`${typeBadge[row._type] || typeBadge.general} border text-[10px] font-oswald tracking-widest uppercase`}>
+          {typeLabel[row._type] || row._type}
+        </Badge>
       ),
     },
     {
@@ -124,7 +163,29 @@ export default function AdminApplications() {
   return (
     <div className="py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <h1 className="font-oswald text-3xl font-bold tracking-tight text-foreground mb-8">COACH APPLICATIONS</h1>
+        <h1 className="font-oswald text-3xl font-bold tracking-tight text-foreground mb-6">APPLICATIONS</h1>
+
+        <div className="flex items-center gap-1 mb-6 border-b border-border overflow-x-auto">
+          {TYPE_TABS.map(t => {
+            const count = t.value === 'all'
+              ? apps.length
+              : apps.filter(a => (a.application_type || 'general') === t.value).length;
+            const active = typeFilter === t.value;
+            return (
+              <button
+                key={t.value}
+                onClick={() => setTypeFilter(t.value)}
+                className={`px-4 py-2 text-xs font-oswald tracking-wider uppercase transition-colors border-b-2 -mb-px whitespace-nowrap ${
+                  active
+                    ? 'border-accent text-accent'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {t.label} <span className="ml-1 text-muted-foreground">({count})</span>
+              </button>
+            );
+          })}
+        </div>
 
         {loading ? (
           <div className="text-center py-12"><div className="w-8 h-8 border-4 border-muted border-t-accent rounded-full animate-spin mx-auto" /></div>

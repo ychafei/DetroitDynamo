@@ -5,12 +5,13 @@ import useCurrentUser from '@/hooks/useCurrentUser';
 import {
   Users, Calendar, FileText, DollarSign, Briefcase, PenTool, MessageSquare,
   Shield, MailX, Zap, CalendarClock, CheckCircle2, UserCheck, History,
-  TrendingUp,
+  TrendingUp, Trophy,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 const adminLinks = [
-  { label: 'Coaches', path: '/admin/coaches', icon: Users, desc: 'Manage coach profiles' },
+  { label: 'Coaches', path: '/admin/coaches', icon: Users, desc: 'Manage private + team coaches' },
+  { label: 'Team', path: '/admin/team', icon: Trophy, desc: 'Roster, schedule, gallery' },
   { label: 'Bookings', path: '/admin/bookings', icon: Calendar, desc: 'View all sessions' },
   { label: 'Credits', path: '/admin/credits', icon: Zap, desc: 'Add, refund, or remove credits' },
   { label: 'Content', path: '/admin/content', icon: FileText, desc: 'Edit site content' },

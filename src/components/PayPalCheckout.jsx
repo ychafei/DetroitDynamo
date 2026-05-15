@@ -24,9 +24,15 @@ export default function PayPalCheckout({ amount, packageId, packageName, package
   const onApprove = async (data) => {
     setProcessing(true);
     setError(null);
-    await rpc.invoke('capturePaypalOrder', { orderId: data.orderID });
-    await onSuccess();
-    setProcessing(false);
+    try {
+      await rpc.invoke('capturePaypalOrder', { orderId: data.orderID });
+      await onSuccess();
+    } catch (err) {
+      console.error('PayPal capture failed:', err);
+      setError(err?.data?.error || 'Payment could not be completed. Please try again.');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const onError = (err) => {

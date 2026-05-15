@@ -13,3 +13,6 @@ export { profileRepo } from './profileRepo';
 export { siteContentRepo } from './siteContentRepo';
 export { unsubscribeRepo } from './unsubscribeRepo';
 export { userBanRepo } from './userBanRepo';
+export { playerRepo } from './playerRepo';
+export { teamMatchRepo } from './teamMatchRepo';
+export { galleryItemRepo } from './galleryItemRepo';

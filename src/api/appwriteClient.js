@@ -35,6 +35,9 @@ export const COL = {
   SiteContent:       'site_content',
   UnsubscribeRecord: 'unsubscribe_records',
   UserBan:           'user_bans',
+  Player:            'players',
+  TeamMatch:         'team_matches',
+  GalleryItem:       'gallery_items',
 };
 
 // Field-name aliases between Base44 and Appwrite system fields.

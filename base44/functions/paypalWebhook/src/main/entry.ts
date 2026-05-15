@@ -11,8 +11,9 @@ export default async ({ req, res, log, error }) => {
     const clientId = process.env.PAYPAL_CLIENT_ID;
     const secretKey = process.env.PAYPAL_SECRET_KEY;
     const webhookId = process.env.PAYPAL_WEBHOOK_ID;
+    const apiBase = process.env.PAYPAL_API_BASE || 'https://api-m.paypal.com';
 
-    const tokenRes = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
+    const tokenRes = await fetch(`${apiBase}/v1/oauth2/token`, {
       method: 'POST',
       headers: {
         'Authorization': 'Basic ' + Buffer.from(`${clientId}:${secretKey}`).toString('base64'),
@@ -22,7 +23,7 @@ export default async ({ req, res, log, error }) => {
     });
     const { access_token } = await tokenRes.json();
 
-    const verifyRes = await fetch('https://api-m.paypal.com/v1/notifications/verify-webhook-signature', {
+    const verifyRes = await fetch(`${apiBase}/v1/notifications/verify-webhook-signature`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${access_token}`,

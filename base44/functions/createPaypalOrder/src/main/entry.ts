@@ -26,7 +26,9 @@ export default async ({ req, res, error }) => {
     const secretKey = process.env.PAYPAL_SECRET_KEY;
     if (!clientId || !secretKey) return res.json({ error: 'PayPal env vars missing' }, 500);
 
-    const tokenRes = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
+    const apiBase = process.env.PAYPAL_API_BASE || 'https://api-m.paypal.com';
+
+    const tokenRes = await fetch(`${apiBase}/v1/oauth2/token`, {
       method: 'POST',
       headers: {
         'Authorization': 'Basic ' + Buffer.from(`${clientId}:${secretKey}`).toString('base64'),
@@ -38,7 +40,7 @@ export default async ({ req, res, error }) => {
 
     const customId = `${me.email}|${packageId}|${packageName}|${packageSessions}|${sessionDurationMinutes}`;
 
-    const orderRes = await fetch('https://api-m.paypal.com/v2/checkout/orders', {
+    const orderRes = await fetch(`${apiBase}/v2/checkout/orders`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${access_token}`,
