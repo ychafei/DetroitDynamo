@@ -21,13 +21,6 @@ const LCFC_ITEMS = [
   { label: 'Learn More', path: '/lcfc/learn-more' },
 ];
 
-const APPLY_ITEMS = [
-  { label: 'Apply as Team Player', path: '/apply/team-player' },
-  { label: 'Apply as Team Coach', path: '/apply/team-coach' },
-  { label: 'Apply as Private Training Coach', path: '/apply/private-training-coach' },
-  { label: 'General Application', path: '/apply' },
-];
-
 // LCFC nav item: the label links to /lcfc; the dropdown opens on hover and
 // keyboard focus, and disappears the moment the pointer leaves the item and
 // menu. Pure CSS (group-hover / focus-within) so it can never get stuck open.
@@ -73,38 +66,37 @@ export default function Navbar() {
   const location = useLocation();
 
   const getNavLinks = () => {
+    // Guests: marketing nav. "Teams" is the LCFC section (same dropdown).
     if (!authenticated || !user) {
       return [
         { label: 'Home', path: '/' },
         { label: 'Book', path: '/book' },
-        { label: 'LCFC', path: '/lcfc', items: LCFC_ITEMS, linkTrigger: true },
-        { label: 'Apply', path: '/apply', items: APPLY_ITEMS },
+        { label: 'Teams', path: '/lcfc', items: LCFC_ITEMS, linkTrigger: true },
         { label: 'Blog', path: '/blog' },
         { label: 'About', path: '/about' },
       ];
     }
 
-    const links = [];
-
-    if (!isCoach && !isAdmin) {
-      links.push({ label: 'Book', path: '/book' });
-      links.push({ label: 'Matching', path: '/matching' });
-      links.push({ label: 'Dashboard', path: '/dashboard' });
-      links.push({ label: 'Messages', path: '/messages' });
-    }
-
-    if (isCoach) {
-      links.push({ label: 'Coach Portal', path: '/coach', icon: Briefcase });
-    }
-
-    links.push({ label: 'LCFC', path: '/lcfc', items: LCFC_ITEMS, linkTrigger: true });
-    links.push({ label: 'Blog', path: '/blog' });
-
+    // Admins: coach portal + admin only.
     if (isAdmin) {
-      links.push({ label: 'Admin', path: '/admin', icon: Shield });
+      return [
+        { label: 'Coach Portal', path: '/coach', icon: Briefcase },
+        { label: 'Admin', path: '/admin', icon: Shield },
+      ];
     }
 
-    return links;
+    // Coaches (non-admin): coach portal only.
+    if (isCoach) {
+      return [{ label: 'Coach Portal', path: '/coach', icon: Briefcase }];
+    }
+
+    // Clients: account nav.
+    return [
+      { label: 'Dashboard', path: '/dashboard' },
+      { label: 'Book', path: '/book' },
+      { label: 'Matching', path: '/matching' },
+      { label: 'Messages', path: '/messages' },
+    ];
   };
 
   const navLinks = getNavLinks();

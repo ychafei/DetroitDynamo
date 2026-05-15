@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { useAuth } from '@/lib/AuthContext';
+import { homePathForRole } from '@/lib/roleHome';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,7 +18,7 @@ const PROVIDERS = [
 export default function Login() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const { refetchUser, isAuthenticated, isLoadingAuth } = useAuth();
+  const { refetchUser, isAuthenticated, isLoadingAuth, user } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,16 +26,18 @@ export default function Login() {
   const [error, setError] = useState(null);
   const [info, setInfo] = useState(null);
 
-  const next = params.get('next') || '/dashboard';
+  // An explicit ?next= (e.g. from a protected route) wins; otherwise send the
+  // user to their role's home (admin → /admin, coach → /coach, else dashboard).
+  const explicitNext = params.get('next');
 
-  // Already signed in → bounce them to wherever they were headed. Prevents
-  // Appwrite's "Creation of a session is prohibited when a session is active"
-  // error if the user lands here after already authenticating.
+  // Already signed in → bounce them to their role home (or explicit next).
+  // Prevents Appwrite's "Creation of a session is prohibited when a session
+  // is active" error if the user lands here after already authenticating.
   useEffect(() => {
     if (!isLoadingAuth && isAuthenticated) {
-      navigate(next, { replace: true });
+      navigate(explicitNext || homePathForRole(user), { replace: true });
     }
-  }, [isLoadingAuth, isAuthenticated, navigate, next]);
+  }, [isLoadingAuth, isAuthenticated, navigate, explicitNext, user]);
 
   useEffect(() => {
     if (params.get('reset') === '1') {
@@ -52,8 +55,8 @@ export default function Login() {
         try {
           setSubmitting(true);
           await auth.completeMagicLink(userId, secret);
-          await refetchUser();
-          navigate(next, { replace: true });
+          const fresh = await refetchUser();
+          navigate(explicitNext || homePathForRole(fresh), { replace: true });
         } catch (err) {
           setError(err?.message || 'Sign-in link is invalid or expired.');
           setSubmitting(false);
@@ -69,7 +72,9 @@ export default function Login() {
       // Drop any lingering session before the OAuth round-trip — otherwise
       // Appwrite refuses to create a new one.
       await auth.signOut();
-      auth.createOAuthSession(provider, next);
+      // Return to /login after the OAuth round-trip; the already-signed-in
+      // effect then routes by role (or to an explicit next).
+      auth.createOAuthSession(provider, explicitNext || '/login');
     } catch (err) {
       setError(
         err?.code === 'general_provider_disabled' || /disabled/i.test(err?.message || '')
@@ -88,8 +93,8 @@ export default function Login() {
       // Drop any stale session so signInWithPassword can replace it cleanly.
       await auth.signOut();
       await auth.signInWithPassword(email, password);
-      await refetchUser();
-      navigate(next, { replace: true });
+      const fresh = await refetchUser();
+      navigate(explicitNext || homePathForRole(fresh), { replace: true });
     } catch (err) {
       setError(err?.message || 'Invalid email or password.');
     } finally {
