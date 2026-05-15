@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { homePathForRole } from '@/lib/roleHome';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import {
   RequireAuth,
@@ -81,6 +82,17 @@ import AdminMessages from '@/pages/admin/AdminMessages';
 import AdminUnsubscribes from '@/pages/admin/AdminUnsubscribes';
 import AdminCredits from '@/pages/admin/AdminCredits';
 
+// Public root: guests see the marketing landing page; signed-in users are
+// sent to their role home (admin → /admin, coach → /coach, client →
+// /dashboard) so they don't get stranded on the public site after login.
+const RootRoute = () => {
+  const { isAuthenticated, user } = useAuth();
+  if (isAuthenticated && user) {
+    return <Navigate to={homePathForRole(user)} replace />;
+  }
+  return <Landing />;
+};
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
 
@@ -100,7 +112,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route element={<PublicLayout />}>
         {/* Public routes */}
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<RootRoute />} />
         <Route path="/about" element={<About />} />
         <Route path="/team" element={<Team />} />
         <Route path="/lcfc" element={<Lcfc />} />
