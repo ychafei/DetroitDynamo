@@ -61,28 +61,58 @@ export default function AdminCoaches() {
   }, []);
   const loadCoaches = () => coachRepo.list('display_order').then(setCoaches);
 
+  // Same email can map to multiple accounts/profiles (e.g. Google + password
+  // sign-in). Gather every profile row sharing an email so link/unlink stamps
+  // all of them — otherwise the coach portal breaks on the "other" account.
+  const profilesForEmail = async (email, seed) => {
+    const map = new Map();
+    if (seed) map.set(seed.id, seed);
+    const e = (email || '').trim();
+    if (e) {
+      const lower = e.toLowerCase();
+      const a = await profileRepo.filter({ email: e }).catch(() => []);
+      const b = lower !== e ? await profileRepo.filter({ email: lower }).catch(() => []) : [];
+      [...a, ...b].forEach(p => map.set(p.id, p));
+    }
+    return [...map.values()];
+  };
+
   const linkUser = async (userId) => {
-    const targetUser = users.find(u => u.id === userId);
-    const updateData = { coach_id: linkDialog.id };
-    // Don't downgrade admins — only set role to 'coach' if not already admin
-    if (targetUser?.role !== 'admin') updateData.role = 'coach';
-    const before = { coach_id: targetUser?.coach_id || null, role: targetUser?.role || 'user' };
-    await profileRepo.updateById(userId, updateData);
-    setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updateData } : u));
+    let seed = users.find(u => u.id === userId);
+    if (!seed) seed = await profileRepo.get(userId).catch(() => null);
+    if (!seed) { toast.error('Could not load that account.'); return; }
+
+    const email = (seed.email || '').trim();
+    const matches = await profilesForEmail(email, seed);
+    const coach_id = linkDialog.id;
+
+    for (const p of matches) {
+      const upd = { coach_id };
+      if (p.role !== 'admin' && p.role !== 'super_admin') upd.role = 'coach';
+      await profileRepo.updateById(p.id, upd);
+    }
+    const ids = new Set(matches.map(p => p.id));
+    setUsers(prev => prev.map(u => ids.has(u.id)
+      ? { ...u, coach_id, ...(u.role !== 'admin' && u.role !== 'super_admin' ? { role: 'coach' } : {}) }
+      : u));
+
     await logAdminAction({
       actor: user,
       action: 'coach.link_user',
       entityType: 'User',
       entityId: userId,
-      before,
-      after: updateData,
+      before: { coach_id: seed.coach_id || null, role: seed.role || 'user' },
+      after: { coach_id },
       metadata: {
-        coach_id: linkDialog.id,
+        coach_id,
         coach_name: `${linkDialog.first_name || ''} ${linkDialog.last_name || ''}`.trim(),
-        target_email: targetUser?.email,
+        target_email: email,
+        profiles_updated: matches.length,
       },
     });
-    toast.success('User linked as coach');
+    toast.success(matches.length > 1
+      ? `Linked as coach (${matches.length} profiles for this email)`
+      : 'User linked as coach');
     setLinkDialog(null);
   };
 
@@ -158,25 +188,35 @@ export default function AdminCoaches() {
       variant: 'destructive',
     });
     if (!ok) return;
-    const keepAdmin = linked.role === 'admin' || linked.role === 'super_admin';
-    const updateData = { coach_id: null, ...(keepAdmin ? {} : { role: 'user' }) };
-    const before = { coach_id: linked.coach_id || null, role: linked.role || 'user' };
-    await profileRepo.updateById(linked.id, updateData);
-    setUsers(prev => prev.map(u => u.id === linked.id ? { ...u, ...updateData } : u));
+
+    // Clear the link on every profile sharing this email (duplicate accounts).
+    const matches = await profilesForEmail(linked.email, linked);
+    for (const p of matches) {
+      const keepAdmin = p.role === 'admin' || p.role === 'super_admin';
+      await profileRepo.updateById(p.id, { coach_id: null, ...(keepAdmin ? {} : { role: 'user' }) });
+    }
+    const ids = new Set(matches.map(p => p.id));
+    setUsers(prev => prev.map(u => ids.has(u.id)
+      ? { ...u, coach_id: null, ...(u.role === 'admin' || u.role === 'super_admin' ? {} : { role: 'user' }) }
+      : u));
+
     await logAdminAction({
       actor: user,
       action: 'coach.unlink_user',
       entityType: 'User',
       entityId: linked.id,
-      before,
-      after: updateData,
+      before: { coach_id: linked.coach_id || null, role: linked.role || 'user' },
+      after: { coach_id: null },
       metadata: {
         coach_id: coach.id,
         coach_name: `${coach.first_name || ''} ${coach.last_name || ''}`.trim(),
         target_email: linked.email,
+        profiles_updated: matches.length,
       },
     });
-    toast.success('Account unlinked');
+    toast.success(matches.length > 1
+      ? `Account unlinked (${matches.length} profiles for this email)`
+      : 'Account unlinked');
   };
 
   const save = async () => {

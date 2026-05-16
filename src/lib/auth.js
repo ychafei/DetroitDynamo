@@ -35,6 +35,28 @@ async function hydrateProfile(acc) {
     }
   }
 
+  // Self-heal duplicate-account profiles: if this account's profile has no
+  // coach_id but a sibling profile with the same email does (an admin linked
+  // the other account), copy the link onto this profile so the coach portal
+  // works regardless of which sign-in method was used.
+  if (profile && !profile.coach_id && acc.email) {
+    try {
+      const sibs = await databases.listDocuments(DB_ID, COL.Profile, [
+        Query.equal('email', acc.email),
+        Query.limit(25),
+      ]);
+      const linked = sibs.documents.find((d) => d.$id !== profile.$id && d.coach_id);
+      if (linked) {
+        const patch = { coach_id: linked.coach_id };
+        // A sibling having coach access proves intent; never auto-grant admin.
+        if (!profile.role || profile.role === 'user') patch.role = 'coach';
+        profile = await databases.updateDocument(DB_ID, COL.Profile, profile.$id, patch);
+      }
+    } catch (err) {
+      console.error('[auth] coach-link self-heal failed for', acc.$id, err);
+    }
+  }
+
   // Profile fields take precedence; account email is authoritative. Typed as
   // `any` because the profile schema is dynamic — TS can't see the columns
   // that come back from Appwrite.
