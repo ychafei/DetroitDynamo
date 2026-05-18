@@ -41,11 +41,18 @@ async function hydrateProfile(acc) {
   // works regardless of which sign-in method was used.
   if (profile && !profile.coach_id && acc.email) {
     try {
+      // Index-free: list profiles and match email client-side. Appwrite
+      // rejects Query.equal on an unindexed attribute, and profiles.email
+      // is not indexed. Fine for a small profiles collection.
+      const want = acc.email.trim().toLowerCase();
       const sibs = await databases.listDocuments(DB_ID, COL.Profile, [
-        Query.equal('email', acc.email),
-        Query.limit(25),
+        Query.limit(200),
       ]);
-      const linked = sibs.documents.find((d) => d.$id !== profile.$id && d.coach_id);
+      const linked = sibs.documents.find(
+        (d) => d.$id !== profile.$id
+          && (d.email || '').trim().toLowerCase() === want
+          && d.coach_id,
+      );
       if (linked) {
         const patch = { coach_id: linked.coach_id };
         // A sibling having coach access proves intent; never auto-grant admin.

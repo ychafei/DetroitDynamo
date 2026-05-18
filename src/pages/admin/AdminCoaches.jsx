@@ -65,14 +65,20 @@ export default function AdminCoaches() {
   // sign-in). Gather every profile row sharing an email so link/unlink stamps
   // all of them — otherwise the coach portal breaks on the "other" account.
   const profilesForEmail = async (email, seed) => {
+    const norm = (s) => (s || '').trim().toLowerCase();
+    const target = norm(email);
     const map = new Map();
     if (seed) map.set(seed.id, seed);
-    const e = (email || '').trim();
-    if (e) {
-      const lower = e.toLowerCase();
-      const a = await profileRepo.filter({ email: e }).catch(() => []);
-      const b = lower !== e ? await profileRepo.filter({ email: lower }).catch(() => []) : [];
-      [...a, ...b].forEach(p => map.set(p.id, p));
+    if (!target) return [...map.values()];
+    // Index-free: match against the already-loaded profile list (no Appwrite
+    // equality query, which would need an index on profiles.email).
+    for (const u of users) if (norm(u.email) === target) map.set(u.id, u);
+    // Re-pull the full list in case local state is stale.
+    try {
+      const all = await profileRepo.list();
+      for (const p of all) if (norm(p.email) === target) map.set(p.id, p);
+    } catch (err) {
+      console.warn('profilesForEmail: list failed', err);
     }
     return [...map.values()];
   };
