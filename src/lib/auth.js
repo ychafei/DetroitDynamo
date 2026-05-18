@@ -35,6 +35,24 @@ async function hydrateProfile(acc) {
     }
   }
 
+  // Repair a blank/stale profile email. Some accounts (often OAuth) were
+  // created when acc.email was empty, leaving profile.email = "" forever —
+  // which silently breaks all email-based matching (admin link + self-heal).
+  // Backfill it on every login so both duplicate rows become matchable.
+  if (
+    profile &&
+    acc.email &&
+    (profile.email || '').trim().toLowerCase() !== acc.email.trim().toLowerCase()
+  ) {
+    try {
+      profile = await databases.updateDocument(DB_ID, COL.Profile, profile.$id, {
+        email: acc.email,
+      });
+    } catch (err) {
+      console.error('[auth] failed to repair profile email for', acc.$id, err);
+    }
+  }
+
   // Self-heal duplicate-account profiles: if this account's profile has no
   // coach_id but a sibling profile with the same email does (an admin linked
   // the other account), copy the link onto this profile so the coach portal
