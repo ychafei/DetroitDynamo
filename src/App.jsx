@@ -30,6 +30,7 @@ import About from '@/pages/About';
 import Team from '@/pages/Team';
 import Lcfc from '@/pages/Lcfc';
 import VerifyCoachLink from '@/pages/VerifyCoachLink';
+import VerifyEmail from '@/pages/VerifyEmail';
 import LcfcRoster from '@/pages/lcfc/LcfcRoster';
 import LcfcSchedule from '@/pages/lcfc/LcfcSchedule';
 import LcfcTryouts from '@/pages/lcfc/LcfcTryouts';
@@ -118,6 +119,7 @@ const AuthenticatedApp = () => {
         <Route path="/team" element={<Team />} />
         <Route path="/lcfc" element={<Lcfc />} />
         <Route path="/verify-coach-link" element={<VerifyCoachLink />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/lcfc/roster" element={<LcfcRoster />} />
         <Route path="/lcfc/schedule" element={<LcfcSchedule />} />
         <Route path="/lcfc/tryouts" element={<LcfcTryouts />} />

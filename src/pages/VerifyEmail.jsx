@@ -1,0 +1,69 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { auth } from '@/lib/auth';
+import { homePathForRole } from '@/lib/roleHome';
+
+export default function VerifyEmail() {
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const userId = params.get('userId');
+  const secret = params.get('secret');
+  const ran = useRef(false);
+
+  const [state, setState] = useState(params.get('userId') ? 'verifying' : 'invalid'); // verifying|success|invalid|error
+  const [errMsg, setErrMsg] = useState('');
+
+  useEffect(() => {
+    if (ran.current) return;
+    ran.current = true;
+    if (!userId || !secret) { setState('invalid'); return; }
+    (async () => {
+      try {
+        const user = await auth.completeEmailVerification(userId, secret);
+        setState('success');
+        setTimeout(() => navigate(homePathForRole(user), { replace: true }), 1500);
+      } catch (err) {
+        setErrMsg(err?.message || 'This verification link is invalid or expired.');
+        setState('error');
+      }
+    })();
+  }, [userId, secret, navigate]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
+      <div className="w-full max-w-md bg-[#F7F5EF] text-[#0B0B0B] rounded-2xl shadow-2xl p-8 sm:p-10 space-y-5 text-center">
+        <h1 className="font-oswald text-2xl sm:text-3xl font-bold tracking-wide">
+          Email verification
+        </h1>
+
+        {state === 'verifying' && (
+          <p className="text-sm text-neutral-600">Verifying your email…</p>
+        )}
+
+        {state === 'success' && (
+          <>
+            <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md py-3 px-4">
+              Email verified. Redirecting…
+            </p>
+          </>
+        )}
+
+        {(state === 'invalid' || state === 'error') && (
+          <>
+            <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md py-3 px-4">
+              {state === 'invalid'
+                ? 'This verification link is invalid.'
+                : errMsg}
+            </p>
+            <Link
+              to="/login"
+              className="inline-block text-sm text-[#0B0B0B] underline underline-offset-4 hover:opacity-80"
+            >
+              Go to sign in
+            </Link>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

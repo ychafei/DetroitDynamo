@@ -39,7 +39,10 @@ async function hydrateProfile(acc) {
   // coach_id but a sibling profile with the same email does (an admin linked
   // the other account), copy the link onto this profile so the coach portal
   // works regardless of which sign-in method was used.
-  if (profile && !profile.coach_id && acc.email) {
+  // Gate auto-reconciliation on a verified email: an unverified account must
+  // not inherit coach access just by using someone else's email. OAuth
+  // accounts are provider-verified; password accounts verify via /verify-email.
+  if (profile && !profile.coach_id && acc.email && acc.emailVerification === true) {
     try {
       // Index-free: list profiles and match email client-side. Appwrite
       // rejects Query.equal on an unindexed attribute, and profiles.email
@@ -110,6 +113,23 @@ export const auth = {
   signUp: async (email, password) => {
     await account.create(ID.unique(), email, password);
     await account.createEmailPasswordSession(email, password);
+    // Send a verification email (best-effort — never block signup on it).
+    try {
+      await account.createVerification(`${window.location.origin}/verify-email`);
+    } catch (err) {
+      console.error('[auth] createVerification failed', err);
+    }
+    return auth.getCurrentUser();
+  },
+
+  // (Re)send the email-verification link for the current account.
+  resendVerification: async () => {
+    return account.createVerification(`${window.location.origin}/verify-email`);
+  },
+
+  // Finish email verification with the userId+secret captured from the URL.
+  completeEmailVerification: async (userId, secret) => {
+    await account.updateVerification(userId, secret);
     return auth.getCurrentUser();
   },
 

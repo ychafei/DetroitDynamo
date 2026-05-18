@@ -684,6 +684,10 @@ export default function AdminCoaches() {
               <strong>Send verify email</strong>: emails the person a link they must
               click while signed in as that email to activate the coach access.
             </p>
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Tip: the coach should verify their email (a verification link is
+              sent at sign-up) — coach access only auto-applies on a verified account.
+            </p>
           </div>
         </DialogContent>
       </Dialog>
