@@ -18,7 +18,16 @@ export default async ({ req, res, error }) => {
       Query.limit(100),
     ]);
 
-    return res.json({ coaches: result.documents });
+    // Expose `id` (clients use it, not $id) and availability as an object
+    // (it's stored as a JSON string).
+    const coaches = result.documents.map((d) => {
+      let availability = d.availability;
+      if (typeof availability === 'string' && availability.trim()) {
+        try { availability = JSON.parse(availability); } catch { availability = {}; }
+      }
+      return { ...d, id: d.$id, availability: availability || {} };
+    });
+    return res.json({ coaches });
   } catch (err) {
     error(`getPublicCoaches: ${err?.message || err}`);
     return res.json({ coaches: [] });

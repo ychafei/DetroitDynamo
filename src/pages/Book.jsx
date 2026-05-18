@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { sessionRepo, sessionCreditRepo, pricingPackageRepo } from '@/api/repo';
 import { auth } from '@/lib/auth';
 import { rpc } from '@/lib/rpc';
+import { normalizePublicCoach } from '@/lib/publicCoach';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
@@ -51,7 +52,7 @@ export default function Book() {
 
   const [step, setStep]                       = useState(saved?.step ?? (preCounty ? 1 : 0));
   const [county, setCounty]                   = useState(saved?.county || preCounty || '');
-  const [coach, setCoach]                     = useState(saved?.coach || null);
+  const [coach, setCoach]                     = useState(saved?.coach ? normalizePublicCoach(saved.coach) : null);
   const [coaches, setCoaches]                 = useState([]);
   const [packages, setPackages]               = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(saved?.selectedPackage || null);
@@ -75,7 +76,7 @@ export default function Book() {
   const [sessionBooked, setSessionBooked]     = useState(false);
 
   useEffect(() => {
-    rpc.invoke('getPublicCoaches', {}).then(res => setCoaches(res.data.coaches || []));
+    rpc.invoke('getPublicCoaches', {}).then(res => setCoaches((res.data.coaches || []).map(normalizePublicCoach)));
     pricingPackageRepo.filter({ is_visible: true }, 'display_order').then(setPackages);
   }, []);
 

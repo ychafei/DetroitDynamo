@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { rpc } from '@/lib/rpc';
+import { normalizePublicCoach } from '@/lib/publicCoach';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ArrowRight, MapPin, Star, BadgeCheck, ShieldCheck, Calendar } from 'lucide-react';
@@ -21,7 +22,7 @@ export default function CoachDetail() {
       try {
         const res = await rpc.invoke('getPublicCoaches', {});
         if (cancelled) return;
-        const list = res?.data?.coaches || res?.coaches || [];
+        const list = (res?.data?.coaches || res?.coaches || []).map(normalizePublicCoach);
         const match = list.find(c => c.id === coachId);
         if (!match) {
           setError(true);
