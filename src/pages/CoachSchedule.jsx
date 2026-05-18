@@ -85,12 +85,17 @@ export default function CoachSchedule() {
       toast.error('Fix the highlighted availability rows before saving.');
       return;
     }
+    if (!coach?.id) {
+      toast.error('Coach profile not loaded yet — refresh and try again.');
+      return;
+    }
     setSavingAvail(true);
     try {
       await coachRepo.update(coach.id, { availability });
       toast.success('Availability saved');
     } catch (err) {
-      toast.error('Could not save availability. Please try again.');
+      console.error('saveAvailability failed', err);
+      toast.error(err?.message || 'Could not save availability. Please try again.');
     } finally {
       setSavingAvail(false);
     }
@@ -130,7 +135,7 @@ export default function CoachSchedule() {
           </h2>
           <p className="text-xs text-muted-foreground mb-4">Set which days and hours you're available for bookings.</p>
           <WeeklyAvailabilityEditor availability={availability} onChange={setAvailability} />
-          <Button onClick={saveAvailability} disabled={savingAvail || hasAvailabilityErrors(availability)} className="mt-4 bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
+          <Button onClick={saveAvailability} disabled={savingAvail} className="mt-4 bg-accent text-accent-foreground font-oswald tracking-wider uppercase hover:bg-accent/90">
             {savingAvail ? 'Saving...' : 'Save Availability'}
           </Button>
         </div>
