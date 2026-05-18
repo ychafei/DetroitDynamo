@@ -31,11 +31,16 @@ export default function AdminPricing() {
     const isUpdate = !!editing.id;
     const previous = isUpdate ? packages.find(p => p.id === editing.id) : null;
     let savedId = editing.id;
-    if (isUpdate) {
-      await pricingPackageRepo.update(editing.id, data);
-    } else {
-      const created = await pricingPackageRepo.create(data);
-      savedId = created?.id;
+    try {
+      if (isUpdate) {
+        await pricingPackageRepo.update(editing.id, data);
+      } else {
+        const created = await pricingPackageRepo.create(data);
+        savedId = created?.id;
+      }
+    } catch (err) {
+      toast.error('Could not save package: ' + (err?.message || String(err)));
+      return;
     }
     await logAdminAction({
       actor: user,
