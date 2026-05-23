@@ -74,6 +74,7 @@ export default function Navbar() {
         { label: 'Teams', path: '/lcfc', items: LCFC_ITEMS, linkTrigger: true },
         { label: 'Blog', path: '/blog' },
         { label: 'About', path: '/about' },
+        { label: 'Preview', path: '/detroit-dynamo-preview', subtle: true },
       ];
     }
 
@@ -174,9 +175,13 @@ export default function Navbar() {
                   key={link.path}
                   to={link.path}
                   className={`px-4 py-2 text-sm font-oswald tracking-wide uppercase transition-colors border-b-2 ${
-                    isActive(link.path)
-                      ? 'text-accent border-accent'
-                      : 'text-muted-foreground border-transparent hover:text-foreground'
+                    link.subtle
+                      ? isActive(link.path)
+                        ? 'text-[#6FE7FF] border-[#6FE7FF]/70'
+                        : 'text-muted-foreground/70 border-transparent hover:text-[#6FE7FF]'
+                      : isActive(link.path)
+                        ? 'text-accent border-accent'
+                        : 'text-muted-foreground border-transparent hover:text-foreground'
                   }`}
                 >
                   <span className="flex items-center gap-1.5">
@@ -289,9 +294,13 @@ export default function Navbar() {
                   to={link.path}
                   onClick={closeMobile}
                   className={`block px-4 py-3 text-sm font-oswald tracking-wide uppercase rounded-md transition-colors ${
-                    isActive(link.path)
-                      ? 'text-accent bg-secondary'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                    link.subtle
+                      ? isActive(link.path)
+                        ? 'text-[#6FE7FF] bg-secondary'
+                        : 'text-muted-foreground/70 hover:text-[#6FE7FF] hover:bg-secondary'
+                      : isActive(link.path)
+                        ? 'text-accent bg-secondary'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                   }`}
                 >
                   <span className="flex items-center gap-2">

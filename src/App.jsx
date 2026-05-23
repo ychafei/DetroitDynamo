@@ -52,6 +52,7 @@ import Apply from '@/pages/Apply';
 import ApplyTeamPlayer from '@/pages/apply/ApplyTeamPlayer';
 import ApplyTeamCoach from '@/pages/apply/ApplyTeamCoach';
 import ApplyPrivateTrainingCoach from '@/pages/apply/ApplyPrivateTrainingCoach';
+import DetroitDynamoPreview from '@/pages/DetroitDynamoPreview';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
 import Unsubscribe from '@/pages/Unsubscribe';
@@ -141,6 +142,7 @@ const AuthenticatedApp = () => {
         <Route path="/apply/team-player" element={<ApplyTeamPlayer />} />
         <Route path="/apply/team-coach" element={<ApplyTeamCoach />} />
         <Route path="/apply/private-training-coach" element={<ApplyPrivateTrainingCoach />} />
+        <Route path="/detroit-dynamo-preview" element={<DetroitDynamoPreview />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/unsubscribe" element={<Unsubscribe />} />

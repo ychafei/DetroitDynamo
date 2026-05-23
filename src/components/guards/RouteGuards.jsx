@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
-import { LogIn, ShieldAlert, LockKeyhole } from 'lucide-react';
+import { LogIn, ShieldAlert } from 'lucide-react';
 
 // Shared spinner — short-lived; never sits forever because guards resolve
 // after isLoadingAuth/isLoadingPublicSettings flip.
