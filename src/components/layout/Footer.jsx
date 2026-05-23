@@ -19,6 +19,7 @@ export default function Footer() {
               <Link to="/blog" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Blog</Link>
               <Link to="/apply" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Become a Coach</Link>
               <Link to="/book" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Book a Session</Link>
+              <Link to="/detroit-dynamo-preview" className="block text-sm text-muted-foreground/75 hover:text-[#6FE7FF] transition-colors">Rebrand Preview</Link>
             </div>
           </div>
           <div>

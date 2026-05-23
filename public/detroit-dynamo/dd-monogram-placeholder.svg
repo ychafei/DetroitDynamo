@@ -1,0 +1,23 @@
+<!-- Temporary Detroit Dynamo monogram placeholder. Swap this file for the final approved logo asset when brand artwork is ready. -->
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Detroit Dynamo DD monogram placeholder</title>
+  <desc id="desc">Interlocking DD monogram with an electric blue slash.</desc>
+  <rect width="512" height="512" rx="40" fill="#020714"/>
+  <path d="M96 76H236C314 76 374 136 374 256C374 376 314 436 236 436H96V76Z" stroke="#F8FAFC" stroke-width="34" stroke-linejoin="round"/>
+  <path d="M178 136H270C334 136 388 182 388 256C388 330 334 376 270 376H178V136Z" stroke="#A8B3C7" stroke-width="34" stroke-linejoin="round"/>
+  <path d="M313 48L218 240H296L196 464L421 204H332L404 48H313Z" fill="#00A3FF"/>
+  <path d="M313 48L218 240H296L196 464L421 204H332L404 48H313Z" fill="url(#slashGlow)" fill-opacity="0.7"/>
+  <path d="M96 76H236C314 76 374 136 374 256C374 376 314 436 236 436H96V76Z" stroke="url(#outerEdge)" stroke-width="8" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="slashGlow" x1="213" y1="454" x2="403" y2="54" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6FE7FF"/>
+      <stop offset="0.45" stop-color="#00A3FF"/>
+      <stop offset="1" stop-color="#F8FAFC" stop-opacity="0.72"/>
+    </linearGradient>
+    <linearGradient id="outerEdge" x1="96" y1="76" x2="393" y2="417" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="0.5" stop-color="#00A3FF"/>
+      <stop offset="1" stop-color="#6B7280"/>
+    </linearGradient>
+  </defs>
+</svg>
