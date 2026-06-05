@@ -26,9 +26,9 @@ export default function HeroSection() {
       <div className="absolute top-20 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
       
-      {/* Shield watermark — right side */}
+      {/* Shield watermark - right side */}
       <img
-        src="/logo-shield.png"
+        src="/detroit-dynamo/logo-primary.png"
         alt=""
         aria-hidden="true"
         className="pointer-events-none select-none absolute right-[-140px] top-1/2 -translate-y-1/2 w-[720px] opacity-[0.10] mix-blend-screen hidden lg:block"

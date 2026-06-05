@@ -1,0 +1,67 @@
+{
+  "checkedAt": "2026-06-05T16:14:19.035Z",
+  "summary": {
+    "passed": 7,
+    "pendingExternal": 1,
+    "failed": 0,
+    "total": 8
+  },
+  "requirements": [
+    {
+      "id": "promoted-brand-shell",
+      "requirement": "Detroit Dynamo is the global public brand while existing functional route registrations remain available.",
+      "status": "pass",
+      "evidence": "Checked src/App.jsx, index.html, public/manifest.json, shared navbar/footer, and src/lib/brand.js.",
+      "details": ""
+    },
+    {
+      "id": "parallel-dynamo-site",
+      "requirement": "Detroit Dynamo is a full parallel site under /detroit-dynamo with its own layout, header, footer, and scoped styles.",
+      "status": "pass",
+      "evidence": "Checked 17 required paths, DetroitDynamoLayout, header/footer, and scoped .dynamo-site styles.",
+      "details": ""
+    },
+    {
+      "id": "public-website-structure",
+      "requirement": "Public Detroit Dynamo pages cover the requested home, training, youth, senior, tryout, team, schedule, camp, sponsor, about, and contact experiences.",
+      "status": "pass",
+      "evidence": "Checked route manifest labels and Detroit Dynamo page source for the requested sections, CTAs, pathway language, live booking handoff, portal access, coach section, secondary training inquiry, tryout team-interest handoff, sponsor package handoff, camp/clinic interest handoff, contact topic handoff, and youth age-group handoff.",
+      "details": ""
+    },
+    {
+      "id": "forms-lead-system",
+      "requirement": "Detroit Dynamo forms include validation, loading, success, error states, all requested fields, and clean placeholder/Appwrite-ready lead persistence.",
+      "status": "pass",
+      "evidence": "Checked DetroitDynamoLeadForm, detroitDynamoLeads helper, and page-level form usage for all variants.",
+      "details": ""
+    },
+    {
+      "id": "admin-data-foundation",
+      "requirement": "Admin roles, modules, lead routing, Appwrite-ready schemas, and the lead intake function scaffold cover the requested club operating model.",
+      "status": "pass",
+      "evidence": "Checked 18 models, 20 Appwrite collections, 7 roles, 16 modules, 16 module registry entries, 7 role permission rows, 7 access summaries, 16 action guard groups, 7 record draft maps, 3 admin record workspace fixtures, 12 lead pipeline stages, 4 pipeline-backed schemas, 7 lead intake success fixtures, 4 lead intake rejection fixtures, 6 pipeline action success fixtures, 3 pipeline action rejection fixtures, 6 admin module read success fixtures, 5 admin module read rejection fixtures, 6 admin role grant success fixtures, 6 admin role grant rejection fixtures, 6 admin module write success fixtures, 7 admin module write rejection fixtures, 7 claim-safety tracks, 9 promotion cutover tracks, 8 safeguarding tracks, 5 function scaffolds, and 8 backend activation steps.",
+      "details": ""
+    },
+    {
+      "id": "brand-seo-launch-plan",
+      "requirement": "Detroit Dynamo assets, preview metadata, sitemap-ready route metadata, aliases, redirect plan, and launch gates are in place without replacing LC root SEO.",
+      "status": "pass",
+      "evidence": "Checked 7 assets, 16 sitemap routes, 4 aliases, 7 redirects, launch gates, 6 external confirmation registers, 6 payment/package gate tracks, 6 waiver gate tracks, 7 claim-safety tracks, 9 promotion cutover tracks, 13 launch evidence checklist items, 4 launch evidence action fixtures, 6 external confirmation action fixtures, 9 owner launch review sections, 13 owner evidence intake rows, 30 production-preview evidence tracks, 11 live readiness board rows, 31 launch artifact index items, 10 deployment readiness tracks, 10 Vercel preview runbook steps, 8 secret redaction rules, 9 external gate closure rows, 10 owner handoff packet sections, 11 owner signoff rows, 15 final acceptance rows, and 8 safeguarding tracks.",
+      "details": ""
+    },
+    {
+      "id": "verification-documentation",
+      "requirement": "Repo has repeatable verification commands and the requested audit, issues, implementation, changes, features, remaining needs, testing, and next-step documentation.",
+      "status": "pass",
+      "evidence": "Checked package scripts and DETROIT_DYNAMO_REBRAND_AUDIT_AND_ROADMAP.md sections.",
+      "details": ""
+    },
+    {
+      "id": "external-promotion-gates",
+      "requirement": "Backend provisioning, payments, waivers/legal, league/facility confirmations, and launch approvals remain explicit external gates before full promotion.",
+      "status": "pending_external",
+      "evidence": "Pending promotion gates: Data backend live, Payments approved, Waivers approved, League and facility facts confirmed, SEO and redirect launch approved.",
+      "details": ""
+    }
+  ]
+}

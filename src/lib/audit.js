@@ -1,15 +1,27 @@
 import { auditLogRepo } from '@/api/repo';
 
+/**
+ * @param {{
+ *   actor?: any,
+ *   action?: string,
+ *   entityType?: string,
+ *   entityId?: string,
+ *   before?: any,
+ *   after?: any,
+ *   reason?: string,
+ *   metadata?: any,
+ * }} [entry]
+ */
 export async function logAdminAction({
   actor,
   action,
-  entityType,
-  entityId,
+  entityType = '',
+  entityId = '',
   before,
   after,
-  reason,
+  reason = '',
   metadata,
-}) {
+} = {}) {
   if (!actor?.email || !action) return;
 
   const payload = {

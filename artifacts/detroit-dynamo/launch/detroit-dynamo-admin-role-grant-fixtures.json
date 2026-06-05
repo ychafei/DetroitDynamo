@@ -1,0 +1,456 @@
+{
+  "generatedAt": "2026-05-29T14:14:32.030Z",
+  "functionId": "detroitDynamoAdminRoleGrantAction",
+  "functionExecutePermission": "users",
+  "assignmentCollectionId": "dd_admin_role_assignments",
+  "auditEventCollectionId": "dd_admin_audit_events",
+  "bootstrapEnv": "DETROIT_DYNAMO_BOOTSTRAP_ADMIN_USER_ID",
+  "actions": [
+    "grant_role",
+    "suspend_role",
+    "revoke_role",
+    "expire_role",
+    "reactivate_role"
+  ],
+  "roles": [
+    "Master Admin",
+    "Club Director",
+    "Training Director",
+    "Coach",
+    "Team Manager",
+    "Registrar",
+    "Media/Admin Staff"
+  ],
+  "successFixtures": [
+    {
+      "id": "bootstrap-master-admin-grant",
+      "label": "Bootstrap first Master Admin",
+      "action": "grant_role",
+      "role": "Master Admin",
+      "actorRole": "Bootstrap Master Admin",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "bootstrap": true,
+      "requestBody": {
+        "action": "grant_role",
+        "role": "Master Admin",
+        "scope_note": "Initial owner-controlled Master Admin grant before any active Master Admin exists.",
+        "target_user_id": "user_bootstrap_master",
+        "email": "director@detroitdynamo.example",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminRoleGrantAction",
+        "function_execute_permission": "users",
+        "action": "grant_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Bootstrap Master Admin",
+        "assignment_id": "assignment_user_bootstrap_master_master_admin",
+        "role": "Master Admin",
+        "status": "active",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAssignment": {
+        "collectionId": "dd_admin_role_assignments",
+        "documentId": "assignment_user_bootstrap_master_master_admin",
+        "actor_user_id": "user_bootstrap_master",
+        "role": "Master Admin",
+        "previous_status": "none",
+        "next_status": "active",
+        "expires_at": "",
+        "scope_note": "Initial owner-controlled Master Admin grant before any active Master Admin exists."
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "grant_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Bootstrap Master Admin",
+        "target_model": "AdminRoleAssignment",
+        "target_collection_id": "dd_admin_role_assignments",
+        "target_record_id": "assignment_user_bootstrap_master_master_admin",
+        "role_previous_status": "none",
+        "role_next_status": "active",
+        "metadata_json": "role assignment status, target user, expiration, and scope note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "grant-club-director",
+      "label": "Grant Club Director",
+      "action": "grant_role",
+      "role": "Club Director",
+      "actorRole": "Master Admin",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "bootstrap": false,
+      "requestBody": {
+        "action": "grant_role",
+        "role": "Club Director",
+        "scope_note": "Owns pathway, team, staff, sponsor, and content approval work.",
+        "target_user_id": "user_club_director",
+        "email": "club-director@detroitdynamo.example",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminRoleGrantAction",
+        "function_execute_permission": "users",
+        "action": "grant_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "assignment_id": "assignment_user_club_director_club_director",
+        "role": "Club Director",
+        "status": "active",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAssignment": {
+        "collectionId": "dd_admin_role_assignments",
+        "documentId": "assignment_user_club_director_club_director",
+        "actor_user_id": "user_club_director",
+        "role": "Club Director",
+        "previous_status": "none",
+        "next_status": "active",
+        "expires_at": "",
+        "scope_note": "Owns pathway, team, staff, sponsor, and content approval work."
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "grant_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "target_model": "AdminRoleAssignment",
+        "target_collection_id": "dd_admin_role_assignments",
+        "target_record_id": "assignment_user_club_director_club_director",
+        "role_previous_status": "none",
+        "role_next_status": "active",
+        "metadata_json": "role assignment status, target user, expiration, and scope note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "grant-registrar",
+      "label": "Grant Registrar",
+      "action": "grant_role",
+      "role": "Registrar",
+      "actorRole": "Master Admin",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "bootstrap": false,
+      "requestBody": {
+        "action": "grant_role",
+        "role": "Registrar",
+        "scope_note": "Owns player, guardian, tryout, waiver, and roster intake records.",
+        "target_user_id": "user_registrar",
+        "email": "registrar@detroitdynamo.example",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminRoleGrantAction",
+        "function_execute_permission": "users",
+        "action": "grant_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "assignment_id": "assignment_user_registrar_registrar",
+        "role": "Registrar",
+        "status": "active",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAssignment": {
+        "collectionId": "dd_admin_role_assignments",
+        "documentId": "assignment_user_registrar_registrar",
+        "actor_user_id": "user_registrar",
+        "role": "Registrar",
+        "previous_status": "none",
+        "next_status": "active",
+        "expires_at": "",
+        "scope_note": "Owns player, guardian, tryout, waiver, and roster intake records."
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "grant_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "target_model": "AdminRoleAssignment",
+        "target_collection_id": "dd_admin_role_assignments",
+        "target_record_id": "assignment_user_registrar_registrar",
+        "role_previous_status": "none",
+        "role_next_status": "active",
+        "metadata_json": "role assignment status, target user, expiration, and scope note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "suspend-coach",
+      "label": "Suspend Coach access",
+      "action": "suspend_role",
+      "role": "Coach",
+      "actorRole": "Master Admin",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "bootstrap": false,
+      "requestBody": {
+        "action": "suspend_role",
+        "role": "Coach",
+        "scope_note": "Temporary suspension while staff verification is reviewed.",
+        "assignment_id": "assignment_coach_active",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminRoleGrantAction",
+        "function_execute_permission": "users",
+        "action": "suspend_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "assignment_id": "assignment_coach_active",
+        "role": "Coach",
+        "status": "suspended",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAssignment": {
+        "collectionId": "dd_admin_role_assignments",
+        "documentId": "assignment_coach_active",
+        "actor_user_id": "user_coach",
+        "role": "Coach",
+        "previous_status": "active",
+        "next_status": "suspended",
+        "expires_at": "",
+        "scope_note": "Temporary suspension while staff verification is reviewed."
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "suspend_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "target_model": "AdminRoleAssignment",
+        "target_collection_id": "dd_admin_role_assignments",
+        "target_record_id": "assignment_coach_active",
+        "role_previous_status": "active",
+        "role_next_status": "suspended",
+        "metadata_json": "role assignment status, target user, expiration, and scope note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "revoke-media-admin",
+      "label": "Revoke Media/Admin Staff access",
+      "action": "revoke_role",
+      "role": "Media/Admin Staff",
+      "actorRole": "Master Admin",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "bootstrap": false,
+      "requestBody": {
+        "action": "revoke_role",
+        "role": "Media/Admin Staff",
+        "scope_note": "Remove content and sponsor lead access after offboarding.",
+        "assignment_id": "assignment_media_active",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminRoleGrantAction",
+        "function_execute_permission": "users",
+        "action": "revoke_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "assignment_id": "assignment_media_active",
+        "role": "Media/Admin Staff",
+        "status": "revoked",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAssignment": {
+        "collectionId": "dd_admin_role_assignments",
+        "documentId": "assignment_media_active",
+        "actor_user_id": "user_media",
+        "role": "Media/Admin Staff",
+        "previous_status": "active",
+        "next_status": "revoked",
+        "expires_at": "",
+        "scope_note": "Remove content and sponsor lead access after offboarding."
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "revoke_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "target_model": "AdminRoleAssignment",
+        "target_collection_id": "dd_admin_role_assignments",
+        "target_record_id": "assignment_media_active",
+        "role_previous_status": "active",
+        "role_next_status": "revoked",
+        "metadata_json": "role assignment status, target user, expiration, and scope note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "expire-team-manager",
+      "label": "Expire Team Manager access",
+      "action": "expire_role",
+      "role": "Team Manager",
+      "actorRole": "Master Admin",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "bootstrap": false,
+      "requestBody": {
+        "action": "expire_role",
+        "role": "Team Manager",
+        "scope_note": "Seasonal team manager access with a planned expiration date.",
+        "assignment_id": "assignment_team_manager_active",
+        "expires_at": "2026-08-01T00:00:00.000Z"
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminRoleGrantAction",
+        "function_execute_permission": "users",
+        "action": "expire_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "assignment_id": "assignment_team_manager_active",
+        "role": "Team Manager",
+        "status": "active",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAssignment": {
+        "collectionId": "dd_admin_role_assignments",
+        "documentId": "assignment_team_manager_active",
+        "actor_user_id": "user_team_manager",
+        "role": "Team Manager",
+        "previous_status": "active",
+        "next_status": "active",
+        "expires_at": "2026-08-01T00:00:00.000Z",
+        "scope_note": "Seasonal team manager access with a planned expiration date."
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "expire_role",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Master Admin",
+        "target_model": "AdminRoleAssignment",
+        "target_collection_id": "dd_admin_role_assignments",
+        "target_record_id": "assignment_team_manager_active",
+        "role_previous_status": "active",
+        "role_next_status": "active",
+        "metadata_json": "role assignment status, target user, expiration, and scope note JSON",
+        "created_at": "now"
+      }
+    }
+  ],
+  "rejectionFixtures": [
+    {
+      "id": "reject-unauthenticated-role-grant",
+      "label": "Reject unauthenticated role grant",
+      "action": "grant_role",
+      "role": "Registrar",
+      "requestBody": {
+        "action": "grant_role",
+        "role": "Registrar",
+        "scope_note": "Rejected fixture payload",
+        "target_user_id": "user_rejected",
+        "email": "rejected@detroitdynamo.example",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 401,
+        "error": "Detroit Dynamo admin role grant requires an authenticated Appwrite user."
+      },
+      "reason": "Role grants must only be created from a protected dashboard session."
+    },
+    {
+      "id": "reject-non-master-admin",
+      "label": "Reject non-Master Admin actor",
+      "action": "grant_role",
+      "role": "Registrar",
+      "requestBody": {
+        "action": "grant_role",
+        "role": "Registrar",
+        "scope_note": "Rejected fixture payload",
+        "target_user_id": "user_rejected",
+        "email": "rejected@detroitdynamo.example",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 403,
+        "error": "Only an active Master Admin can manage Detroit Dynamo admin role grants."
+      },
+      "reason": "Club Director has broad operating access but cannot grant trusted admin roles."
+    },
+    {
+      "id": "reject-missing-bootstrap-authority",
+      "label": "Reject first Master Admin without bootstrap authority",
+      "action": "grant_role",
+      "role": "Master Admin",
+      "requestBody": {
+        "action": "grant_role",
+        "role": "Master Admin",
+        "scope_note": "Rejected fixture payload",
+        "target_user_id": "user_rejected",
+        "email": "rejected@detroitdynamo.example",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 403,
+        "error": "Bootstrap Master Admin grant is not authorized for this Appwrite user."
+      },
+      "reason": "The first Master Admin grant requires the server-side DETROIT_DYNAMO_BOOTSTRAP_ADMIN_USER_ID owner user id."
+    },
+    {
+      "id": "reject-invalid-role",
+      "label": "Reject invalid role",
+      "action": "grant_role",
+      "role": "Owner",
+      "requestBody": {
+        "action": "grant_role",
+        "role": "Owner",
+        "scope_note": "Rejected fixture payload",
+        "target_user_id": "user_rejected",
+        "email": "rejected@detroitdynamo.example",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "role must be a planned Detroit Dynamo admin role"
+      },
+      "reason": "Only planned Detroit Dynamo admin roles should be written to the trusted role assignment collection."
+    },
+    {
+      "id": "reject-self-master-admin-lockout",
+      "label": "Reject self lockout",
+      "action": "revoke_role",
+      "role": "Master Admin",
+      "requestBody": {
+        "action": "revoke_role",
+        "role": "Master Admin",
+        "scope_note": "Rejected fixture payload",
+        "assignment_id": "assignment_current_master_admin",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 409,
+        "error": "Master Admin cannot remove their own active role grant with this action."
+      },
+      "reason": "The live dashboard needs an explicit guard against accidental single-admin lockout."
+    },
+    {
+      "id": "reject-unknown-assignment",
+      "label": "Reject unknown assignment",
+      "action": "suspend_role",
+      "role": "Coach",
+      "requestBody": {
+        "action": "suspend_role",
+        "role": "Coach",
+        "scope_note": "Rejected fixture payload",
+        "assignment_id": "missing_assignment",
+        "expires_at": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 404,
+        "error": "Detroit Dynamo admin role assignment was not found."
+      },
+      "reason": "Mutation actions must target a real trusted assignment document."
+    }
+  ],
+  "issues": []
+}

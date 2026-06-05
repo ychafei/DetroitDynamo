@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Shared LCFC building blocks + the exact LCFC palette (scoped here via
+// Shared Detroit Dynamo FC building blocks + the exact Detroit Dynamo FC palette (scoped here via
 // Tailwind arbitrary values so the global theme is untouched).
 //   black     #050505 / #080808 / #0B0B0B / #111111
 //   gold      #C9A646 (main) #D4AF37 (hi) #A9822B (deep) #F0D98A (pale)
@@ -20,6 +20,7 @@ export async function safeLoad(repo, where, sort, fallbackSort) {
   }
 }
 
+/** @param {{ as?: any, className?: string, children?: React.ReactNode, [key: string]: any }} props */
 export function GoldButton({ as: As = 'a', className = '', children, ...props }) {
   return (
     <As
@@ -31,6 +32,7 @@ export function GoldButton({ as: As = 'a', className = '', children, ...props })
   );
 }
 
+/** @param {{ as?: any, className?: string, children?: React.ReactNode, [key: string]: any }} props */
 export function LightOutlineButton({ as: As = 'a', className = '', children, ...props }) {
   return (
     <As
@@ -42,6 +44,7 @@ export function LightOutlineButton({ as: As = 'a', className = '', children, ...
   );
 }
 
+/** @param {{ as?: any, className?: string, children?: React.ReactNode, [key: string]: any }} props */
 export function DarkOutlineButton({ as: As = 'a', className = '', children, ...props }) {
   return (
     <As
@@ -53,6 +56,7 @@ export function DarkOutlineButton({ as: As = 'a', className = '', children, ...p
   );
 }
 
+/** @param {{ id?: string, className?: string, children?: React.ReactNode }} props */
 export function Card({ id, className = '', children }) {
   return (
     <div
@@ -65,6 +69,7 @@ export function Card({ id, className = '', children }) {
   );
 }
 
+/** @param {{ children?: React.ReactNode, sub?: React.ReactNode }} props */
 export function CardTitle({ children, sub }) {
   return (
     <div className="mb-5">
@@ -74,6 +79,7 @@ export function CardTitle({ children, sub }) {
   );
 }
 
+/** @param {{ icon?: any, children?: React.ReactNode }} props */
 export function EmptyState({ icon: Icon, children }) {
   return (
     <div className="flex flex-col items-center justify-center text-center rounded-xl border border-dashed border-[#DDDAD2] bg-[#F7F7F5] py-16 px-4">
@@ -87,7 +93,8 @@ export function EmptyState({ icon: Icon, children }) {
   );
 }
 
-// Compact club-style hero used at the top of every LCFC subpage.
+// Compact club-style hero used at the top of every Detroit Dynamo FC subpage.
+/** @param {{ title?: React.ReactNode, subtitle?: React.ReactNode }} props */
 export function LcfcHero({ title, subtitle }) {
   return (
     <section className="relative overflow-hidden bg-[#050505]">
@@ -103,14 +110,14 @@ export function LcfcHero({ title, subtitle }) {
       <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg,rgba(0,0,0,0.92),rgba(0,0,0,0.68),rgba(0,0,0,0.35))' }} />
 
       <img
-        src="/logo-shield.png"
+        src="/detroit-dynamo/logo-primary.png"
         alt=""
         aria-hidden="true"
         className="pointer-events-none select-none absolute right-6 top-1/2 -translate-y-1/2 w-[180px] md:w-[240px] opacity-30 md:opacity-45 drop-shadow-[0_0_50px_rgba(201,166,70,0.35)] hidden sm:block"
       />
 
       <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-28 md:pt-36 pb-14 md:pb-20">
-        <p className="font-oswald text-[11px] tracking-[0.3em] uppercase text-[#B8B8B8] mb-3">LCFC · Les Chèvres</p>
+        <p className="font-oswald text-[11px] tracking-[0.3em] uppercase text-[#B8B8B8] mb-3">Detroit Dynamo FC · Detroit Dynamo</p>
         <h1 className="font-oswald text-4xl md:text-6xl font-bold tracking-tight text-white leading-[0.95]">
           {title}
         </h1>

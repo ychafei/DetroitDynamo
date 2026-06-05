@@ -1,0 +1,479 @@
+{
+  "generatedAt": "2026-05-29T14:14:30.554Z",
+  "paymentPackageTracks": [
+    {
+      "id": "private-training-package",
+      "label": "Private training package",
+      "publicRoutes": [
+        "/detroit-dynamo/training",
+        "/detroit-dynamo/book"
+      ],
+      "relatedModels": [
+        "TrainingPackage",
+        "Booking",
+        "Payment"
+      ],
+      "packageType": "training",
+      "publishMode": "placeholder_only",
+      "providerStatus": "not_connected",
+      "approvalRequired": [
+        "Exact price",
+        "Session count",
+        "Duration",
+        "Refund/cancellation rule",
+        "Provider product id"
+      ],
+      "blockedAction": "Do not show checkout or collect payment until the owner approves the package matrix and provider mapping.",
+      "collectionIds": [
+        "dd_training_packages",
+        "dd_bookings",
+        "dd_payments"
+      ]
+    },
+    {
+      "id": "small-group-training-package",
+      "label": "Small-group training package",
+      "publicRoutes": [
+        "/detroit-dynamo/training",
+        "/detroit-dynamo/book"
+      ],
+      "relatedModels": [
+        "TrainingPackage",
+        "Booking",
+        "Payment"
+      ],
+      "packageType": "training",
+      "publishMode": "placeholder_only",
+      "providerStatus": "not_connected",
+      "approvalRequired": [
+        "Exact price",
+        "Group size rules",
+        "Session count",
+        "Makeup policy",
+        "Provider product id"
+      ],
+      "blockedAction": "Do not publish exact small-group pricing until group size and refund rules are approved.",
+      "collectionIds": [
+        "dd_training_packages",
+        "dd_bookings",
+        "dd_payments"
+      ]
+    },
+    {
+      "id": "team-training-quote",
+      "label": "Team training quote",
+      "publicRoutes": [
+        "/detroit-dynamo/training",
+        "/detroit-dynamo/contact"
+      ],
+      "relatedModels": [
+        "TrainingPackage",
+        "Booking",
+        "Payment"
+      ],
+      "packageType": "quote",
+      "publishMode": "interest_only",
+      "providerStatus": "not_connected",
+      "approvalRequired": [
+        "Quote rules",
+        "Facility costs",
+        "Coach assignment policy",
+        "Invoice/checkout choice"
+      ],
+      "blockedAction": "Use inquiry language only until team-training quote rules and payment handling are approved.",
+      "collectionIds": [
+        "dd_training_packages",
+        "dd_bookings",
+        "dd_payments"
+      ]
+    },
+    {
+      "id": "camp-clinic-registration",
+      "label": "Camp and clinic registration",
+      "publicRoutes": [
+        "/detroit-dynamo/camps-clinics"
+      ],
+      "relatedModels": [
+        "CampClinic",
+        "TrainingPackage",
+        "Payment",
+        "Waiver"
+      ],
+      "packageType": "event",
+      "publishMode": "coming_soon_interest",
+      "providerStatus": "not_connected",
+      "approvalRequired": [
+        "Dates",
+        "Facility",
+        "Capacity",
+        "Price",
+        "Waiver requirement",
+        "Refund/cancellation rule"
+      ],
+      "blockedAction": "Do not open registration or payment until dates, capacity, waiver rules, and package price are confirmed.",
+      "collectionIds": [
+        "dd_camps_clinics",
+        "dd_training_packages",
+        "dd_payments",
+        "dd_waivers"
+      ]
+    },
+    {
+      "id": "youth-club-dues",
+      "label": "Youth club dues",
+      "publicRoutes": [
+        "/detroit-dynamo/youth-club",
+        "/detroit-dynamo/tryouts"
+      ],
+      "relatedModels": [
+        "Team",
+        "Player",
+        "ParentGuardian",
+        "Payment",
+        "Waiver"
+      ],
+      "packageType": "club_dues",
+      "publishMode": "pathway_goal_only",
+      "providerStatus": "not_connected",
+      "approvalRequired": [
+        "Age-group costs",
+        "Uniform policy",
+        "League fees",
+        "Payment schedule",
+        "Refund policy"
+      ],
+      "blockedAction": "Do not publish dues or collect deposits until age-group teams, costs, and waiver requirements are approved.",
+      "collectionIds": [
+        "dd_teams",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_payments",
+        "dd_waivers"
+      ]
+    },
+    {
+      "id": "sponsor-package",
+      "label": "Sponsor package",
+      "publicRoutes": [
+        "/detroit-dynamo/sponsors"
+      ],
+      "relatedModels": [
+        "Sponsor",
+        "Payment"
+      ],
+      "packageType": "sponsorship",
+      "publishMode": "inquiry_only",
+      "providerStatus": "not_connected",
+      "approvalRequired": [
+        "Package tiers",
+        "Logo permissions",
+        "Activation inventory",
+        "Invoice/checkout workflow"
+      ],
+      "blockedAction": "Keep sponsor CTAs as inquiry-only until package tiers, logo rules, and payment workflow are approved.",
+      "collectionIds": [
+        "dd_sponsors",
+        "dd_payments"
+      ]
+    }
+  ],
+  "waiverTracks": [
+    {
+      "id": "youth-participation",
+      "label": "Youth participation waiver",
+      "publicRoutes": [
+        "/detroit-dynamo/youth-club",
+        "/detroit-dynamo/tryouts"
+      ],
+      "relatedModels": [
+        "Waiver",
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration",
+        "Team"
+      ],
+      "appliesTo": [
+        "Youth Club",
+        "Youth tryouts",
+        "Future youth teams"
+      ],
+      "approvalStatus": "legal_review_required",
+      "signatureMode": "not_enabled",
+      "requiredApprovals": [
+        "Guardian signature language",
+        "Participation risks",
+        "Emergency contact handling",
+        "Expiration rule"
+      ],
+      "blockedAction": "Do not collect youth participation signatures until the approved waiver version exists.",
+      "collectionIds": [
+        "dd_waivers",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_tryout_registrations",
+        "dd_teams"
+      ]
+    },
+    {
+      "id": "medical-consent",
+      "label": "Medical consent and emergency contact",
+      "publicRoutes": [
+        "/detroit-dynamo/tryouts",
+        "/detroit-dynamo/camps-clinics"
+      ],
+      "relatedModels": [
+        "Waiver",
+        "Player",
+        "ParentGuardian",
+        "CampClinic"
+      ],
+      "appliesTo": [
+        "Tryouts",
+        "Camps",
+        "Clinics",
+        "Youth teams"
+      ],
+      "approvalStatus": "legal_review_required",
+      "signatureMode": "not_enabled",
+      "requiredApprovals": [
+        "Emergency contact fields",
+        "Medical disclosure rules",
+        "Data retention policy",
+        "Staff access policy"
+      ],
+      "blockedAction": "Do not require medical consent in public forms until reviewed text and data handling rules are approved.",
+      "collectionIds": [
+        "dd_waivers",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_camps_clinics"
+      ]
+    },
+    {
+      "id": "media-release",
+      "label": "Media release",
+      "publicRoutes": [
+        "/detroit-dynamo/about",
+        "/detroit-dynamo/camps-clinics",
+        "/detroit-dynamo/teams"
+      ],
+      "relatedModels": [
+        "Waiver",
+        "Player",
+        "ParentGuardian",
+        "NewsPost"
+      ],
+      "appliesTo": [
+        "Photos",
+        "Video",
+        "News",
+        "Social media",
+        "Sponsor proof"
+      ],
+      "approvalStatus": "legal_review_required",
+      "signatureMode": "not_enabled",
+      "requiredApprovals": [
+        "Minor media consent",
+        "Opt-out workflow",
+        "Sponsor/content usage rules",
+        "Expiration rule"
+      ],
+      "blockedAction": "Do not publish player proof, testimonials, or media assets without approved release coverage.",
+      "collectionIds": [
+        "dd_waivers",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_news_posts"
+      ]
+    },
+    {
+      "id": "camp-clinic-waiver",
+      "label": "Camp and clinic waiver",
+      "publicRoutes": [
+        "/detroit-dynamo/camps-clinics"
+      ],
+      "relatedModels": [
+        "Waiver",
+        "CampClinic",
+        "Player",
+        "ParentGuardian"
+      ],
+      "appliesTo": [
+        "Seasonal camps",
+        "Winter indoor training",
+        "Speed/agility clinics",
+        "Goalkeeper training"
+      ],
+      "approvalStatus": "legal_review_required",
+      "signatureMode": "not_enabled",
+      "requiredApprovals": [
+        "Program-specific risk language",
+        "Facility terms",
+        "Refund/cancellation link",
+        "Emergency contact handling"
+      ],
+      "blockedAction": "Do not open camp or clinic registration until waiver and facility requirements are mapped.",
+      "collectionIds": [
+        "dd_waivers",
+        "dd_camps_clinics",
+        "dd_players",
+        "dd_parent_guardians"
+      ]
+    },
+    {
+      "id": "adult-participation",
+      "label": "Adult participation waiver",
+      "publicRoutes": [
+        "/detroit-dynamo/senior-men",
+        "/detroit-dynamo/senior-women"
+      ],
+      "relatedModels": [
+        "Waiver",
+        "Player",
+        "TryoutRegistration",
+        "Team"
+      ],
+      "appliesTo": [
+        "Senior men interest",
+        "Senior women interest",
+        "Adult evaluations"
+      ],
+      "approvalStatus": "legal_review_required",
+      "signatureMode": "not_enabled",
+      "requiredApprovals": [
+        "Adult assumption-of-risk language",
+        "Tryout/event scope",
+        "Emergency contact handling",
+        "Expiration rule"
+      ],
+      "blockedAction": "Do not run senior-team evaluations through the site until adult participation waiver coverage is approved.",
+      "collectionIds": [
+        "dd_waivers",
+        "dd_players",
+        "dd_tryout_registrations",
+        "dd_teams"
+      ]
+    },
+    {
+      "id": "team-travel",
+      "label": "Team travel and event consent",
+      "publicRoutes": [
+        "/detroit-dynamo/teams",
+        "/detroit-dynamo/schedule-results"
+      ],
+      "relatedModels": [
+        "Waiver",
+        "Team",
+        "Player",
+        "ParentGuardian",
+        "MatchFixture"
+      ],
+      "appliesTo": [
+        "Future fixtures",
+        "Team travel",
+        "Events outside regular training venues"
+      ],
+      "approvalStatus": "legal_review_required",
+      "signatureMode": "not_enabled",
+      "requiredApprovals": [
+        "Travel consent language",
+        "Transportation rules",
+        "Chaperone/staff policy",
+        "Event-specific expiry"
+      ],
+      "blockedAction": "Do not publish team travel workflows until fixtures, facilities, and consent language are approved.",
+      "collectionIds": [
+        "dd_waivers",
+        "dd_teams",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_match_fixtures"
+      ]
+    }
+  ],
+  "launchReadiness": [
+    {
+      "category": "Payments/Packages",
+      "status": "pending_confirmation",
+      "ownerRole": "Master Admin",
+      "evidenceNeeded": [
+        "Approved training package pricing",
+        "Camp, tryout, club dues, and sponsor package rules",
+        "Stripe or PayPal product mapping",
+        "Refund, cancellation, and failed-payment handling"
+      ],
+      "nextAction": "Confirm business pricing and provider choice before connecting checkout or package purchase flows.",
+      "promotionGate": "Payments approved"
+    },
+    {
+      "category": "Waivers/Legal",
+      "status": "pending_confirmation",
+      "ownerRole": "Registrar",
+      "evidenceNeeded": [
+        "Youth participation waiver",
+        "Medical consent and emergency contact language",
+        "Media release and privacy language",
+        "Adult participation and team-travel consent where needed"
+      ],
+      "nextAction": "Have the owner and appropriate legal reviewer approve waiver text before collecting signatures.",
+      "promotionGate": "Waivers approved"
+    }
+  ],
+  "promotionGates": [
+    {
+      "gate": "Payments approved",
+      "status": "pending_confirmation",
+      "requiredEvidence": "Products, packages, taxes/fees, refunds, and settlement handling are approved by the business owner.",
+      "nextAction": "Map approved packages to checkout flows and payment records."
+    },
+    {
+      "gate": "Waivers approved",
+      "status": "pending_confirmation",
+      "requiredEvidence": "Participation, medical, media, privacy, and travel consent language is approved before signature capture.",
+      "nextAction": "Connect waiver versions to registrations, bookings, camps, and teams."
+    }
+  ],
+  "confirmationRegisters": [
+    {
+      "area": "Payments & Packages",
+      "status": "pending_confirmation",
+      "ownerRole": "Master Admin",
+      "relatedModels": [
+        "TrainingPackage",
+        "Payment",
+        "Booking",
+        "CampClinic",
+        "Sponsor"
+      ],
+      "requiredFacts": [
+        "Approved private, small-group, team-training, camp, tryout, dues, and sponsor package pricing",
+        "Selected payment provider, checkout flow, refund policy, and failed-payment handling",
+        "Tax/fee treatment, discount policy, and settlement ownership",
+        "Admin reporting needs for packages, payments, refunds, and outstanding balances"
+      ],
+      "publishRule": "Do not publish checkout links or exact package commitments until pricing and provider setup are approved.",
+      "nextAction": "Owner approves package matrix, provider, refund rules, and admin payment fields."
+    },
+    {
+      "area": "Waivers & Legal",
+      "status": "pending_confirmation",
+      "ownerRole": "Registrar",
+      "relatedModels": [
+        "Waiver",
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration",
+        "CampClinic"
+      ],
+      "requiredFacts": [
+        "Youth participation waiver and medical consent language",
+        "Media release, privacy/terms language, and adult participation waiver",
+        "Travel, emergency contact, and camp/clinic consent requirements",
+        "Versioning, expiration, guardian signature, and retention rules"
+      ],
+      "publishRule": "Do not collect signatures or present legal text as final until owner/legal review is complete.",
+      "nextAction": "Prepare approved waiver versions and map each form/program to the right waiver requirement."
+    }
+  ],
+  "issues": []
+}

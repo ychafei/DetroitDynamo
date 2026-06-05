@@ -22,7 +22,7 @@ const emptyCoach = { first_name: '', last_name: '', email: '', phone: '', county
 const TYPE_TABS = [
   { value: 'all', label: 'All' },
   { value: 'private_training', label: 'Private Training' },
-  { value: 'team', label: 'LCFC / Team' },
+  { value: 'team', label: 'Detroit Dynamo FC / Team' },
 ];
 
 export default function AdminCoaches() {
@@ -374,8 +374,8 @@ export default function AdminCoaches() {
                     <Select value={editing.coach_type || 'private_training'} onValueChange={v => setEditing({...editing, coach_type: v})}>
                       <SelectTrigger className="bg-secondary border-border mt-1"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="private_training">Private Training (LC Training)</SelectItem>
-                        <SelectItem value="team">Team / LCFC</SelectItem>
+                        <SelectItem value="private_training">Private Training (Detroit Dynamo)</SelectItem>
+                        <SelectItem value="team">Team / Detroit Dynamo FC</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -539,7 +539,7 @@ export default function AdminCoaches() {
                   <p className="font-oswald tracking-wider text-foreground">{coach.first_name} {coach.last_name}</p>
                   <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                     <Badge variant="outline" className="text-[10px] font-oswald tracking-widest uppercase">
-                      {(coach.coach_type || 'private_training') === 'team' ? 'LCFC' : 'Private'}
+                      {(coach.coach_type || 'private_training') === 'team' ? 'Detroit Dynamo FC' : 'Private'}
                     </Badge>
                     {coach.county && (
                       <span className="text-xs text-accent flex items-center gap-1"><MapPin className="w-3 h-3" />{coach.county}</span>

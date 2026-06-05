@@ -1,0 +1,1237 @@
+{
+  "generatedAt": "2026-05-29T14:14:30.653Z",
+  "decision": {
+    "status": "evidence_required",
+    "launchMode": "preview_only",
+    "label": "Evidence Required: Preview Only",
+    "reason": "Production-preview submissions, authenticated admin actions, backend provisioning proof, and owner approvals must be attached before Detroit Dynamo can replace LCTrainings.com."
+  },
+  "tracks": [
+    {
+      "id": "public-form-contact",
+      "trackType": "public_form_submission",
+      "label": "General contact inquiry",
+      "ownerRole": "Media/Admin Staff",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "/detroit-dynamo/contact",
+      "leadType": "contact",
+      "functionId": "",
+      "sourceReferences": [
+        "Route: /detroit-dynamo/contact",
+        "Function fixture: contact-general-inquiry",
+        "Collections: dd_contact_leads"
+      ],
+      "requiredEvidence": [
+        "Submit the contact public form on the production-preview deployment and record the returned ContactLead id.",
+        "Confirm created model ids for ContactLead in isolated dd_* collections.",
+        "Confirm pipeline fields are populated for owner, status, due date, last note, update timestamp, and event count.",
+        "Attach screenshot or browser QA state proving success copy is visible without console errors."
+      ],
+      "acceptanceCriteria": [
+        "The source route remains under /detroit-dynamo and never posts into the current LC Training booking or contact shell.",
+        "A failed Appwrite call shows the polished error state and keeps the browser-local fallback recoverable.",
+        "The production-preview evidence id is attached to the owner launch review before live routing is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "owner launch approval"
+      ],
+      "productionPreviewEvidenceId": "pp-form-contact-general-inquiry",
+      "previewCoverage": "1 model(s), 1 routing collection(s), 6 pipeline field(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-fixtures.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json"
+      ]
+    },
+    {
+      "id": "public-form-training",
+      "trackType": "public_form_submission",
+      "label": "Training academy inquiry",
+      "ownerRole": "Training Director",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "/detroit-dynamo/training",
+      "leadType": "training",
+      "functionId": "",
+      "sourceReferences": [
+        "Route: /detroit-dynamo/training",
+        "Function fixture: training-private-session",
+        "Collections: dd_contact_leads, dd_bookings"
+      ],
+      "requiredEvidence": [
+        "Submit the training public form on the production-preview deployment and record the returned ContactLead id.",
+        "Confirm created model ids for ContactLead, Booking in isolated dd_* collections.",
+        "Confirm pipeline fields are populated for owner, status, due date, last note, update timestamp, and event count.",
+        "Attach screenshot or browser QA state proving success copy is visible without console errors."
+      ],
+      "acceptanceCriteria": [
+        "The source route remains under /detroit-dynamo and never posts into the current LC Training booking or contact shell.",
+        "A failed Appwrite call shows the polished error state and keeps the browser-local fallback recoverable.",
+        "The production-preview evidence id is attached to the owner launch review before live routing is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "owner launch approval"
+      ],
+      "productionPreviewEvidenceId": "pp-form-training-private-session",
+      "previewCoverage": "2 model(s), 2 routing collection(s), 6 pipeline field(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-fixtures.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json"
+      ]
+    },
+    {
+      "id": "public-form-youth",
+      "trackType": "public_form_submission",
+      "label": "Youth club pathway interest",
+      "ownerRole": "Registrar",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "/detroit-dynamo/youth-club",
+      "leadType": "youth",
+      "functionId": "",
+      "sourceReferences": [
+        "Route: /detroit-dynamo/youth-club",
+        "Function fixture: youth-club-interest",
+        "Collections: dd_contact_leads, dd_players, dd_parent_guardians, dd_tryout_registrations"
+      ],
+      "requiredEvidence": [
+        "Submit the youth public form on the production-preview deployment and record the returned ContactLead id.",
+        "Confirm created model ids for ContactLead, Player, ParentGuardian, TryoutRegistration in isolated dd_* collections.",
+        "Confirm pipeline fields are populated for owner, status, due date, last note, update timestamp, and event count.",
+        "Attach screenshot or browser QA state proving success copy is visible without console errors."
+      ],
+      "acceptanceCriteria": [
+        "The source route remains under /detroit-dynamo and never posts into the current LC Training booking or contact shell.",
+        "A failed Appwrite call shows the polished error state and keeps the browser-local fallback recoverable.",
+        "The production-preview evidence id is attached to the owner launch review before live routing is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "owner launch approval"
+      ],
+      "productionPreviewEvidenceId": "pp-form-youth-club-interest",
+      "previewCoverage": "4 model(s), 3 routing collection(s), 6 pipeline field(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-fixtures.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json"
+      ]
+    },
+    {
+      "id": "public-form-tryout",
+      "trackType": "public_form_submission",
+      "label": "Open tryout registration",
+      "ownerRole": "Registrar",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "/detroit-dynamo/tryouts",
+      "leadType": "tryout",
+      "functionId": "",
+      "sourceReferences": [
+        "Route: /detroit-dynamo/tryouts",
+        "Function fixture: tryout-registration",
+        "Collections: dd_contact_leads, dd_players, dd_parent_guardians, dd_tryout_registrations"
+      ],
+      "requiredEvidence": [
+        "Submit the tryout public form on the production-preview deployment and record the returned ContactLead id.",
+        "Confirm created model ids for ContactLead, Player, ParentGuardian, TryoutRegistration in isolated dd_* collections.",
+        "Confirm pipeline fields are populated for owner, status, due date, last note, update timestamp, and event count.",
+        "Attach screenshot or browser QA state proving success copy is visible without console errors."
+      ],
+      "acceptanceCriteria": [
+        "The source route remains under /detroit-dynamo and never posts into the current LC Training booking or contact shell.",
+        "A failed Appwrite call shows the polished error state and keeps the browser-local fallback recoverable.",
+        "The production-preview evidence id is attached to the owner launch review before live routing is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "owner launch approval"
+      ],
+      "productionPreviewEvidenceId": "pp-form-tryout-registration",
+      "previewCoverage": "4 model(s), 3 routing collection(s), 6 pipeline field(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-fixtures.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json"
+      ]
+    },
+    {
+      "id": "public-form-men",
+      "trackType": "public_form_submission",
+      "label": "Senior men player interest",
+      "ownerRole": "Club Director",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "/detroit-dynamo/senior-men",
+      "leadType": "men",
+      "functionId": "",
+      "sourceReferences": [
+        "Route: /detroit-dynamo/senior-men",
+        "Function fixture: senior-men-interest",
+        "Collections: dd_contact_leads, dd_players, dd_tryout_registrations"
+      ],
+      "requiredEvidence": [
+        "Submit the men public form on the production-preview deployment and record the returned ContactLead id.",
+        "Confirm created model ids for ContactLead, Player, TryoutRegistration in isolated dd_* collections.",
+        "Confirm pipeline fields are populated for owner, status, due date, last note, update timestamp, and event count.",
+        "Attach screenshot or browser QA state proving success copy is visible without console errors."
+      ],
+      "acceptanceCriteria": [
+        "The source route remains under /detroit-dynamo and never posts into the current LC Training booking or contact shell.",
+        "A failed Appwrite call shows the polished error state and keeps the browser-local fallback recoverable.",
+        "The production-preview evidence id is attached to the owner launch review before live routing is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "owner launch approval"
+      ],
+      "productionPreviewEvidenceId": "pp-form-senior-men-interest",
+      "previewCoverage": "3 model(s), 3 routing collection(s), 6 pipeline field(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-fixtures.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json"
+      ]
+    },
+    {
+      "id": "public-form-women",
+      "trackType": "public_form_submission",
+      "label": "Senior women player interest",
+      "ownerRole": "Club Director",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "/detroit-dynamo/senior-women",
+      "leadType": "women",
+      "functionId": "",
+      "sourceReferences": [
+        "Route: /detroit-dynamo/senior-women",
+        "Function fixture: senior-women-interest",
+        "Collections: dd_contact_leads, dd_players, dd_tryout_registrations"
+      ],
+      "requiredEvidence": [
+        "Submit the women public form on the production-preview deployment and record the returned ContactLead id.",
+        "Confirm created model ids for ContactLead, Player, TryoutRegistration in isolated dd_* collections.",
+        "Confirm pipeline fields are populated for owner, status, due date, last note, update timestamp, and event count.",
+        "Attach screenshot or browser QA state proving success copy is visible without console errors."
+      ],
+      "acceptanceCriteria": [
+        "The source route remains under /detroit-dynamo and never posts into the current LC Training booking or contact shell.",
+        "A failed Appwrite call shows the polished error state and keeps the browser-local fallback recoverable.",
+        "The production-preview evidence id is attached to the owner launch review before live routing is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "owner launch approval"
+      ],
+      "productionPreviewEvidenceId": "pp-form-senior-women-interest",
+      "previewCoverage": "3 model(s), 3 routing collection(s), 6 pipeline field(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-fixtures.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json"
+      ]
+    },
+    {
+      "id": "public-form-sponsor",
+      "trackType": "public_form_submission",
+      "label": "Sponsor partnership inquiry",
+      "ownerRole": "Media/Admin Staff",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "/detroit-dynamo/sponsors",
+      "leadType": "sponsor",
+      "functionId": "",
+      "sourceReferences": [
+        "Route: /detroit-dynamo/sponsors",
+        "Function fixture: sponsor-inquiry",
+        "Collections: dd_contact_leads, dd_sponsors"
+      ],
+      "requiredEvidence": [
+        "Submit the sponsor public form on the production-preview deployment and record the returned ContactLead id.",
+        "Confirm created model ids for ContactLead, Sponsor in isolated dd_* collections.",
+        "Confirm pipeline fields are populated for owner, status, due date, last note, update timestamp, and event count.",
+        "Attach screenshot or browser QA state proving success copy is visible without console errors."
+      ],
+      "acceptanceCriteria": [
+        "The source route remains under /detroit-dynamo and never posts into the current LC Training booking or contact shell.",
+        "A failed Appwrite call shows the polished error state and keeps the browser-local fallback recoverable.",
+        "The production-preview evidence id is attached to the owner launch review before live routing is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "owner launch approval"
+      ],
+      "productionPreviewEvidenceId": "pp-form-sponsor-inquiry",
+      "previewCoverage": "2 model(s), 2 routing collection(s), 6 pipeline field(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-fixtures.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json"
+      ]
+    },
+    {
+      "id": "public-form-negative-probes",
+      "trackType": "public_validation_probe",
+      "label": "Public form rejection probes",
+      "ownerRole": "Media/Admin Staff",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Rejection fixtures: 4",
+        "Function fixture: detroitDynamoLeadIntake rejection cases",
+        "Browser probes: validation error and storage error states"
+      ],
+      "requiredEvidence": [
+        "Run invalid source route, invalid lead type, incomplete tryout, and incomplete sponsor payload probes.",
+        "Capture visible validation errors with aria-invalid and aria-describedby intact.",
+        "Capture storage/backend failure state with role=alert and no broken fetch console spam.",
+        "Attach response statuses and visible UI screenshots to the owner review packet."
+      ],
+      "acceptanceCriteria": [
+        "Invalid payloads are rejected with stable 400-level messages.",
+        "The user-facing form remains recoverable and mobile-friendly after each error.",
+        "No rejected probe creates a live ContactLead, Booking, TryoutRegistration, Player, ParentGuardian, or Sponsor record."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing"
+      ],
+      "productionPreviewEvidenceId": "pp-form-negative-probes",
+      "previewCoverage": "4 rejection fixture(s) plus browser validation and storage-error probes.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-fixtures.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json"
+      ]
+    },
+    {
+      "id": "admin-pipeline-action",
+      "trackType": "admin_function_action",
+      "label": "Authenticated pipeline status action",
+      "ownerRole": "Registrar",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "detroitDynamoLeadPipelineAction",
+      "sourceReferences": [
+        "Function: detroitDynamoLeadPipelineAction",
+        "Success fixtures: 6",
+        "Rejection fixtures: 3"
+      ],
+      "requiredEvidence": [
+        "Run every success fixture against the production-preview Appwrite function with an authenticated session.",
+        "Run every rejection fixture and capture the expected status/error without mutating protected records.",
+        "Confirm trusted role assignment, collection scope, action guard, and audit-event behavior where applicable.",
+        "Attach response ids, audit event ids, and screenshots from protected admin views to the owner review packet."
+      ],
+      "acceptanceCriteria": [
+        "Success fixtures only touch isolated dd_* collections and return expected ids.",
+        "Rejection fixtures block unauthenticated, unassigned, cross-module, or externally gated requests.",
+        "No production root route, checkout, waiver signature, public claim, noindex removal, or redirect is changed."
+      ],
+      "blockedLiveActions": [
+        "live lead status transitions",
+        "live audit-event writes",
+        "admin workflow launch"
+      ],
+      "productionPreviewEvidenceId": "pp-admin-pipeline-action",
+      "previewCoverage": "6 success fixture(s) and 3 rejection fixture(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-pipeline-action-handoff.md"
+      ]
+    },
+    {
+      "id": "admin-module-read",
+      "trackType": "admin_function_action",
+      "label": "Authenticated admin module reads",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "detroitDynamoAdminModuleRead",
+      "sourceReferences": [
+        "Function: detroitDynamoAdminModuleRead",
+        "Success fixtures: 6",
+        "Rejection fixtures: 5"
+      ],
+      "requiredEvidence": [
+        "Run every success fixture against the production-preview Appwrite function with an authenticated session.",
+        "Run every rejection fixture and capture the expected status/error without mutating protected records.",
+        "Confirm trusted role assignment, collection scope, action guard, and audit-event behavior where applicable.",
+        "Attach response ids, audit event ids, and screenshots from protected admin views to the owner review packet."
+      ],
+      "acceptanceCriteria": [
+        "Success fixtures only touch isolated dd_* collections and return expected ids.",
+        "Rejection fixtures block unauthenticated, unassigned, cross-module, or externally gated requests.",
+        "No production root route, checkout, waiver signature, public claim, noindex removal, or redirect is changed."
+      ],
+      "blockedLiveActions": [
+        "protected admin live reads",
+        "role-scoped record browsing",
+        "admin dashboard launch"
+      ],
+      "productionPreviewEvidenceId": "pp-admin-module-read",
+      "previewCoverage": "6 success fixture(s) and 5 rejection fixture(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-module-read-handoff.md"
+      ]
+    },
+    {
+      "id": "admin-role-grant",
+      "trackType": "admin_function_action",
+      "label": "Master Admin role grant actions",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "detroitDynamoAdminRoleGrantAction",
+      "sourceReferences": [
+        "Function: detroitDynamoAdminRoleGrantAction",
+        "Success fixtures: 6",
+        "Rejection fixtures: 6"
+      ],
+      "requiredEvidence": [
+        "Run every success fixture against the production-preview Appwrite function with an authenticated session.",
+        "Run every rejection fixture and capture the expected status/error without mutating protected records.",
+        "Confirm trusted role assignment, collection scope, action guard, and audit-event behavior where applicable.",
+        "Attach response ids, audit event ids, and screenshots from protected admin views to the owner review packet."
+      ],
+      "acceptanceCriteria": [
+        "Success fixtures only touch isolated dd_* collections and return expected ids.",
+        "Rejection fixtures block unauthenticated, unassigned, cross-module, or externally gated requests.",
+        "No production root route, checkout, waiver signature, public claim, noindex removal, or redirect is changed."
+      ],
+      "blockedLiveActions": [
+        "trusted role grants",
+        "protected admin live reads",
+        "protected admin live writes"
+      ],
+      "productionPreviewEvidenceId": "pp-admin-role-grant",
+      "previewCoverage": "6 success fixture(s) and 6 rejection fixture(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-role-grant-handoff.md"
+      ]
+    },
+    {
+      "id": "admin-module-write",
+      "trackType": "admin_function_action",
+      "label": "Authenticated admin module writes",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "detroitDynamoAdminModuleWriteAction",
+      "sourceReferences": [
+        "Function: detroitDynamoAdminModuleWriteAction",
+        "Success fixtures: 6",
+        "Rejection fixtures: 7"
+      ],
+      "requiredEvidence": [
+        "Run every success fixture against the production-preview Appwrite function with an authenticated session.",
+        "Run every rejection fixture and capture the expected status/error without mutating protected records.",
+        "Confirm trusted role assignment, collection scope, action guard, and audit-event behavior where applicable.",
+        "Attach response ids, audit event ids, and screenshots from protected admin views to the owner review packet."
+      ],
+      "acceptanceCriteria": [
+        "Success fixtures only touch isolated dd_* collections and return expected ids.",
+        "Rejection fixtures block unauthenticated, unassigned, cross-module, or externally gated requests.",
+        "No production root route, checkout, waiver signature, public claim, noindex removal, or redirect is changed."
+      ],
+      "blockedLiveActions": [
+        "protected admin live writes",
+        "fixture/result publication",
+        "payment/waiver/sponsor mutation"
+      ],
+      "productionPreviewEvidenceId": "pp-admin-module-write",
+      "previewCoverage": "6 success fixture(s) and 7 rejection fixture(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-module-write-handoff.md"
+      ]
+    },
+    {
+      "id": "admin-record-workspace-review",
+      "trackType": "admin_record_workspace",
+      "label": "Admin record workspace review",
+      "ownerRole": "Club Director",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Flattened records: 3",
+        "Fixture collections: 2",
+        "Protected module detail pages: /admin/detroit-dynamo/modules/:moduleSlug"
+      ],
+      "requiredEvidence": [
+        "Review record workspace rows on a production-preview protected admin module route.",
+        "Export a CSV from at least one module and attach it to the owner review packet.",
+        "Prepare a write payload from a record detail preview without submitting a live mutation.",
+        "Confirm required-field readiness and field display profiles match Appwrite schema expectations."
+      ],
+      "acceptanceCriteria": [
+        "Record previews remain read-only until admin module write evidence is approved.",
+        "Prepared payloads include missing-required-field warnings before any live create/update/archive action.",
+        "CSV export does not leak current LC Training records or non-Dynamo collections."
+      ],
+      "blockedLiveActions": [
+        "protected admin live writes",
+        "admin CRUD launch",
+        "live record migration"
+      ],
+      "productionPreviewEvidenceId": "pp-admin-record-workspace-review",
+      "previewCoverage": "3 flattened preview record(s) across 2 fixture collection(s).",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-record-workspace.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-record-workspace.json"
+      ]
+    },
+    {
+      "id": "current-lc-route-preservation",
+      "trackType": "route_browser_qa",
+      "label": "Current LC site route preservation",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Routes: /, /about, /book, /lcfc, /team, /blog, /apply",
+        "Smoke command: BASE_URL=... npm run test -- --run",
+        "Browser command: BASE_URL=... npm run qa:dynamo-browser"
+      ],
+      "requiredEvidence": [
+        "Attach production-preview route smoke output for current LC Training routes.",
+        "Attach browser screenshots or QA report proving the current homepage and booking shell still render.",
+        "Confirm no Detroit Dynamo header, footer, or preview noindex behavior replaces the legacy root.",
+        "Record rollback deployment id before any root route promotion is attempted."
+      ],
+      "acceptanceCriteria": [
+        "Every current LC route returns the SPA root with HTTP 2xx/3xx.",
+        "Booking, auth, blog, team, LCFC, and admin navigation remain reachable.",
+        "No permanent redirects from current LC routes are applied while preview-only."
+      ],
+      "blockedLiveActions": [
+        "root route promotion",
+        "permanent redirects",
+        "noindex removal"
+      ],
+      "productionPreviewEvidenceId": "pp-current-lc-route-preservation",
+      "previewCoverage": "Current-site route list is covered by smoke tests and browser QA.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/goal-audit.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json"
+      ]
+    },
+    {
+      "id": "dynamo-public-route-matrix",
+      "trackType": "route_browser_qa",
+      "label": "Detroit Dynamo public route matrix",
+      "ownerRole": "Media/Admin Staff",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Dynamo routes: 22",
+        "Route root: /detroit-dynamo",
+        "Smoke command: BASE_URL=... npm run test -- --run"
+      ],
+      "requiredEvidence": [
+        "Attach production-preview smoke output for every /detroit-dynamo route and alias.",
+        "Attach mobile and desktop browser QA screenshots for key public pages.",
+        "Confirm every CTA stays inside the Dynamo preview or clearly labels current LC fallback booking.",
+        "Confirm no dead buttons, broken anchors, or console errors appear in the route matrix."
+      ],
+      "acceptanceCriteria": [
+        "All Dynamo routes return HTTP 2xx/3xx and render the isolated Dynamo shell.",
+        "The goat logo, LC footer, old navigation, and old gold/black shell do not appear in Dynamo pages.",
+        "Forms show loading, success, validation, and storage-error states cleanly."
+      ],
+      "blockedLiveActions": [
+        "root route promotion",
+        "SEO index launch",
+        "public launch announcement"
+      ],
+      "productionPreviewEvidenceId": "pp-dynamo-public-route-matrix",
+      "previewCoverage": "22 Dynamo route path(s) are covered by static and browser QA.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-sitemap-preview.xml"
+      ]
+    },
+    {
+      "id": "protected-admin-route-matrix",
+      "trackType": "route_browser_qa",
+      "label": "Protected Dynamo admin route matrix",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Protected module routes: 16",
+        "Route root: /admin/detroit-dynamo",
+        "Browser command: BASE_URL=... npm run qa:dynamo-browser"
+      ],
+      "requiredEvidence": [
+        "Attach production-preview browser QA output covering protected admin sign-in guard behavior.",
+        "Open each /admin/detroit-dynamo/modules/:moduleSlug route and record the module readiness state.",
+        "Confirm protected routes do not expose live writes without an authenticated trusted role.",
+        "Confirm local preview ledgers and action consoles retain preview-only status labels."
+      ],
+      "acceptanceCriteria": [
+        "Unauthenticated users see the expected sign-in guard.",
+        "Protected module pages render action guards, data targets, safety gates, and record workspace sections.",
+        "Live read/write controls remain blocked until Appwrite role and function evidence exists."
+      ],
+      "blockedLiveActions": [
+        "protected admin live reads",
+        "protected admin live writes",
+        "role grant launch"
+      ],
+      "productionPreviewEvidenceId": "pp-protected-admin-route-matrix",
+      "previewCoverage": "16 protected module route(s) are covered by browser QA.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-module-registry.md"
+      ]
+    },
+    {
+      "id": "backend-activation-step-1",
+      "trackType": "backend_activation",
+      "label": "1. Run Local Backend Preflight",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Command: npm run preflight:dynamo-backend",
+        "Evidence: Backend preflight report shows schema, function config, function source, pipeline-action fixture coverage, admin-module-read fixture coverage, admin-role-grant fixture coverage, admin-module-write fixture coverage, and env-key presence without printing secrets.",
+        "Runbook: detroit-dynamo-backend-activation-runbook.md"
+      ],
+      "requiredEvidence": [
+        "Run or complete: npm run preflight:dynamo-backend.",
+        "Attach proof for: Backend preflight report shows schema, function config, function source, pipeline-action fixture coverage, admin-module-read fixture coverage, admin-role-grant fixture coverage, admin-module-write fixture coverage, and env-key presence without printing secrets..",
+        "Record next action outcome: Resolve any failing local checks before attempting networked backend work..",
+        "Confirm the step does not mutate current LC Training collections, booking, auth, blog, or forms."
+      ],
+      "acceptanceCriteria": [
+        "The step targets isolated Detroit Dynamo dd_* schema, functions, or preview artifacts.",
+        "Secrets are not printed in logs or committed to artifacts.",
+        "The owner review packet references the evidence before Appwrite live mode is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ],
+      "productionPreviewEvidenceId": "pp-backend-step-1",
+      "previewCoverage": "Backend preflight report shows schema, function config, function source, pipeline-action fixture coverage, admin-module-read fixture coverage, admin-role-grant fixture coverage, admin-module-write fixture coverage, and env-key presence without printing secrets. is already named in the backend activation runbook.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md"
+      ]
+    },
+    {
+      "id": "backend-activation-step-2",
+      "trackType": "backend_activation",
+      "label": "2. Review Appwrite Collection Plan",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Command: npm run plan:dynamo-appwrite",
+        "Evidence: Plan confirms the 18 requested operational dd_* collections plus admin audit event and admin role assignment collections with expected attributes, indexes, access policies, and public/function write paths.",
+        "Runbook: detroit-dynamo-backend-activation-runbook.md"
+      ],
+      "requiredEvidence": [
+        "Run or complete: npm run plan:dynamo-appwrite.",
+        "Attach proof for: Plan confirms the 18 requested operational dd_* collections plus admin audit event and admin role assignment collections with expected attributes, indexes, access policies, and public/function write paths..",
+        "Record next action outcome: Approve fields, indexes, owner roles, public-form destinations, and audit-event retention before applying..",
+        "Confirm the step does not mutate current LC Training collections, booking, auth, blog, or forms."
+      ],
+      "acceptanceCriteria": [
+        "The step targets isolated Detroit Dynamo dd_* schema, functions, or preview artifacts.",
+        "Secrets are not printed in logs or committed to artifacts.",
+        "The owner review packet references the evidence before Appwrite live mode is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ],
+      "productionPreviewEvidenceId": "pp-backend-step-2",
+      "previewCoverage": "Plan confirms the 18 requested operational dd_* collections plus admin audit event and admin role assignment collections with expected attributes, indexes, access policies, and public/function write paths. is already named in the backend activation runbook.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md"
+      ]
+    },
+    {
+      "id": "backend-activation-step-3",
+      "trackType": "backend_activation",
+      "label": "3. Provision Isolated Collections",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Command: npm run provision:dynamo-appwrite -- --apply",
+        "Evidence: Appwrite contains the dd_* collections, attributes, indexes, and permissions required by the Detroit Dynamo model.",
+        "Runbook: detroit-dynamo-backend-activation-runbook.md"
+      ],
+      "requiredEvidence": [
+        "Run or complete: npm run provision:dynamo-appwrite -- --apply.",
+        "Attach proof for: Appwrite contains the dd_* collections, attributes, indexes, and permissions required by the Detroit Dynamo model..",
+        "Record next action outcome: Use valid Appwrite credentials and do not mutate legacy LC Training collections..",
+        "Confirm the step does not mutate current LC Training collections, booking, auth, blog, or forms."
+      ],
+      "acceptanceCriteria": [
+        "The step targets isolated Detroit Dynamo dd_* schema, functions, or preview artifacts.",
+        "Secrets are not printed in logs or committed to artifacts.",
+        "The owner review packet references the evidence before Appwrite live mode is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ],
+      "productionPreviewEvidenceId": "pp-backend-step-3",
+      "previewCoverage": "Appwrite contains the dd_* collections, attributes, indexes, and permissions required by the Detroit Dynamo model. is already named in the backend activation runbook.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md"
+      ]
+    },
+    {
+      "id": "backend-activation-step-4",
+      "trackType": "backend_activation",
+      "label": "4. Configure Function Variables",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Command: node scripts/configure-functions.mjs",
+        "Evidence: detroitDynamoLeadIntake, detroitDynamoLeadPipelineAction, detroitDynamoAdminModuleRead, detroitDynamoAdminRoleGrantAction, and detroitDynamoAdminModuleWriteAction have APPWRITE_API_KEY configured in Appwrite without exposing the key in logs or client code.",
+        "Runbook: detroit-dynamo-backend-activation-runbook.md"
+      ],
+      "requiredEvidence": [
+        "Run or complete: node scripts/configure-functions.mjs.",
+        "Attach proof for: detroitDynamoLeadIntake, detroitDynamoLeadPipelineAction, detroitDynamoAdminModuleRead, detroitDynamoAdminRoleGrantAction, and detroitDynamoAdminModuleWriteAction have APPWRITE_API_KEY configured in Appwrite without exposing the key in logs or client code..",
+        "Record next action outcome: Confirm function variables after replacing any expired Appwrite key; set DETROIT_DYNAMO_BOOTSTRAP_ADMIN_USER_ID before first live Master Admin grant..",
+        "Confirm the step does not mutate current LC Training collections, booking, auth, blog, or forms."
+      ],
+      "acceptanceCriteria": [
+        "The step targets isolated Detroit Dynamo dd_* schema, functions, or preview artifacts.",
+        "Secrets are not printed in logs or committed to artifacts.",
+        "The owner review packet references the evidence before Appwrite live mode is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ],
+      "productionPreviewEvidenceId": "pp-backend-step-4",
+      "previewCoverage": "detroitDynamoLeadIntake, detroitDynamoLeadPipelineAction, detroitDynamoAdminModuleRead, detroitDynamoAdminRoleGrantAction, and detroitDynamoAdminModuleWriteAction have APPWRITE_API_KEY configured in Appwrite without exposing the key in logs or client code. is already named in the backend activation runbook.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md"
+      ]
+    },
+    {
+      "id": "backend-activation-step-5",
+      "trackType": "backend_activation",
+      "label": "5. Deploy Lead Intake, Pipeline, Module Read, Role Grant, and Module Write Functions",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Command: appwrite push functions --all",
+        "Evidence: detroitDynamoLeadIntake, detroitDynamoLeadPipelineAction, detroitDynamoAdminModuleRead, detroitDynamoAdminRoleGrantAction, and detroitDynamoAdminModuleWriteAction are deployed and enabled with database/document scopes from appwrite.json.",
+        "Runbook: detroit-dynamo-backend-activation-runbook.md"
+      ],
+      "requiredEvidence": [
+        "Run or complete: appwrite push functions --all.",
+        "Attach proof for: detroitDynamoLeadIntake, detroitDynamoLeadPipelineAction, detroitDynamoAdminModuleRead, detroitDynamoAdminRoleGrantAction, and detroitDynamoAdminModuleWriteAction are deployed and enabled with database/document scopes from appwrite.json..",
+        "Record next action outcome: Deploy only after preflight, provisioning, and function variable configuration pass..",
+        "Confirm the step does not mutate current LC Training collections, booking, auth, blog, or forms."
+      ],
+      "acceptanceCriteria": [
+        "The step targets isolated Detroit Dynamo dd_* schema, functions, or preview artifacts.",
+        "Secrets are not printed in logs or committed to artifacts.",
+        "The owner review packet references the evidence before Appwrite live mode is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ],
+      "productionPreviewEvidenceId": "pp-backend-step-5",
+      "previewCoverage": "detroitDynamoLeadIntake, detroitDynamoLeadPipelineAction, detroitDynamoAdminModuleRead, detroitDynamoAdminRoleGrantAction, and detroitDynamoAdminModuleWriteAction are deployed and enabled with database/document scopes from appwrite.json. is already named in the backend activation runbook.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md"
+      ]
+    },
+    {
+      "id": "backend-activation-step-6",
+      "trackType": "backend_activation",
+      "label": "6. Enable Appwrite Intake in Admin",
+      "ownerRole": "Media/Admin Staff",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Command: Use /admin/detroit-dynamo Form Intake Mode",
+        "Evidence: Protected admin mode is switched from Local Preview to Appwrite Intake after backend deployment.",
+        "Runbook: detroit-dynamo-backend-activation-runbook.md"
+      ],
+      "requiredEvidence": [
+        "Run or complete: Use /admin/detroit-dynamo Form Intake Mode.",
+        "Attach proof for: Protected admin mode is switched from Local Preview to Appwrite Intake after backend deployment..",
+        "Record next action outcome: Keep local preview fallback available until production-preview form submissions are verified..",
+        "Confirm the step does not mutate current LC Training collections, booking, auth, blog, or forms."
+      ],
+      "acceptanceCriteria": [
+        "The step targets isolated Detroit Dynamo dd_* schema, functions, or preview artifacts.",
+        "Secrets are not printed in logs or committed to artifacts.",
+        "The owner review packet references the evidence before Appwrite live mode is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ],
+      "productionPreviewEvidenceId": "pp-backend-step-6",
+      "previewCoverage": "Protected admin mode is switched from Local Preview to Appwrite Intake after backend deployment. is already named in the backend activation runbook.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md"
+      ]
+    },
+    {
+      "id": "backend-activation-step-7",
+      "trackType": "backend_activation",
+      "label": "7. Submit Production-Preview Test Leads and Pipeline Actions",
+      "ownerRole": "Registrar",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Command: npm run verify:dynamo-intake-contract && npm run verify:dynamo-pipeline-actions, then submit training, tryout, youth, senior, sponsor, and contact forms from /detroit-dynamo/*",
+        "Evidence: Pipeline action fixtures validate locally, test submissions create ContactLead plus expected TryoutRegistration or Sponsor records in the dd_* collections, and authenticated pipeline actions update allowed statuses.",
+        "Runbook: detroit-dynamo-backend-activation-runbook.md"
+      ],
+      "requiredEvidence": [
+        "Run or complete: npm run verify:dynamo-intake-contract && npm run verify:dynamo-pipeline-actions, then submit training, tryout, youth, senior, sponsor, and contact forms from /detroit-dynamo/*.",
+        "Attach proof for: Pipeline action fixtures validate locally, test submissions create ContactLead plus expected TryoutRegistration or Sponsor records in the dd_* collections, and authenticated pipeline actions update allowed statuses..",
+        "Record next action outcome: Verify no console errors, no broken success states, valid status transitions, and clear admin routing for every lead type..",
+        "Confirm the step does not mutate current LC Training collections, booking, auth, blog, or forms."
+      ],
+      "acceptanceCriteria": [
+        "The step targets isolated Detroit Dynamo dd_* schema, functions, or preview artifacts.",
+        "Secrets are not printed in logs or committed to artifacts.",
+        "The owner review packet references the evidence before Appwrite live mode is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ],
+      "productionPreviewEvidenceId": "pp-backend-step-7",
+      "previewCoverage": "Pipeline action fixtures validate locally, test submissions create ContactLead plus expected TryoutRegistration or Sponsor records in the dd_* collections, and authenticated pipeline actions update allowed statuses. is already named in the backend activation runbook.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md"
+      ]
+    },
+    {
+      "id": "backend-activation-step-8",
+      "trackType": "backend_activation",
+      "label": "8. Lock Promotion Gate Evidence",
+      "ownerRole": "Club Director",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Command: npm run audit:dynamo-goal",
+        "Evidence: Goal audit still passes implemented scope and keeps external gates visible until payments, waivers, facilities, and league facts are confirmed.",
+        "Runbook: detroit-dynamo-backend-activation-runbook.md"
+      ],
+      "requiredEvidence": [
+        "Run or complete: npm run audit:dynamo-goal.",
+        "Attach proof for: Goal audit still passes implemented scope and keeps external gates visible until payments, waivers, facilities, and league facts are confirmed..",
+        "Record next action outcome: Do not remove preview-only noindex or redirect the current LC site until all promotion gates are approved..",
+        "Confirm the step does not mutate current LC Training collections, booking, auth, blog, or forms."
+      ],
+      "acceptanceCriteria": [
+        "The step targets isolated Detroit Dynamo dd_* schema, functions, or preview artifacts.",
+        "Secrets are not printed in logs or committed to artifacts.",
+        "The owner review packet references the evidence before Appwrite live mode is enabled."
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ],
+      "productionPreviewEvidenceId": "pp-backend-step-8",
+      "previewCoverage": "Goal audit still passes implemented scope and keeps external gates visible until payments, waivers, facilities, and league facts are confirmed. is already named in the backend activation runbook.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md"
+      ]
+    },
+    {
+      "id": "external-confirmation-payments-packages",
+      "trackType": "external_confirmation",
+      "label": "Payments & Packages",
+      "ownerRole": "Master Admin",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Status now: pending_confirmation",
+        "Related models: TrainingPackage, Payment, Booking, CampClinic, Sponsor",
+        "Publish rule: Do not publish checkout links or exact package commitments until pricing and provider setup are approved."
+      ],
+      "requiredEvidence": [
+        "Approved private, small-group, team-training, camp, tryout, dues, and sponsor package pricing",
+        "Selected payment provider, checkout flow, refund policy, and failed-payment handling",
+        "Tax/fee treatment, discount policy, and settlement ownership",
+        "Admin reporting needs for packages, payments, refunds, and outstanding balances",
+        "Record action outcome: Owner approves package matrix, provider, refund rules, and admin payment fields.."
+      ],
+      "acceptanceCriteria": [
+        "The publish rule remains enforced until official proof or owner approval is attached.",
+        "Unconfirmed facts stay as future-pathway, placeholder, or register-interest language.",
+        "No payment, waiver, staff, roster, sponsor, facility, league, SEO, redirect, or proof publication is unlocked by this preview record."
+      ],
+      "blockedLiveActions": [
+        "public fact publication",
+        "checkout/signature activation",
+        "SEO/redirect launch"
+      ],
+      "productionPreviewEvidenceId": "pp-external-payments-packages",
+      "previewCoverage": "4 required fact(s) are named for owner review.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-actions.md"
+      ]
+    },
+    {
+      "id": "external-confirmation-waivers-legal",
+      "trackType": "external_confirmation",
+      "label": "Waivers & Legal",
+      "ownerRole": "Registrar",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Status now: pending_confirmation",
+        "Related models: Waiver, Player, ParentGuardian, TryoutRegistration, CampClinic",
+        "Publish rule: Do not collect signatures or present legal text as final until owner/legal review is complete."
+      ],
+      "requiredEvidence": [
+        "Youth participation waiver and medical consent language",
+        "Media release, privacy/terms language, and adult participation waiver",
+        "Travel, emergency contact, and camp/clinic consent requirements",
+        "Versioning, expiration, guardian signature, and retention rules",
+        "Record action outcome: Prepare approved waiver versions and map each form/program to the right waiver requirement.."
+      ],
+      "acceptanceCriteria": [
+        "The publish rule remains enforced until official proof or owner approval is attached.",
+        "Unconfirmed facts stay as future-pathway, placeholder, or register-interest language.",
+        "No payment, waiver, staff, roster, sponsor, facility, league, SEO, redirect, or proof publication is unlocked by this preview record."
+      ],
+      "blockedLiveActions": [
+        "public fact publication",
+        "checkout/signature activation",
+        "SEO/redirect launch"
+      ],
+      "productionPreviewEvidenceId": "pp-external-waivers-legal",
+      "previewCoverage": "4 required fact(s) are named for owner review.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-actions.md"
+      ]
+    },
+    {
+      "id": "external-confirmation-league-competition-facts",
+      "trackType": "external_confirmation",
+      "label": "League & Competition Facts",
+      "ownerRole": "Club Director",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Status now: future_pathway",
+        "Related models: Team, MatchFixture, MatchResult, NewsPost",
+        "Publish rule: Use future-pathway language until written league or competition confirmation exists."
+      ],
+      "requiredEvidence": [
+        "Confirmed senior men league acceptance before naming current UPSL or similar membership",
+        "Confirmed senior women league acceptance before naming current UPSL Women or similar membership",
+        "Confirmed youth league placement before naming current youth competition",
+        "Fixture, opponent, venue, roster, staff, and competition rules confirmed before publication",
+        "Record action outcome: Collect official league/competition documentation and owner-approved public wording.."
+      ],
+      "acceptanceCriteria": [
+        "The publish rule remains enforced until official proof or owner approval is attached.",
+        "Unconfirmed facts stay as future-pathway, placeholder, or register-interest language.",
+        "No payment, waiver, staff, roster, sponsor, facility, league, SEO, redirect, or proof publication is unlocked by this preview record."
+      ],
+      "blockedLiveActions": [
+        "public fact publication",
+        "checkout/signature activation",
+        "SEO/redirect launch"
+      ],
+      "productionPreviewEvidenceId": "pp-external-league-competition-facts",
+      "previewCoverage": "4 required fact(s) are named for owner review.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-actions.md"
+      ]
+    },
+    {
+      "id": "external-confirmation-facilities-operations",
+      "trackType": "external_confirmation",
+      "label": "Facilities & Operations",
+      "ownerRole": "Club Director",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Status now: pending_confirmation",
+        "Related models: TrainingSession, CampClinic, MatchFixture, Program",
+        "Publish rule: Do not publish facility commitments, addresses, or schedules until operating access is confirmed."
+      ],
+      "requiredEvidence": [
+        "Confirmed training locations, field permits, indoor facility access, and match venues",
+        "Calendar availability for private training, camps, tryouts, youth teams, and senior teams",
+        "Insurance, safety, weather, cancellation, check-in, and emergency procedures",
+        "Published location names, addresses, parking/access notes, and facility partner permissions",
+        "Record action outcome: Confirm facility partners, operating rules, insurance requirements, and calendar windows.."
+      ],
+      "acceptanceCriteria": [
+        "The publish rule remains enforced until official proof or owner approval is attached.",
+        "Unconfirmed facts stay as future-pathway, placeholder, or register-interest language.",
+        "No payment, waiver, staff, roster, sponsor, facility, league, SEO, redirect, or proof publication is unlocked by this preview record."
+      ],
+      "blockedLiveActions": [
+        "public fact publication",
+        "checkout/signature activation",
+        "SEO/redirect launch"
+      ],
+      "productionPreviewEvidenceId": "pp-external-facilities-operations",
+      "previewCoverage": "4 required fact(s) are named for owner review.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-actions.md"
+      ]
+    },
+    {
+      "id": "external-confirmation-staff-rosters-safeguarding",
+      "trackType": "external_confirmation",
+      "label": "Staff, Rosters & Safeguarding",
+      "ownerRole": "Club Director",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Status now: pending_confirmation",
+        "Related models: Coach, StaffMember, Team, Player",
+        "Publish rule: Do not publish staff, roster, or player bio details until permissions and verification are complete."
+      ],
+      "requiredEvidence": [
+        "Confirmed staff names, roles, bios, licenses, photos, and public contact rules",
+        "Background check, safeguarding, and youth communication standards",
+        "Approved rosters, player photos, bios, statuses, and parent/player release permissions",
+        "Team manager assignments and internal access levels",
+        "Record action outcome: Collect staff/roster approvals and map internal roles to admin permissions.."
+      ],
+      "acceptanceCriteria": [
+        "The publish rule remains enforced until official proof or owner approval is attached.",
+        "Unconfirmed facts stay as future-pathway, placeholder, or register-interest language.",
+        "No payment, waiver, staff, roster, sponsor, facility, league, SEO, redirect, or proof publication is unlocked by this preview record."
+      ],
+      "blockedLiveActions": [
+        "public fact publication",
+        "checkout/signature activation",
+        "SEO/redirect launch"
+      ],
+      "productionPreviewEvidenceId": "pp-external-staff-rosters-safeguarding",
+      "previewCoverage": "4 required fact(s) are named for owner review.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-actions.md"
+      ]
+    },
+    {
+      "id": "external-confirmation-sponsors-media-content-proof",
+      "trackType": "external_confirmation",
+      "label": "Sponsors, Media & Content Proof",
+      "ownerRole": "Media/Admin Staff",
+      "status": "evidence_required",
+      "liveGateStatus": "not_cleared",
+      "sourceRoute": "",
+      "leadType": "",
+      "functionId": "",
+      "sourceReferences": [
+        "Status now: preview_only",
+        "Related models: Sponsor, NewsPost, ContactLead",
+        "Publish rule: Keep proof slots as placeholders until real quotes, sponsor assets, and content rights are approved."
+      ],
+      "requiredEvidence": [
+        "Approved sponsor packages, logos, website links, activation inventory, and display permissions",
+        "Real testimonials, player stories, media clips, and partner quotes",
+        "Launch announcements, news categories, editorial approval workflow, and image rights",
+        "SEO/social assets, redirect timing, sitemap/robots publication, and current-site migration wording",
+        "Record action outcome: Approve sponsor assets, proof content, launch copy, and publication workflow before promotion.."
+      ],
+      "acceptanceCriteria": [
+        "The publish rule remains enforced until official proof or owner approval is attached.",
+        "Unconfirmed facts stay as future-pathway, placeholder, or register-interest language.",
+        "No payment, waiver, staff, roster, sponsor, facility, league, SEO, redirect, or proof publication is unlocked by this preview record."
+      ],
+      "blockedLiveActions": [
+        "public fact publication",
+        "checkout/signature activation",
+        "SEO/redirect launch"
+      ],
+      "productionPreviewEvidenceId": "pp-external-sponsors-media-content-proof",
+      "previewCoverage": "4 required fact(s) are named for owner review.",
+      "relatedArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-actions.md"
+      ]
+    }
+  ],
+  "summary": {
+    "tracksTotal": 30,
+    "evidenceRequired": 30,
+    "liveGatesCleared": 0,
+    "productionSubmissionsRecorded": 0,
+    "publicationsUnlocked": 0,
+    "trackTypes": {
+      "public_form_submission": 7,
+      "public_validation_probe": 1,
+      "admin_function_action": 4,
+      "admin_record_workspace": 1,
+      "route_browser_qa": 3,
+      "backend_activation": 8,
+      "external_confirmation": 6
+    },
+    "ownerRoles": [
+      "Club Director",
+      "Master Admin",
+      "Media/Admin Staff",
+      "Registrar",
+      "Training Director"
+    ],
+    "publicFormTracks": 7,
+    "adminActionTracks": 4,
+    "routeQaTracks": 3,
+    "backendActivationTracks": 8,
+    "externalConfirmationTracks": 6,
+    "launchEvidenceItems": 13,
+    "ownerReviewSections": 9,
+    "ownerReviewDecision": "no_go_preview_only",
+    "blockedLiveActions": 24
+  },
+  "requiredProductionPreviewActions": [
+    "Run every public form fixture on a production-preview deployment and attach response ids or screenshots.",
+    "Run authenticated admin function success and rejection fixtures with trusted preview roles.",
+    "Attach route smoke, browser QA, and console-clean evidence for current LC routes, Dynamo public routes, and protected Dynamo admin routes.",
+    "Attach Appwrite preflight, provisioning/dry-run, function deployment, and isolated dd_* collection evidence before enabling live backend mode.",
+    "Keep the owner launch review decision at No-Go: Preview Only until external approvals and production-preview evidence are reviewed."
+  ],
+  "blockedLiveActions": [
+    "Appwrite intake default",
+    "SEO index launch",
+    "SEO/redirect launch",
+    "admin CRUD launch",
+    "admin dashboard launch",
+    "admin workflow launch",
+    "checkout/signature activation",
+    "fixture/result publication",
+    "live audit-event writes",
+    "live lead routing",
+    "live lead status transitions",
+    "live record migration",
+    "noindex removal",
+    "owner launch approval",
+    "payment/waiver/sponsor mutation",
+    "permanent redirects",
+    "protected admin live reads",
+    "protected admin live writes",
+    "public fact publication",
+    "public launch announcement",
+    "role grant launch",
+    "role-scoped record browsing",
+    "root route promotion",
+    "trusted role grants"
+  ],
+  "referencedReports": {
+    "launchEvidence": {
+      "total": 13,
+      "previewPassed": 1,
+      "evidenceRequired": 4,
+      "pendingConfirmation": 5,
+      "futurePathway": 1,
+      "previewOnly": 2,
+      "blockedActions": 37
+    },
+    "ownerLaunchReview": {
+      "sectionsTotal": 9,
+      "reviewReady": 1,
+      "blockedSections": 8,
+      "externalApprovalsRequired": 6,
+      "unresolvedEvidenceItems": 12,
+      "liveGatesCleared": 0,
+      "publicationsUnlocked": 0,
+      "paymentPackageTracks": 6,
+      "waiverTracks": 6,
+      "claimSafetyTracks": 7,
+      "cutoverTracks": 9,
+      "safeguardingTracks": 8,
+      "backendActivationSteps": 8,
+      "blockedLiveActions": 25
+    }
+  },
+  "issues": []
+}

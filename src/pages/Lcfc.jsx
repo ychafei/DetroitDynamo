@@ -66,6 +66,7 @@ export default function Lcfc() {
 
 /* ---------- primitives ---------- */
 
+/** @param {{ as?: any, className?: string, children?: React.ReactNode, [key: string]: any }} props */
 function GoldButton({ as: As = 'a', className = '', children, ...props }) {
   return (
     <As
@@ -77,6 +78,7 @@ function GoldButton({ as: As = 'a', className = '', children, ...props }) {
   );
 }
 
+/** @param {{ as?: any, className?: string, children?: React.ReactNode, [key: string]: any }} props */
 function OutlineButton({ as: As = 'a', className = '', children, ...props }) {
   return (
     <As
@@ -88,6 +90,7 @@ function OutlineButton({ as: As = 'a', className = '', children, ...props }) {
   );
 }
 
+/** @param {{ id?: string, className?: string, children?: React.ReactNode }} props */
 function Card({ id, className = '', children }) {
   return (
     <div id={id} className={`relative scroll-mt-24 bg-white rounded-2xl border border-zinc-200/80 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.15)] ${className}`}>
@@ -97,6 +100,7 @@ function Card({ id, className = '', children }) {
   );
 }
 
+/** @param {{ children?: React.ReactNode, sub?: React.ReactNode }} props */
 function CardTitle({ children, sub }) {
   return (
     <div className="mb-5">
@@ -106,6 +110,7 @@ function CardTitle({ children, sub }) {
   );
 }
 
+/** @param {{ icon?: any, children?: React.ReactNode }} props */
 function EmptyState({ icon: Icon, children }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center rounded-xl border border-dashed border-zinc-300 bg-zinc-50/70 py-12 px-4">
@@ -128,7 +133,7 @@ function Hero({ s }) {
         <>
           <div
             className="absolute inset-0"
-            style={{ background: 'radial-gradient(ellipse 80% 60% at 70% 0%, rgba(186,154,75,0.22), transparent 60%), linear-gradient(160deg, #050505 0%, #0c0c0c 45%, #161310 100%)' }}
+            style={{ background: 'radial-gradient(ellipse 80% 60% at 70% 0%, rgba(201,166,70,0.20), transparent 60%), linear-gradient(160deg, #050505 0%, #080808 45%, #111111 100%)' }}
           />
           <div className="absolute -top-24 right-1/4 w-[34rem] h-[34rem] bg-accent/10 rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-1/3 w-[26rem] h-[26rem] bg-accent/5 rounded-full blur-3xl" />
@@ -142,19 +147,18 @@ function Hero({ s }) {
       {/* Strong dark overlay for readability over any image */}
       <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/85 to-zinc-950/30" />
 
-      {/* Existing LC logo, large, right side — no new crest created */}
       <img
-        src="/logo-shield.png"
+        src="/detroit-dynamo/logo-primary.png"
         alt=""
         aria-hidden="true"
-        className="pointer-events-none select-none absolute right-[-60px] md:right-8 top-1/2 -translate-y-1/2 w-[300px] md:w-[460px] lg:w-[540px] opacity-25 md:opacity-50 drop-shadow-[0_0_60px_rgba(186,154,75,0.35)] hidden sm:block"
+        className="pointer-events-none select-none absolute right-[-60px] md:right-8 top-1/2 -translate-y-1/2 w-[300px] md:w-[460px] lg:w-[540px] opacity-25 md:opacity-50 drop-shadow-[0_0_60px_rgba(201,166,70,0.35)] hidden sm:block"
       />
 
       <div className="relative w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/30 mb-7">
             <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-            <span className="text-accent text-[11px] font-oswald tracking-[0.25em] uppercase">Les Chèvres · Competitive Side</span>
+            <span className="text-accent text-[11px] font-oswald tracking-[0.25em] uppercase">Detroit Dynamo FC · Competitive Side</span>
           </div>
 
           <h1 className="font-oswald text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-[0.95]">
@@ -192,8 +196,8 @@ function AboutRow({ s }) {
       </Card>
 
       <div className="relative rounded-2xl overflow-hidden bg-zinc-950 p-10 lg:p-12 flex flex-col justify-center min-h-[240px]">
-        <div className="absolute inset-0 opacity-[0.5]" style={{ background: 'radial-gradient(circle at 85% 15%, rgba(186,154,75,0.18), transparent 55%)' }} />
-        {/* diagonal gold accent lines */}
+        <div className="absolute inset-0 opacity-[0.5]" style={{ background: 'radial-gradient(circle at 85% 15%, rgba(0,120,255,0.18), transparent 55%)' }} />
+        {/* diagonal electric-blue accent lines */}
         <div className="absolute -right-10 top-0 bottom-0 w-[2px] bg-accent/40 rotate-[14deg]" />
         <div className="absolute -right-4 top-0 bottom-0 w-[2px] bg-accent/20 rotate-[14deg]" />
         <div className="absolute top-5 left-5 right-5 h-px bg-accent/40" />
@@ -221,7 +225,7 @@ function OverviewCard({ s }) {
         style={{
           background: s.overview_image_url
             ? undefined
-            : 'radial-gradient(circle at 100% 100%, rgba(186,154,75,0.12), transparent 70%)',
+            : 'radial-gradient(circle at 100% 100%, rgba(0,120,255,0.12), transparent 70%)',
         }}
       />
       {s.overview_image_url && (
@@ -339,7 +343,7 @@ function TryoutsCard({ s }) {
 
   return (
     <div id="tryouts" className="relative h-full rounded-2xl overflow-hidden bg-zinc-950 p-8 lg:p-10">
-      <div className="absolute inset-0 opacity-60" style={{ background: 'radial-gradient(circle at 90% 10%, rgba(186,154,75,0.16), transparent 55%)' }} />
+      <div className="absolute inset-0 opacity-60" style={{ background: 'radial-gradient(circle at 90% 10%, rgba(0,120,255,0.16), transparent 55%)' }} />
       <div className="absolute top-5 left-5 right-5 h-px bg-accent/30" />
       <div className="relative flex items-center gap-8">
         <div className="flex-1">
@@ -410,7 +414,7 @@ function NewsSection({ featured, newsList }) {
   const empty = !featured && newsList.length === 0;
   return (
     <section id="news" className="relative bg-zinc-950 py-16 md:py-20 overflow-hidden">
-      <div className="absolute inset-0 opacity-50" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(186,154,75,0.12), transparent 55%)' }} />
+      <div className="absolute inset-0 opacity-50" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(0,120,255,0.12), transparent 55%)' }} />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
 
       <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">

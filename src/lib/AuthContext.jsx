@@ -29,9 +29,9 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       // 401 = no session — this is the normal "logged out" path, not an error.
       const code = err?.code;
-      if (code !== 401 && code !== 403) {
-        console.error('User auth check failed:', err);
-      }
+      const message = String(err?.message || err || '');
+      const backendUnavailable = err instanceof TypeError || /Failed to fetch|NetworkError|Load failed/i.test(message);
+      setAuthError(code !== 401 && code !== 403 && code !== 'APPWRITE_BROWSER_DISABLED' && !backendUnavailable ? err : null);
       setUser(null);
       setIsAuthenticated(false);
     } finally {

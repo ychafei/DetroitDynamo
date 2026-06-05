@@ -104,16 +104,16 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
-      <div className="w-full max-w-md bg-[#F7F5EF] text-[#0B0B0B] rounded-2xl shadow-2xl p-8 sm:p-10 space-y-6">
+      <div className="w-full max-w-md rounded-2xl border border-[rgba(98,216,255,0.22)] bg-[#061225] p-8 text-white shadow-2xl shadow-black/40 sm:p-10 space-y-6">
         <div className="flex flex-col items-center gap-4">
-          <div className="rounded-full bg-white p-2 shadow-md">
-            <img src="/logo.png" alt="LC Training" className="h-20 w-20 rounded-full object-cover" />
+          <div className="rounded-full border border-[rgba(98,216,255,0.28)] bg-[#020714] p-2 shadow-md shadow-[rgba(0,120,255,0.18)]">
+            <img src="/detroit-dynamo/logo-primary.png" alt="Detroit Dynamo" className="h-20 w-20 rounded-full object-contain" />
           </div>
           <div className="text-center">
             <h1 className="font-oswald text-2xl sm:text-3xl font-bold tracking-wide">
-              Welcome to LC Training
+              Welcome to Detroit Dynamo
             </h1>
-            <p className="text-sm text-neutral-500 mt-1">Sign in to continue</p>
+            <p className="text-sm text-[#AEBBD0] mt-1">Sign in to continue</p>
           </div>
         </div>
 
@@ -133,14 +133,14 @@ export default function Login() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-neutral-200" />
-          <span className="text-xs uppercase tracking-widest text-neutral-400">or</span>
-          <div className="h-px flex-1 bg-neutral-200" />
+          <div className="h-px flex-1 bg-white/15" />
+          <span className="text-xs uppercase tracking-widest text-[#AEBBD0]">or</span>
+          <div className="h-px flex-1 bg-white/15" />
         </div>
 
         <form onSubmit={handlePasswordLogin} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-sm font-medium text-neutral-700">Email</Label>
+            <Label htmlFor="email" className="text-sm font-medium text-[#D7DEEA]">Email</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none" />
               <Input
@@ -158,7 +158,7 @@ export default function Login() {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-sm font-medium text-neutral-700">Password</Label>
+            <Label htmlFor="password" className="text-sm font-medium text-[#D7DEEA]">Password</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none" />
               <Input
@@ -181,19 +181,19 @@ export default function Login() {
           <Button
             type="submit"
             disabled={submitting}
-            className="w-full bg-[#0B0B0B] hover:bg-black text-white py-2.5 rounded-md"
+            className="w-full bg-[var(--dynamo-blue)] text-[#020714] hover:bg-[var(--dynamo-blue-bright)] py-2.5 rounded-md"
           >
             Sign in
           </Button>
         </form>
 
         <div className="flex items-center justify-between text-sm">
-          <Link to="/forgot-password" className="text-neutral-600 hover:text-[#0B0B0B] underline-offset-4 hover:underline">
+          <Link to="/forgot-password" className="text-[#AEBBD0] hover:text-white underline-offset-4 hover:underline">
             Forgot password?
           </Link>
-          <span className="text-neutral-500">
+          <span className="text-[#AEBBD0]">
             Need an account?{' '}
-            <Link to="/signup" className="font-semibold text-[#0B0B0B] underline-offset-4 hover:underline">
+            <Link to="/signup" className="font-semibold text-[var(--dynamo-blue-bright)] underline-offset-4 hover:underline">
               Sign up
             </Link>
           </span>

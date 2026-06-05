@@ -1,0 +1,443 @@
+{
+  "generatedAt": "2026-05-29T14:14:30.571Z",
+  "fixtures": [
+    {
+      "confirmation_area": "Payments & Packages",
+      "action": "request_owner_signoff",
+      "actor_role": "Master Admin",
+      "evidence_label": "Draft package and provider matrix",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+      "note": "Owner must approve exact prices and provider product ids before checkout exists."
+    },
+    {
+      "confirmation_area": "Waivers & Legal",
+      "action": "attach_confirmation_evidence",
+      "actor_role": "Registrar",
+      "evidence_label": "Waiver version register draft",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+      "note": "Preview artifact only; no signatures are enabled."
+    },
+    {
+      "confirmation_area": "League & Competition Facts",
+      "action": "request_changes",
+      "actor_role": "Club Director",
+      "evidence_label": "League pathway wording",
+      "artifact_reference": "",
+      "note": "Keep public copy future-pathway until official league documents exist."
+    },
+    {
+      "confirmation_area": "Facilities & Operations",
+      "action": "record_preview_decision",
+      "actor_role": "Club Director",
+      "evidence_label": "Facility operations review rehearsal",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md",
+      "note": "Preview decision only; no facility name, address, or schedule is public-approved."
+    },
+    {
+      "confirmation_area": "Staff, Rosters & Safeguarding",
+      "action": "request_owner_signoff",
+      "actor_role": "Club Director",
+      "evidence_label": "Staff and roster safeguarding review",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+      "note": "Staff/roster proof stays gated until permissions and safeguarding evidence exist."
+    },
+    {
+      "confirmation_area": "Sponsors, Media & Content Proof",
+      "action": "attach_confirmation_evidence",
+      "actor_role": "Media/Admin Staff",
+      "evidence_label": "Sponsor and media proof checklist",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+      "note": "Proof slots remain placeholders until logo, media, and testimonial permissions are approved."
+    }
+  ],
+  "actions": [
+    {
+      "id": "fixture-external-confirmation-1",
+      "status": "owner_signoff_requested",
+      "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+      "live_gate_cleared": false,
+      "publication_unlocked": false,
+      "created_at": "2026-05-29T00:10:00.000Z",
+      "updated_at": "2026-05-29T00:10:00.000Z",
+      "owner_role": "Master Admin",
+      "register_status": "pending_confirmation",
+      "related_models": [
+        "TrainingPackage",
+        "Payment",
+        "Booking",
+        "CampClinic",
+        "Sponsor"
+      ],
+      "required_facts": [
+        "Approved private, small-group, team-training, camp, tryout, dues, and sponsor package pricing",
+        "Selected payment provider, checkout flow, refund policy, and failed-payment handling",
+        "Tax/fee treatment, discount policy, and settlement ownership",
+        "Admin reporting needs for packages, payments, refunds, and outstanding balances"
+      ],
+      "publish_rule": "Do not publish checkout links or exact package commitments until pricing and provider setup are approved.",
+      "next_action": "Owner approves package matrix, provider, refund rules, and admin payment fields.",
+      "confirmation_area": "Payments & Packages",
+      "action": "request_owner_signoff",
+      "actor_role": "Master Admin",
+      "evidence_label": "Draft package and provider matrix",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+      "note": "Owner must approve exact prices and provider product ids before checkout exists."
+    },
+    {
+      "id": "fixture-external-confirmation-2",
+      "status": "evidence_attached",
+      "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+      "live_gate_cleared": false,
+      "publication_unlocked": false,
+      "created_at": "2026-05-29T00:11:00.000Z",
+      "updated_at": "2026-05-29T00:11:00.000Z",
+      "owner_role": "Registrar",
+      "register_status": "pending_confirmation",
+      "related_models": [
+        "Waiver",
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration",
+        "CampClinic"
+      ],
+      "required_facts": [
+        "Youth participation waiver and medical consent language",
+        "Media release, privacy/terms language, and adult participation waiver",
+        "Travel, emergency contact, and camp/clinic consent requirements",
+        "Versioning, expiration, guardian signature, and retention rules"
+      ],
+      "publish_rule": "Do not collect signatures or present legal text as final until owner/legal review is complete.",
+      "next_action": "Prepare approved waiver versions and map each form/program to the right waiver requirement.",
+      "confirmation_area": "Waivers & Legal",
+      "action": "attach_confirmation_evidence",
+      "actor_role": "Registrar",
+      "evidence_label": "Waiver version register draft",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+      "note": "Preview artifact only; no signatures are enabled."
+    },
+    {
+      "id": "fixture-external-confirmation-3",
+      "status": "changes_requested",
+      "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+      "live_gate_cleared": false,
+      "publication_unlocked": false,
+      "created_at": "2026-05-29T00:12:00.000Z",
+      "updated_at": "2026-05-29T00:12:00.000Z",
+      "owner_role": "Club Director",
+      "register_status": "future_pathway",
+      "related_models": [
+        "Team",
+        "MatchFixture",
+        "MatchResult",
+        "NewsPost"
+      ],
+      "required_facts": [
+        "Confirmed senior men league acceptance before naming current UPSL or similar membership",
+        "Confirmed senior women league acceptance before naming current UPSL Women or similar membership",
+        "Confirmed youth league placement before naming current youth competition",
+        "Fixture, opponent, venue, roster, staff, and competition rules confirmed before publication"
+      ],
+      "publish_rule": "Use future-pathway language until written league or competition confirmation exists.",
+      "next_action": "Collect official league/competition documentation and owner-approved public wording.",
+      "confirmation_area": "League & Competition Facts",
+      "action": "request_changes",
+      "actor_role": "Club Director",
+      "evidence_label": "League pathway wording",
+      "artifact_reference": "",
+      "note": "Keep public copy future-pathway until official league documents exist."
+    },
+    {
+      "id": "fixture-external-confirmation-4",
+      "status": "preview_decision_recorded",
+      "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+      "live_gate_cleared": false,
+      "publication_unlocked": false,
+      "created_at": "2026-05-29T00:13:00.000Z",
+      "updated_at": "2026-05-29T00:13:00.000Z",
+      "owner_role": "Club Director",
+      "register_status": "pending_confirmation",
+      "related_models": [
+        "TrainingSession",
+        "CampClinic",
+        "MatchFixture",
+        "Program"
+      ],
+      "required_facts": [
+        "Confirmed training locations, field permits, indoor facility access, and match venues",
+        "Calendar availability for private training, camps, tryouts, youth teams, and senior teams",
+        "Insurance, safety, weather, cancellation, check-in, and emergency procedures",
+        "Published location names, addresses, parking/access notes, and facility partner permissions"
+      ],
+      "publish_rule": "Do not publish facility commitments, addresses, or schedules until operating access is confirmed.",
+      "next_action": "Confirm facility partners, operating rules, insurance requirements, and calendar windows.",
+      "confirmation_area": "Facilities & Operations",
+      "action": "record_preview_decision",
+      "actor_role": "Club Director",
+      "evidence_label": "Facility operations review rehearsal",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md",
+      "note": "Preview decision only; no facility name, address, or schedule is public-approved."
+    },
+    {
+      "id": "fixture-external-confirmation-5",
+      "status": "owner_signoff_requested",
+      "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+      "live_gate_cleared": false,
+      "publication_unlocked": false,
+      "created_at": "2026-05-29T00:14:00.000Z",
+      "updated_at": "2026-05-29T00:14:00.000Z",
+      "owner_role": "Club Director",
+      "register_status": "pending_confirmation",
+      "related_models": [
+        "Coach",
+        "StaffMember",
+        "Team",
+        "Player"
+      ],
+      "required_facts": [
+        "Confirmed staff names, roles, bios, licenses, photos, and public contact rules",
+        "Background check, safeguarding, and youth communication standards",
+        "Approved rosters, player photos, bios, statuses, and parent/player release permissions",
+        "Team manager assignments and internal access levels"
+      ],
+      "publish_rule": "Do not publish staff, roster, or player bio details until permissions and verification are complete.",
+      "next_action": "Collect staff/roster approvals and map internal roles to admin permissions.",
+      "confirmation_area": "Staff, Rosters & Safeguarding",
+      "action": "request_owner_signoff",
+      "actor_role": "Club Director",
+      "evidence_label": "Staff and roster safeguarding review",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+      "note": "Staff/roster proof stays gated until permissions and safeguarding evidence exist."
+    },
+    {
+      "id": "fixture-external-confirmation-6",
+      "status": "evidence_attached",
+      "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+      "live_gate_cleared": false,
+      "publication_unlocked": false,
+      "created_at": "2026-05-29T00:15:00.000Z",
+      "updated_at": "2026-05-29T00:15:00.000Z",
+      "owner_role": "Media/Admin Staff",
+      "register_status": "preview_only",
+      "related_models": [
+        "Sponsor",
+        "NewsPost",
+        "ContactLead"
+      ],
+      "required_facts": [
+        "Approved sponsor packages, logos, website links, activation inventory, and display permissions",
+        "Real testimonials, player stories, media clips, and partner quotes",
+        "Launch announcements, news categories, editorial approval workflow, and image rights",
+        "SEO/social assets, redirect timing, sitemap/robots publication, and current-site migration wording"
+      ],
+      "publish_rule": "Keep proof slots as placeholders until real quotes, sponsor assets, and content rights are approved.",
+      "next_action": "Approve sponsor assets, proof content, launch copy, and publication workflow before promotion.",
+      "confirmation_area": "Sponsors, Media & Content Proof",
+      "action": "attach_confirmation_evidence",
+      "actor_role": "Media/Admin Staff",
+      "evidence_label": "Sponsor and media proof checklist",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+      "note": "Proof slots remain placeholders until logo, media, and testimonial permissions are approved."
+    }
+  ],
+  "summary": {
+    "totalActions": 6,
+    "confirmationAreasTouched": 6,
+    "ownerSignoffsRequested": 2,
+    "changesRequested": 1,
+    "previewDecisions": 1,
+    "liveGatesCleared": 0,
+    "publicationsUnlocked": 0,
+    "latestByArea": [
+      {
+        "id": "fixture-external-confirmation-1",
+        "status": "owner_signoff_requested",
+        "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+        "live_gate_cleared": false,
+        "publication_unlocked": false,
+        "created_at": "2026-05-29T00:10:00.000Z",
+        "updated_at": "2026-05-29T00:10:00.000Z",
+        "owner_role": "Master Admin",
+        "register_status": "pending_confirmation",
+        "related_models": [
+          "TrainingPackage",
+          "Payment",
+          "Booking",
+          "CampClinic",
+          "Sponsor"
+        ],
+        "required_facts": [
+          "Approved private, small-group, team-training, camp, tryout, dues, and sponsor package pricing",
+          "Selected payment provider, checkout flow, refund policy, and failed-payment handling",
+          "Tax/fee treatment, discount policy, and settlement ownership",
+          "Admin reporting needs for packages, payments, refunds, and outstanding balances"
+        ],
+        "publish_rule": "Do not publish checkout links or exact package commitments until pricing and provider setup are approved.",
+        "next_action": "Owner approves package matrix, provider, refund rules, and admin payment fields.",
+        "confirmation_area": "Payments & Packages",
+        "action": "request_owner_signoff",
+        "actor_role": "Master Admin",
+        "evidence_label": "Draft package and provider matrix",
+        "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+        "note": "Owner must approve exact prices and provider product ids before checkout exists."
+      },
+      {
+        "id": "fixture-external-confirmation-2",
+        "status": "evidence_attached",
+        "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+        "live_gate_cleared": false,
+        "publication_unlocked": false,
+        "created_at": "2026-05-29T00:11:00.000Z",
+        "updated_at": "2026-05-29T00:11:00.000Z",
+        "owner_role": "Registrar",
+        "register_status": "pending_confirmation",
+        "related_models": [
+          "Waiver",
+          "Player",
+          "ParentGuardian",
+          "TryoutRegistration",
+          "CampClinic"
+        ],
+        "required_facts": [
+          "Youth participation waiver and medical consent language",
+          "Media release, privacy/terms language, and adult participation waiver",
+          "Travel, emergency contact, and camp/clinic consent requirements",
+          "Versioning, expiration, guardian signature, and retention rules"
+        ],
+        "publish_rule": "Do not collect signatures or present legal text as final until owner/legal review is complete.",
+        "next_action": "Prepare approved waiver versions and map each form/program to the right waiver requirement.",
+        "confirmation_area": "Waivers & Legal",
+        "action": "attach_confirmation_evidence",
+        "actor_role": "Registrar",
+        "evidence_label": "Waiver version register draft",
+        "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+        "note": "Preview artifact only; no signatures are enabled."
+      },
+      {
+        "id": "fixture-external-confirmation-3",
+        "status": "changes_requested",
+        "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+        "live_gate_cleared": false,
+        "publication_unlocked": false,
+        "created_at": "2026-05-29T00:12:00.000Z",
+        "updated_at": "2026-05-29T00:12:00.000Z",
+        "owner_role": "Club Director",
+        "register_status": "future_pathway",
+        "related_models": [
+          "Team",
+          "MatchFixture",
+          "MatchResult",
+          "NewsPost"
+        ],
+        "required_facts": [
+          "Confirmed senior men league acceptance before naming current UPSL or similar membership",
+          "Confirmed senior women league acceptance before naming current UPSL Women or similar membership",
+          "Confirmed youth league placement before naming current youth competition",
+          "Fixture, opponent, venue, roster, staff, and competition rules confirmed before publication"
+        ],
+        "publish_rule": "Use future-pathway language until written league or competition confirmation exists.",
+        "next_action": "Collect official league/competition documentation and owner-approved public wording.",
+        "confirmation_area": "League & Competition Facts",
+        "action": "request_changes",
+        "actor_role": "Club Director",
+        "evidence_label": "League pathway wording",
+        "artifact_reference": "",
+        "note": "Keep public copy future-pathway until official league documents exist."
+      },
+      {
+        "id": "fixture-external-confirmation-4",
+        "status": "preview_decision_recorded",
+        "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+        "live_gate_cleared": false,
+        "publication_unlocked": false,
+        "created_at": "2026-05-29T00:13:00.000Z",
+        "updated_at": "2026-05-29T00:13:00.000Z",
+        "owner_role": "Club Director",
+        "register_status": "pending_confirmation",
+        "related_models": [
+          "TrainingSession",
+          "CampClinic",
+          "MatchFixture",
+          "Program"
+        ],
+        "required_facts": [
+          "Confirmed training locations, field permits, indoor facility access, and match venues",
+          "Calendar availability for private training, camps, tryouts, youth teams, and senior teams",
+          "Insurance, safety, weather, cancellation, check-in, and emergency procedures",
+          "Published location names, addresses, parking/access notes, and facility partner permissions"
+        ],
+        "publish_rule": "Do not publish facility commitments, addresses, or schedules until operating access is confirmed.",
+        "next_action": "Confirm facility partners, operating rules, insurance requirements, and calendar windows.",
+        "confirmation_area": "Facilities & Operations",
+        "action": "record_preview_decision",
+        "actor_role": "Club Director",
+        "evidence_label": "Facility operations review rehearsal",
+        "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md",
+        "note": "Preview decision only; no facility name, address, or schedule is public-approved."
+      },
+      {
+        "id": "fixture-external-confirmation-5",
+        "status": "owner_signoff_requested",
+        "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+        "live_gate_cleared": false,
+        "publication_unlocked": false,
+        "created_at": "2026-05-29T00:14:00.000Z",
+        "updated_at": "2026-05-29T00:14:00.000Z",
+        "owner_role": "Club Director",
+        "register_status": "pending_confirmation",
+        "related_models": [
+          "Coach",
+          "StaffMember",
+          "Team",
+          "Player"
+        ],
+        "required_facts": [
+          "Confirmed staff names, roles, bios, licenses, photos, and public contact rules",
+          "Background check, safeguarding, and youth communication standards",
+          "Approved rosters, player photos, bios, statuses, and parent/player release permissions",
+          "Team manager assignments and internal access levels"
+        ],
+        "publish_rule": "Do not publish staff, roster, or player bio details until permissions and verification are complete.",
+        "next_action": "Collect staff/roster approvals and map internal roles to admin permissions.",
+        "confirmation_area": "Staff, Rosters & Safeguarding",
+        "action": "request_owner_signoff",
+        "actor_role": "Club Director",
+        "evidence_label": "Staff and roster safeguarding review",
+        "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+        "note": "Staff/roster proof stays gated until permissions and safeguarding evidence exist."
+      },
+      {
+        "id": "fixture-external-confirmation-6",
+        "status": "evidence_attached",
+        "destination": "Fixture preview external confirmation ledger; this does not approve publication or clear promotion gates",
+        "live_gate_cleared": false,
+        "publication_unlocked": false,
+        "created_at": "2026-05-29T00:15:00.000Z",
+        "updated_at": "2026-05-29T00:15:00.000Z",
+        "owner_role": "Media/Admin Staff",
+        "register_status": "preview_only",
+        "related_models": [
+          "Sponsor",
+          "NewsPost",
+          "ContactLead"
+        ],
+        "required_facts": [
+          "Approved sponsor packages, logos, website links, activation inventory, and display permissions",
+          "Real testimonials, player stories, media clips, and partner quotes",
+          "Launch announcements, news categories, editorial approval workflow, and image rights",
+          "SEO/social assets, redirect timing, sitemap/robots publication, and current-site migration wording"
+        ],
+        "publish_rule": "Keep proof slots as placeholders until real quotes, sponsor assets, and content rights are approved.",
+        "next_action": "Approve sponsor assets, proof content, launch copy, and publication workflow before promotion.",
+        "confirmation_area": "Sponsors, Media & Content Proof",
+        "action": "attach_confirmation_evidence",
+        "actor_role": "Media/Admin Staff",
+        "evidence_label": "Sponsor and media proof checklist",
+        "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "note": "Proof slots remain placeholders until logo, media, and testimonial permissions are approved."
+      }
+    ]
+  },
+  "csv": "id,created_at,status,action,confirmation_area,register_status,owner_role,actor_role,evidence_label,artifact_reference,live_gate_cleared,publication_unlocked,note\n\"fixture-external-confirmation-1\",\"2026-05-29T00:10:00.000Z\",\"owner_signoff_requested\",\"request_owner_signoff\",\"Payments & Packages\",\"pending_confirmation\",\"Master Admin\",\"Master Admin\",\"Draft package and provider matrix\",\"artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md\",\"false\",\"false\",\"Owner must approve exact prices and provider product ids before checkout exists.\"\n\"fixture-external-confirmation-2\",\"2026-05-29T00:11:00.000Z\",\"evidence_attached\",\"attach_confirmation_evidence\",\"Waivers & Legal\",\"pending_confirmation\",\"Registrar\",\"Registrar\",\"Waiver version register draft\",\"artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md\",\"false\",\"false\",\"Preview artifact only; no signatures are enabled.\"\n\"fixture-external-confirmation-3\",\"2026-05-29T00:12:00.000Z\",\"changes_requested\",\"request_changes\",\"League & Competition Facts\",\"future_pathway\",\"Club Director\",\"Club Director\",\"League pathway wording\",\"\",\"false\",\"false\",\"Keep public copy future-pathway until official league documents exist.\"\n\"fixture-external-confirmation-4\",\"2026-05-29T00:13:00.000Z\",\"preview_decision_recorded\",\"record_preview_decision\",\"Facilities & Operations\",\"pending_confirmation\",\"Club Director\",\"Club Director\",\"Facility operations review rehearsal\",\"artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md\",\"false\",\"false\",\"Preview decision only; no facility name, address, or schedule is public-approved.\"\n\"fixture-external-confirmation-5\",\"2026-05-29T00:14:00.000Z\",\"owner_signoff_requested\",\"request_owner_signoff\",\"Staff, Rosters & Safeguarding\",\"pending_confirmation\",\"Club Director\",\"Club Director\",\"Staff and roster safeguarding review\",\"artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md\",\"false\",\"false\",\"Staff/roster proof stays gated until permissions and safeguarding evidence exist.\"\n\"fixture-external-confirmation-6\",\"2026-05-29T00:15:00.000Z\",\"evidence_attached\",\"attach_confirmation_evidence\",\"Sponsors, Media & Content Proof\",\"preview_only\",\"Media/Admin Staff\",\"Media/Admin Staff\",\"Sponsor and media proof checklist\",\"artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md\",\"false\",\"false\",\"Proof slots remain placeholders until logo, media, and testimonial permissions are approved.\"",
+  "csvHeader": "id,created_at,status,action,confirmation_area,register_status,owner_role,actor_role,evidence_label,artifact_reference,live_gate_cleared,publication_unlocked,note",
+  "issues": []
+}

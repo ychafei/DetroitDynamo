@@ -1,0 +1,27 @@
+<!-- TODO: Replace with final exported transparent Detroit Dynamo favicon when available. -->
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 12H27C37 12 44 20 44 32C44 44 37 52 27 52H8L14 32L8 12Z" fill="url(#leftD)"/>
+  <path d="M18 21H27C32 21 35 25 35 32C35 39 32 43 27 43H18L22 32L18 21Z" fill="#020714"/>
+  <path d="M30 18H43C51 18 57 24 57 32C57 40 51 46 43 46H30L35 32L30 18Z" fill="url(#rightD)"/>
+  <path d="M38 25H43C47 25 50 28 50 32C50 36 47 39 43 39H38L41 32L38 25Z" fill="#020714"/>
+  <path d="M42 5L25 30H34L20 59L49 28H39L58 5H42Z" fill="#006BFF"/>
+  <path d="M41 8L27 30H36L25 53L45 29H36L53 8H41Z" fill="url(#slash)"/>
+  <path d="M27 30H36L33 36H23L27 30Z" fill="#F8FAFC"/>
+  <defs>
+    <linearGradient id="leftD" x1="8" y1="12" x2="38" y2="54" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.52" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#98A5B8"/>
+    </linearGradient>
+    <linearGradient id="rightD" x1="30" y1="18" x2="54" y2="49" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.56" stop-color="#DDE5F0"/>
+      <stop offset="1" stop-color="#7F8B9D"/>
+    </linearGradient>
+    <linearGradient id="slash" x1="25" y1="53" x2="50" y2="8" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#005DFF"/>
+      <stop offset="0.46" stop-color="#00A3FF"/>
+      <stop offset="1" stop-color="#77EAFF"/>
+    </linearGradient>
+  </defs>
+</svg>

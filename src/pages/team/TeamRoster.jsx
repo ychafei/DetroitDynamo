@@ -15,7 +15,7 @@ export default function TeamRoster() {
       <TeamPageHero
         eyebrow="The Squad"
         title="ROSTER"
-        description="The players representing LCFC on the pitch this season."
+        description="The players representing Detroit Dynamo FC on the pitch this season."
       />
 
       <section className="py-16">

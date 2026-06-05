@@ -70,13 +70,13 @@ export default function VerifyCoachLink() {
 
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center px-4 py-24">
-      <div className="w-full max-w-md bg-[#0B0B0B] border border-[#C9A646]/35 rounded-2xl p-8 text-center">
-        <div className="w-14 h-14 rounded-full bg-[#C9A646]/10 flex items-center justify-center mx-auto mb-5">
+      <div className="w-full max-w-md bg-[#020714] border border-[#0078FF]/35 rounded-2xl p-8 text-center">
+        <div className="w-14 h-14 rounded-full bg-[#0078FF]/10 flex items-center justify-center mx-auto mb-5">
           {state === 'success'
-            ? <CheckCircle2 className="w-7 h-7 text-[#C9A646]" />
+            ? <CheckCircle2 className="w-7 h-7 text-[#0078FF]" />
             : state === 'invalid' || state === 'used' || state === 'expired' || state === 'error' || state === 'mismatch'
-              ? <AlertTriangle className="w-7 h-7 text-[#C9A646]" />
-              : <ShieldCheck className="w-7 h-7 text-[#C9A646]" />}
+              ? <AlertTriangle className="w-7 h-7 text-[#0078FF]" />
+              : <ShieldCheck className="w-7 h-7 text-[#0078FF]" />}
         </div>
 
         {isLoadingAuth || state === 'loading' ? (
@@ -89,7 +89,7 @@ export default function VerifyCoachLink() {
             </p>
             <Button
               onClick={() => navigate(`/login?next=${encodeURIComponent(`/verify-coach-link?token=${token}`)}`)}
-              className="bg-[#C9A646] text-[#050505] font-oswald tracking-widest uppercase hover:bg-[#D4AF37]"
+              className="bg-[#0078FF] text-white font-oswald tracking-widest uppercase hover:bg-[#62D8FF] hover:text-[#020714]"
             >
               Sign In
             </Button>
@@ -104,13 +104,13 @@ export default function VerifyCoachLink() {
           <>
             <h1 className="font-oswald text-2xl text-white tracking-wide mb-2">Wrong account</h1>
             <p className="text-[#B8B8B8] text-sm mb-6">
-              You're signed in as <span className="text-[#C9A646]">{user?.email}</span>, but this link
-              was sent to <span className="text-[#C9A646]">{request?.email}</span>. Sign in with that
+              You're signed in as <span className="text-[#0078FF]">{user?.email}</span>, but this link
+              was sent to <span className="text-[#0078FF]">{request?.email}</span>. Sign in with that
               account to verify.
             </p>
             <Button
               onClick={async () => { await auth.signOut(); navigate(`/login?next=${encodeURIComponent(`/verify-coach-link?token=${token}`)}`); }}
-              className="bg-[#C9A646] text-[#050505] font-oswald tracking-widest uppercase hover:bg-[#D4AF37]"
+              className="bg-[#0078FF] text-white font-oswald tracking-widest uppercase hover:bg-[#62D8FF] hover:text-[#020714]"
             >
               Switch Account
             </Button>
@@ -120,7 +120,7 @@ export default function VerifyCoachLink() {
             <h1 className="font-oswald text-2xl text-white tracking-wide mb-2">Verified</h1>
             <p className="text-[#B8B8B8] text-sm mb-6">Your account is now linked. Welcome aboard.</p>
             <Link to="/coach">
-              <Button className="bg-[#C9A646] text-[#050505] font-oswald tracking-widest uppercase hover:bg-[#D4AF37]">
+              <Button className="bg-[#0078FF] text-white font-oswald tracking-widest uppercase hover:bg-[#62D8FF] hover:text-[#020714]">
                 Go to Coaching Portal
               </Button>
             </Link>
@@ -131,13 +131,13 @@ export default function VerifyCoachLink() {
           <>
             <h1 className="font-oswald text-2xl text-white tracking-wide mb-2">Confirm coach link</h1>
             <p className="text-[#B8B8B8] text-sm mb-6">
-              Link <span className="text-[#C9A646]">{user?.email}</span> to{' '}
-              <span className="text-[#C9A646]">{coachName}</span>?
+              Link <span className="text-[#0078FF]">{user?.email}</span> to{' '}
+              <span className="text-[#0078FF]">{coachName}</span>?
             </p>
             <Button
               onClick={confirm}
               disabled={busy}
-              className="bg-[#C9A646] text-[#050505] font-oswald tracking-widest uppercase hover:bg-[#D4AF37]"
+              className="bg-[#0078FF] text-white font-oswald tracking-widest uppercase hover:bg-[#62D8FF] hover:text-[#020714]"
             >
               {busy ? 'Verifying…' : 'Verify & Activate'}
             </Button>

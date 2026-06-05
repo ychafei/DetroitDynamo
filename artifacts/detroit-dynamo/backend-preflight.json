@@ -1,0 +1,179 @@
+{
+  "checkedAt": "2026-05-29T05:47:10.229Z",
+  "summary": {
+    "pass": 23,
+    "pending": 1,
+    "fail": 0,
+    "total": 24
+  },
+  "checks": [
+    {
+      "id": "env-file",
+      "label": ".env.local available",
+      "status": "pass",
+      "evidence": ".env.local exists. Secret values were not printed.",
+      "nextAction": ""
+    },
+    {
+      "id": "appwrite-env",
+      "label": "Appwrite provisioning environment",
+      "status": "pass",
+      "evidence": "VITE_APPWRITE_ENDPOINT, VITE_APPWRITE_PROJECT_ID, and APPWRITE_API_KEY are present. Secret values were not printed.",
+      "nextAction": ""
+    },
+    {
+      "id": "appwrite-schema",
+      "label": "Appwrite schema validation",
+      "status": "pass",
+      "evidence": "20 collections, 247 attributes, and 70 indexes validate locally.",
+      "nextAction": ""
+    },
+    {
+      "id": "payment-waiver-gate-contracts",
+      "label": "Payment/package and waiver gate contracts",
+      "status": "pass",
+      "evidence": "6 payment/package tracks and 6 waiver tracks keep checkout and signatures disabled until approvals are complete.",
+      "nextAction": ""
+    },
+    {
+      "id": "claim-safety-contract",
+      "label": "Public claim safety contract",
+      "status": "pass",
+      "evidence": "7 claim-safety tracks keep league, facility, roster, sponsor, fixture, outcome, and launch claims approval-gated.",
+      "nextAction": ""
+    },
+    {
+      "id": "promotion-cutover-contract",
+      "label": "Promotion cutover contract",
+      "status": "pass",
+      "evidence": "9 cutover tracks keep root promotion, redirects, backend intake, payments, legal/support, proof content, and rollback approval-gated.",
+      "nextAction": ""
+    },
+    {
+      "id": "safeguarding-privacy-contract",
+      "label": "Safeguarding and data privacy contract",
+      "status": "pass",
+      "evidence": "8 safeguarding tracks keep minor consent, staff verification, medical data, media releases, retention, and audit enforcement approval-gated.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-config-detroitDynamoLeadIntake",
+      "label": "detroitDynamoLeadIntake Appwrite config",
+      "status": "pass",
+      "evidence": "Function is public lead intake, enabled, points to the scaffold path, and includes database/document scopes.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-config-detroitDynamoLeadPipelineAction",
+      "label": "detroitDynamoLeadPipelineAction Appwrite config",
+      "status": "pass",
+      "evidence": "Function is authenticated pipeline action, enabled, points to the scaffold path, and includes database/document scopes.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-config-detroitDynamoAdminModuleRead",
+      "label": "detroitDynamoAdminModuleRead Appwrite config",
+      "status": "pass",
+      "evidence": "Function is authenticated admin module read, enabled, points to the scaffold path, and includes database/document scopes.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-config-detroitDynamoAdminRoleGrantAction",
+      "label": "detroitDynamoAdminRoleGrantAction Appwrite config",
+      "status": "pass",
+      "evidence": "Function is authenticated admin role grant action, enabled, points to the scaffold path, and includes database/document scopes.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-config-detroitDynamoAdminModuleWriteAction",
+      "label": "detroitDynamoAdminModuleWriteAction Appwrite config",
+      "status": "pass",
+      "evidence": "Function is authenticated admin module write action, enabled, points to the scaffold path, and includes database/document scopes.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-scaffold",
+      "label": "detroitDynamoLeadIntake scaffold",
+      "status": "pass",
+      "evidence": "Function package and source validate the public lead payload and write contact, tryout, sponsor, player, guardian, booking, and pipeline fields to the expected dd_* collections.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-lead-intake-contract",
+      "label": "detroitDynamoLeadIntake public payload contract",
+      "status": "pass",
+      "evidence": "7 success fixtures and 4 rejection fixtures validate against public form variants, routing collections, and required field guardrails.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-scaffold-pipeline-action",
+      "label": "detroitDynamoLeadPipelineAction scaffold",
+      "status": "pass",
+      "evidence": "Function package and source validate authenticated pipeline transitions, update pipeline fields on expected dd_* records, and append audit events.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-pipeline-action-contract",
+      "label": "detroitDynamoLeadPipelineAction handoff contract",
+      "status": "pass",
+      "evidence": "6 success fixtures and 3 rejection fixtures validate against supported dd_* collections, admin roles, allowed pipeline transitions, and audit event writes.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-scaffold-admin-module-read",
+      "label": "detroitDynamoAdminModuleRead scaffold",
+      "status": "pass",
+      "evidence": "Function package and source validate authenticated module reads, role access, collection scoping, pagination limit, and Appwrite document reads.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-admin-module-read-contract",
+      "label": "detroitDynamoAdminModuleRead handoff contract",
+      "status": "pass",
+      "evidence": "6 success fixtures and 5 rejection fixtures validate against protected modules, scoped dd_* collections, and admin role view access.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-scaffold-admin-role-grant",
+      "label": "detroitDynamoAdminRoleGrantAction scaffold",
+      "status": "pass",
+      "evidence": "Function package and source validate authenticated Master Admin role grants, bootstrap the first Master Admin only by server env, mutate trusted role assignments, and append audit events.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-admin-role-grant-contract",
+      "label": "detroitDynamoAdminRoleGrantAction handoff contract",
+      "status": "pass",
+      "evidence": "6 success fixtures and 6 rejection fixtures validate against Master Admin gating, first-admin bootstrap, self-lockout protection, trusted assignment writes, and audit event writes.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-scaffold-admin-module-write",
+      "label": "detroitDynamoAdminModuleWriteAction scaffold",
+      "status": "pass",
+      "evidence": "Function package and source validate authenticated module writes, trusted role grants, module action guards, collection scoping, external gates, document mutations, and audit events.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-admin-module-write-contract",
+      "label": "detroitDynamoAdminModuleWriteAction handoff contract",
+      "status": "pass",
+      "evidence": "6 success fixtures and 7 rejection fixtures validate against protected modules, action guards, scoped collections, trusted role grants, external gates, and audit event writes.",
+      "nextAction": ""
+    },
+    {
+      "id": "function-env-config",
+      "label": "Function variable configuration path",
+      "status": "pass",
+      "evidence": "scripts/configure-functions.mjs includes Detroit Dynamo function APPWRITE_API_KEY mappings.",
+      "nextAction": ""
+    },
+    {
+      "id": "backend-network",
+      "label": "Live backend verification",
+      "status": "pending",
+      "evidence": "No Appwrite network calls were made. This keeps the preflight safe for local preview and CI without credentials.",
+      "nextAction": "After replacing/confirming credentials, run npm run provision:dynamo-appwrite -- --apply, configure function variables, deploy Detroit Dynamo functions, bootstrap or grant Master Admin access, submit production-preview forms, test an authenticated pipeline transition, then test an authenticated admin module read."
+    }
+  ]
+}

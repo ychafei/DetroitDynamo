@@ -3,6 +3,7 @@ import { sessionRepo, sessionCreditRepo, pricingPackageRepo } from '@/api/repo';
 import { auth } from '@/lib/auth';
 import { rpc } from '@/lib/rpc';
 import { normalizePublicCoach } from '@/lib/publicCoach';
+import { LIMITS } from '@/lib/validation';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
@@ -37,6 +38,43 @@ function calcPrice(pkg, dur) {
   if (!pkg || !dur) return null;
   const perSessionBase = pkg.price / (pkg.sessions || 1);
   return Math.round(perSessionBase * dur.hours * (1 - dur.discount));
+}
+
+async function loadPublicCoaches() {
+  try {
+    const res = await rpc.invoke('getPublicCoaches', {});
+    return (res.data.coaches || []).map(normalizePublicCoach);
+  } catch {
+    return [];
+  }
+}
+
+async function loadVisiblePackages() {
+  try {
+    return await pricingPackageRepo.filter({ is_visible: true }, 'display_order');
+  } catch {
+    return [];
+  }
+}
+
+async function loadCoachAvailability(coachId) {
+  try {
+    const res = await rpc.invoke('getCoachAvailability', { coach_id: coachId });
+    return {
+      blocks: res.data.blocks || [],
+      sessions: res.data.sessions || [],
+    };
+  } catch {
+    return { blocks: [], sessions: [] };
+  }
+}
+
+async function loadSessionCredits(email) {
+  try {
+    return await sessionCreditRepo.filter({ client_email: email });
+  } catch {
+    return [];
+  }
 }
 
 export default function Book() {
@@ -76,8 +114,13 @@ export default function Book() {
   const [sessionBooked, setSessionBooked]     = useState(false);
 
   useEffect(() => {
-    rpc.invoke('getPublicCoaches', {}).then(res => setCoaches((res.data.coaches || []).map(normalizePublicCoach)));
-    pricingPackageRepo.filter({ is_visible: true }, 'display_order').then(setPackages);
+    let cancelled = false;
+    void Promise.all([loadPublicCoaches(), loadVisiblePackages()]).then(([nextCoaches, nextPackages]) => {
+      if (cancelled) return;
+      setCoaches(nextCoaches);
+      setPackages(nextPackages);
+    });
+    return () => { cancelled = true; };
   }, []);
 
   // One-shot: pre-select coach from /coaches/:id "Book with this coach" link.
@@ -102,44 +145,58 @@ export default function Book() {
   }, [county, coaches, preCounty, preCoachId]);
 
   useEffect(() => {
-    if (coach) {
-      rpc.invoke('getCoachAvailability', { coach_id: coach.id }).then(res => {
-        setBlocks(res.data.blocks || []);
-        setExistingSessions(res.data.sessions || []);
-      });
+    if (!coach) {
+      setBlocks([]);
+      setExistingSessions([]);
+      return undefined;
     }
+
+    let cancelled = false;
+    void loadCoachAvailability(coach.id).then(({ blocks: nextBlocks, sessions: nextSessions }) => {
+      if (cancelled) return;
+      setBlocks(nextBlocks);
+      setExistingSessions(nextSessions);
+    });
+    return () => { cancelled = true; };
   }, [coach]);
 
   useEffect(() => {
-    if (user) {
-      sessionCreditRepo.filter({ client_email: user.email }).then(credits => {
-        // If coming from Dashboard with a specific credit_id, use that one
-        let active;
-        if (preCreditId) {
-          active = credits.find(c => c.id === preCreditId && (c.total_credits - c.used_credits) > 0);
-        }
-        if (!active) {
-          active = credits.find(c => (c.total_credits - c.used_credits) > 0);
-        }
-        setExistingCredit(active || null);
-        setUseExistingCredit(!!active);
-
-        // Auto-skip to scheduling when arriving from Dashboard with a valid credit
-        if (preCreditId && active) {
-          setCreditRecord(active);
-          setPaymentConfirmed(true);
-          setSkipToSchedule(true);
-          if (active.session_duration_minutes) {
-            const creditDur = DURATIONS.find(d => d.minutes === active.session_duration_minutes);
-            if (creditDur) setDuration(creditDur);
-          }
-          setScheduling(true);
-          // Jump to county selection (step 0) so they pick coach → schedule
-          setStep(0);
-        }
-      });
+    if (!user) {
+      setExistingCredit(null);
+      setUseExistingCredit(false);
+      return undefined;
     }
-  }, [user]);
+
+    let cancelled = false;
+    void loadSessionCredits(user.email).then(credits => {
+      if (cancelled) return;
+      // If coming from Dashboard with a specific credit_id, use that one
+      let active;
+      if (preCreditId) {
+        active = credits.find(c => c.id === preCreditId && (c.total_credits - c.used_credits) > 0);
+      }
+      if (!active) {
+        active = credits.find(c => (c.total_credits - c.used_credits) > 0);
+      }
+      setExistingCredit(active || null);
+      setUseExistingCredit(!!active);
+
+      // Auto-skip to scheduling when arriving from Dashboard with a valid credit
+      if (preCreditId && active) {
+        setCreditRecord(active);
+        setPaymentConfirmed(true);
+        setSkipToSchedule(true);
+        if (active.session_duration_minutes) {
+          const creditDur = DURATIONS.find(d => d.minutes === active.session_duration_minutes);
+          if (creditDur) setDuration(creditDur);
+        }
+        setScheduling(true);
+        // Jump to county selection (step 0) so they pick coach → schedule
+        setStep(0);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [user, preCreditId]);
 
   // Detect Stripe Checkout success redirect
   useEffect(() => {
@@ -153,7 +210,7 @@ export default function Book() {
       window.history.replaceState({}, '', url.pathname);
 
       // Reload credits to pick up the webhook-created record, then advance
-      sessionCreditRepo.filter({ client_email: user.email }).then(credits => {
+      loadSessionCredits(user.email).then(credits => {
         const active = credits.find(c => (c.total_credits - c.used_credits) > 0);
         if (active) {
           setExistingCredit(active);
@@ -269,7 +326,7 @@ export default function Book() {
     const sessionGoals = [...selectedTags, goals].filter(Boolean).join(', ');
     const pmMethod = useExistingCredit ? 'credits' : paymentMethod === 'cash' ? 'cash' : 'electronic';
     const durationMinutes = duration?.minutes ?? 60;
-    const clientAge = user.dob ? Math.floor((Date.now() - new Date(user.dob)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
+    const clientAge = user.dob ? Math.floor((Date.now() - new Date(user.dob).getTime()) / (365.25 * 24 * 60 * 60 * 1000)) : null;
 
     // Deduct 1 credit from the active credit record (all paths — existing credits, new purchase, cash)
     const activeCredit = creditRecord || existingCredit;
@@ -728,7 +785,11 @@ export default function Book() {
             </div>
             <Textarea placeholder="Any additional goals or notes for your sessions..."
               value={goals} onChange={(e) => setGoals(e.target.value)}
+              maxLength={LIMITS.longText}
               className="bg-card border-border" rows={4} />
+            <div className="flex justify-end mt-1">
+              <span className="text-xs text-muted-foreground">{goals.length}/{LIMITS.longText}</span>
+            </div>
 
             {user && !user.profile_setup_complete && (
               <div className="mt-6 p-4 rounded-lg bg-accent/10 border border-accent/30">
@@ -866,7 +927,7 @@ export default function Book() {
                       <div className="border-t border-border pt-4">
                         <div className="bg-secondary/50 border border-border rounded-lg p-3 mb-3">
                           <p className="text-xs text-muted-foreground">
-                            Bring <strong className="text-foreground">${sessionPrice * (selectedPackage?.sessions || 1)}</strong> in exact cash to your session. Your coach collects payment directly — LC Training is not involved in the cash transaction.
+                            Bring <strong className="text-foreground">${sessionPrice * (selectedPackage?.sessions || 1)}</strong> in exact cash to your session. Your coach collects payment directly and records the session through Detroit Dynamo.
                           </p>
                         </div>
                         <Button

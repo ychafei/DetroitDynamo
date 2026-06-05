@@ -8,7 +8,7 @@ const SECTIONS = [
   { to: '/team/roster', icon: Users, title: 'Roster', desc: 'Meet the squad — players, positions, and numbers.' },
   { to: '/team/schedule', icon: Calendar, title: 'Schedule', desc: 'Matches, fixtures, and key dates.' },
   { to: '/team/tryouts', icon: UserPlus, title: 'Tryouts', desc: 'Information for players looking to join the club.' },
-  { to: '/team/coaches', icon: Shield, title: 'Coaches', desc: 'The technical staff shaping LCFC.' },
+  { to: '/team/coaches', icon: Shield, title: 'Coaches', desc: 'The technical staff shaping Detroit Dynamo FC.' },
   { to: '/team/gallery', icon: ImageIcon, title: 'Gallery', desc: 'Photos and videos from the pitch.' },
 ];
 
@@ -16,10 +16,10 @@ export default function Team() {
   return (
     <div>
       <TeamPageHero
-        eyebrow="LCFC · Les Chèvres Football Club"
-        title="LCFC"
+        eyebrow="Detroit Dynamo FC"
+        title="Detroit Dynamo FC"
         accentTitle="OVERVIEW"
-        description="The competitive arm of Les Chèvres — a Metro Detroit football club competing in the United Premier Soccer League. One badge, one brotherhood, one mission."
+        description="The competitive arm of Detroit Dynamo - a Metro Detroit football club competing in the United Premier Soccer League. One badge, one brotherhood, one mission."
       />
 
       <section className="py-16">

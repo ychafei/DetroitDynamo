@@ -8,7 +8,7 @@ import { ChevronDown, MapPin, User, Package, Timer, Zap, DollarSign } from 'luci
 // Driven entirely by props — no data fetching of its own. Steps in Book.jsx
 // already hold all the relevant state.
 
-function Row({ label, value, icon: Icon, hint }) {
+function Row({ label, value, icon: Icon, hint = undefined }) {
   return (
     <div className="flex items-start justify-between gap-3 py-2">
       <span className="flex items-center gap-1.5 text-[11px] font-oswald tracking-widest uppercase text-muted-foreground">

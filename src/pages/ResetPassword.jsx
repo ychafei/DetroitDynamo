@@ -45,7 +45,7 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
-      <div className="w-full max-w-md bg-[#F7F5EF] text-[#0B0B0B] rounded-2xl shadow-2xl p-8 sm:p-10 space-y-6">
+      <div className="w-full max-w-md rounded-2xl border border-[rgba(98,216,255,0.22)] bg-[#061225] text-white shadow-2xl shadow-black/40 p-8 sm:p-10 space-y-6">
         <div>
           <h1 className="font-oswald text-2xl sm:text-3xl font-bold tracking-wide text-center">
             Set a new password
@@ -67,9 +67,9 @@ export default function ResetPassword() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-sm font-medium text-neutral-700">New password</Label>
+              <Label htmlFor="password" className="text-sm font-medium text-[#D7DEEA]">New password</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8390A6] pointer-events-none" />
                 <Input
                   id="password"
                   type="password"
@@ -80,15 +80,15 @@ export default function ResetPassword() {
                   disabled={submitting}
                   required
                   minLength={8}
-                  className="pl-9 bg-white text-[#0B0B0B] placeholder:text-neutral-400 border-neutral-300"
+                  className="pl-9 bg-white text-[#0B0B0B] placeholder:text-[#8390A6] border-neutral-300"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="confirm" className="text-sm font-medium text-neutral-700">Confirm new password</Label>
+              <Label htmlFor="confirm" className="text-sm font-medium text-[#D7DEEA]">Confirm new password</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8390A6] pointer-events-none" />
                 <Input
                   id="confirm"
                   type="password"
@@ -98,7 +98,7 @@ export default function ResetPassword() {
                   onChange={(e) => setConfirm(e.target.value)}
                   disabled={submitting}
                   required
-                  className="pl-9 bg-white text-[#0B0B0B] placeholder:text-neutral-400 border-neutral-300"
+                  className="pl-9 bg-white text-[#0B0B0B] placeholder:text-[#8390A6] border-neutral-300"
                 />
               </div>
             </div>
@@ -108,7 +108,7 @@ export default function ResetPassword() {
             <Button
               type="submit"
               disabled={submitting}
-              className="w-full bg-[#0B0B0B] hover:bg-black text-white py-2.5 rounded-md"
+              className="w-full bg-[var(--dynamo-blue)] text-[#020714] hover:bg-[var(--dynamo-blue-bright)] py-2.5 rounded-md"
             >
               Reset password
             </Button>

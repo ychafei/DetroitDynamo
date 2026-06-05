@@ -26,7 +26,7 @@ export default function TeamSchedule() {
       <TeamPageHero
         eyebrow="Match Day"
         title="SCHEDULE"
-        description="LCFC's fixture list — matches, opponents, and results."
+        description="Detroit Dynamo FC's fixture list - matches, opponents, and results."
       />
 
       <section className="py-16">

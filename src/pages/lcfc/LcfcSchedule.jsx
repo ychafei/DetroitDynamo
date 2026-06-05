@@ -23,7 +23,7 @@ export default function LcfcSchedule() {
   }, []);
 
   return (
-    <LcfcPage title="Schedule / Results" subtitle="Every LCFC fixture, result, and matchday.">
+    <LcfcPage title="Schedule / Results" subtitle="Every Detroit Dynamo FC fixture, result, and matchday.">
       {matches === null ? (
         <div className="h-64 rounded-2xl bg-white border border-[#DDDAD2] animate-pulse" />
       ) : matches.length === 0 ? (
@@ -48,9 +48,9 @@ export default function LcfcSchedule() {
               <span className="text-[#666666]">{m.match_time || '—'}</span>
               <span className="text-[#666666] truncate">{m.location || '—'}</span>
               <span className="flex items-center justify-end gap-3 whitespace-nowrap">
-                <span className="font-oswald font-bold tracking-wider text-[#A9822B]">{statusLabel(m)}</span>
+                <span className="font-oswald font-bold tracking-wider text-[#005DFF]">{statusLabel(m)}</span>
                 {m.ticket_link && (
-                  <a href={m.ticket_link} target="_blank" rel="noreferrer" className="text-[#C9A646] hover:text-[#D4AF37]" title="Tickets">
+                  <a href={m.ticket_link} target="_blank" rel="noreferrer" className="text-[#0078FF] hover:text-[#62D8FF]" title="Tickets">
                     <ExternalLink className="w-4 h-4" />
                   </a>
                 )}

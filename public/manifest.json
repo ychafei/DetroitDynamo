@@ -1,14 +1,14 @@
 {
-  "name": "LC Training",
-  "short_name": "LC Training",
-  "description": "Elite 1-on-1 soccer coaching across Oakland, Macomb, and Wayne counties.",
+  "name": "Detroit Dynamo",
+  "short_name": "Dynamo",
+  "description": "Detroit's player development pathway for private training, youth club growth, and senior team ambition.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
+  "background_color": "#020714",
+  "theme_color": "#0078FF",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/detroit-dynamo/logo-primary.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

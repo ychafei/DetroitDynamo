@@ -1,0 +1,531 @@
+{
+  "generatedAt": "2026-05-29T14:14:31.146Z",
+  "decision": {
+    "decision": "external_gate_closure_required_preview_only",
+    "label": "External Gate Closure Required",
+    "launchMode": "preview_only",
+    "closureAllowed": false,
+    "completionClaimAllowed": false,
+    "reason": "Detroit Dynamo can stay preview-complete, but final goal completion requires real external evidence for backend, payments, waivers, league/facility facts, deployment, cutover, and owner signoff."
+  },
+  "columns": [
+    "id",
+    "label",
+    "gateGroup",
+    "ownerRole",
+    "priority",
+    "status",
+    "sourceArtifacts",
+    "requiredEvidence",
+    "verificationCommands",
+    "blockedLiveActions",
+    "closureQuestion",
+    "closureAllowed"
+  ],
+  "rows": [
+    {
+      "id": "appwrite-project-and-credentials",
+      "label": "Appwrite project, credentials, and environment readiness",
+      "gateGroup": "Backend/Data",
+      "ownerRole": "Master Admin",
+      "priority": "critical",
+      "status": "external_evidence_required",
+      "sourceArtifacts": [
+        "artifacts/detroit-dynamo/backend-preflight.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-secret-redaction.md"
+      ],
+      "requiredEvidence": [
+        "Valid Appwrite project id, endpoint, and server credentials stored only in approved secret stores",
+        "Confirmed Appwrite API key replacement after the expired local key is removed or rotated",
+        "Preview and production environment variable checklist with values redacted from handoff artifacts",
+        "Secret redaction scan showing 0 exact local secret matches and 0 identifier matches after evidence is attached"
+      ],
+      "verificationCommands": [
+        "npm run preflight:dynamo-backend",
+        "npm run verify:dynamo-secret-redaction",
+        "npm run plan:dynamo-appwrite"
+      ],
+      "sourceAcceptanceRows": [
+        "backend-appwrite-scaffold"
+      ],
+      "sourcePromotionGates": [
+        "Live backend ready"
+      ],
+      "sourceConfirmationAreas": [
+        "Backend/Data"
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "protected admin live reads",
+        "protected admin live writes"
+      ],
+      "closureQuestion": "Can the owner prove the backend project and secrets are valid without exposing values in docs or artifacts?",
+      "closureAllowed": false
+    },
+    {
+      "id": "appwrite-schema-provisioning",
+      "label": "Provision isolated Detroit Dynamo dd_* schema",
+      "gateGroup": "Backend/Data",
+      "ownerRole": "Master Admin",
+      "priority": "critical",
+      "status": "external_evidence_required",
+      "sourceArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-record-workspace.md"
+      ],
+      "requiredEvidence": [
+        "Dry-run plan reviewed for all isolated dd_* collections, attributes, indexes, and permissions",
+        "Apply run completed against the target Appwrite project",
+        "Collection count, attribute count, and index count captured in a redacted proof artifact",
+        "Rollback or recreate plan documented before live writes are enabled"
+      ],
+      "verificationCommands": [
+        "npm run plan:dynamo-appwrite",
+        "npm run provision:dynamo-appwrite -- --apply",
+        "npm run preflight:dynamo-backend"
+      ],
+      "sourceAcceptanceRows": [
+        "backend-appwrite-scaffold",
+        "admin-data-model-foundation"
+      ],
+      "sourcePromotionGates": [
+        "Live backend ready"
+      ],
+      "sourceConfirmationAreas": [
+        "Backend/Data"
+      ],
+      "blockedLiveActions": [
+        "live lead routing",
+        "protected admin live reads",
+        "protected admin live writes"
+      ],
+      "closureQuestion": "Do the provisioned Appwrite collections match the typed Detroit Dynamo schema plan?",
+      "closureAllowed": false
+    },
+    {
+      "id": "function-deployment-and-production-preview-submissions",
+      "label": "Deploy functions and capture production-preview submission proof",
+      "gateGroup": "Backend/Data",
+      "ownerRole": "Master Admin",
+      "priority": "critical",
+      "status": "external_evidence_required",
+      "sourceArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-production-preview-evidence.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-handoff.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-pipeline-action-handoff.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-module-read-handoff.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-module-write-handoff.md"
+      ],
+      "requiredEvidence": [
+        "Public intake function deployed and invoked from a production-preview URL for all seven public form variants",
+        "Authenticated pipeline, module-read, role-grant, and module-write functions deployed with role-scoped proof",
+        "Production-preview submission ids captured for ContactLead, Booking, TryoutRegistration, Sponsor, Player, and ParentGuardian paths",
+        "Failure-path proof captured for validation, unauthenticated admin access, missing role grants, and external gate blocks"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-intake-contract",
+        "npm run verify:dynamo-pipeline-actions",
+        "npm run verify:dynamo-admin-module-read",
+        "npm run verify:dynamo-admin-role-grants",
+        "npm run verify:dynamo-admin-module-writes",
+        "BASE_URL=<production-preview-url> npm run qa:dynamo-browser"
+      ],
+      "sourceAcceptanceRows": [
+        "public-lead-forms-and-routing",
+        "admin-data-model-foundation",
+        "backend-appwrite-scaffold"
+      ],
+      "sourcePromotionGates": [
+        "Live backend ready"
+      ],
+      "sourceConfirmationAreas": [
+        "Backend/Data"
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes",
+        "public launch announcement"
+      ],
+      "closureQuestion": "Do real production-preview submissions and admin actions prove the live backend path works before promotion?",
+      "closureAllowed": false
+    },
+    {
+      "id": "payment-package-provider-products",
+      "label": "Approve package matrix, provider products, checkout, and webhook proof",
+      "gateGroup": "Payments & Packages",
+      "ownerRole": "Master Admin",
+      "priority": "critical",
+      "status": "external_evidence_required",
+      "sourceArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-signoff-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-final-acceptance-matrix.md"
+      ],
+      "requiredEvidence": [
+        "Owner-approved package matrix with exact prices, taxes, fees, session counts, refund rules, and payment schedules",
+        "Provider product/price ids mapped to private training, small-group training, camps, youth dues, and sponsorship workflows",
+        "Sandbox checkout success, failure, webhook, refund, and duplicate-submission proof",
+        "Admin payment record and audit-event proof before checkout is linked from public pages"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-gate-contracts",
+        "npm run verify:dynamo-owner-signoff-register",
+        "npm run verify:dynamo-final-acceptance"
+      ],
+      "sourceAcceptanceRows": [
+        "payments-and-packages"
+      ],
+      "sourcePromotionGates": [
+        "Payments approved"
+      ],
+      "sourceConfirmationAreas": [
+        "Payments & Packages"
+      ],
+      "blockedLiveActions": [
+        "checkout activation",
+        "payment collection",
+        "package publication"
+      ],
+      "closureQuestion": "Are packages and payment products approved, tested, and auditable before checkout appears?",
+      "closureAllowed": false
+    },
+    {
+      "id": "waiver-legal-signature-workflow",
+      "label": "Approve waiver versions, signature capture, and safeguarding workflow",
+      "gateGroup": "Waivers/Legal/Safeguarding",
+      "ownerRole": "Registrar",
+      "priority": "critical",
+      "status": "external_evidence_required",
+      "sourceArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-evidence-intake.csv"
+      ],
+      "requiredEvidence": [
+        "Approved youth, adult, medical consent, media release, camp/clinic, and team travel waiver versions",
+        "Guardian/adult signature workflow proof with export, expiration, revocation, and audit-event handling",
+        "Approved privacy, retention, medical-data access, and minor safeguarding procedures",
+        "Legal/support communications handoff for terms, privacy, refund, and support identity"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-safeguarding",
+        "npm run verify:dynamo-gate-contracts",
+        "npm run verify:dynamo-owner-evidence-intake"
+      ],
+      "sourceAcceptanceRows": [
+        "waivers-legal-safeguarding"
+      ],
+      "sourcePromotionGates": [
+        "Waivers approved"
+      ],
+      "sourceConfirmationAreas": [
+        "Waivers & Legal",
+        "Staff, Rosters & Safeguarding"
+      ],
+      "blockedLiveActions": [
+        "signature capture",
+        "medical intake",
+        "youth registration launch",
+        "sensitive admin mutations"
+      ],
+      "closureQuestion": "Can Detroit Dynamo safely collect youth, adult, medical, and media consent records?",
+      "closureAllowed": false
+    },
+    {
+      "id": "league-facility-confirmations",
+      "label": "Confirm league, facility, and operations facts",
+      "gateGroup": "League/Facility Facts",
+      "ownerRole": "Club Director",
+      "priority": "high",
+      "status": "external_evidence_required",
+      "sourceArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-actions.md"
+      ],
+      "requiredEvidence": [
+        "Confirmed senior league status or owner-approved future-pathway wording for men and women",
+        "Confirmed youth league language or explicit roadmap wording that does not imply current membership",
+        "Facility, field, indoor, schedule, insurance, and operations proof before names or addresses are published as facts",
+        "Public copy review showing unconfirmed items remain future-pathway or approval-gated"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-claim-safety",
+        "npm run verify:dynamo-external-confirmation-actions",
+        "BASE_URL=<preview-url> npm run verify:dynamo"
+      ],
+      "sourceAcceptanceRows": [
+        "league-facility-staff-sponsor-proof"
+      ],
+      "sourcePromotionGates": [
+        "League/facility facts confirmed"
+      ],
+      "sourceConfirmationAreas": [
+        "League & Competition Facts",
+        "Facilities & Operations"
+      ],
+      "blockedLiveActions": [
+        "league claim publication",
+        "facility publication",
+        "fixture publication"
+      ],
+      "closureQuestion": "Are league and facility facts either confirmed or still clearly framed as future-pathway goals?",
+      "closureAllowed": false
+    },
+    {
+      "id": "staff-roster-sponsor-media-proof",
+      "label": "Attach staff, roster, sponsor, testimonial, media, and news proof",
+      "gateGroup": "Content/Brand Proof",
+      "ownerRole": "Media/Admin Staff",
+      "priority": "high",
+      "status": "external_evidence_required",
+      "sourceArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md"
+      ],
+      "requiredEvidence": [
+        "Staff bios, credentials, headshots, and safeguarding clearance approved before publication",
+        "Roster permission, player media release, and team status proof before roster cards go live",
+        "Sponsor logo permission, package commitment, and usage rules approved before sponsor marks appear",
+        "Testimonials, news posts, match media, and outcome claims backed by source proof and owner approval"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-claim-safety",
+        "npm run verify:dynamo-safeguarding",
+        "npm run verify:dynamo-external-confirmation-actions"
+      ],
+      "sourceAcceptanceRows": [
+        "league-facility-staff-sponsor-proof"
+      ],
+      "sourcePromotionGates": [
+        "Proof approved"
+      ],
+      "sourceConfirmationAreas": [
+        "Staff, Rosters & Safeguarding",
+        "Sponsors, Media & Content Proof"
+      ],
+      "blockedLiveActions": [
+        "staff proof publication",
+        "roster publication",
+        "sponsor logo publication",
+        "testimonial publication",
+        "news publication"
+      ],
+      "closureQuestion": "Is every proof-like public asset backed by permission and a reviewable source?",
+      "closureAllowed": false
+    },
+    {
+      "id": "vercel-preview-deployment-cutover-and-rollback",
+      "label": "Record Vercel preview deployment, cutover, redirect, and rollback evidence",
+      "gateGroup": "Deployment/Cutover",
+      "ownerRole": "Master Admin",
+      "priority": "critical",
+      "status": "external_evidence_required",
+      "sourceArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-vercel-preview-runbook.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-deployment-readiness.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-promotion-cutover.md"
+      ],
+      "requiredEvidence": [
+        "Vercel CLI upgraded before deployment work and linked project inspected with identifiers redacted from handoffs",
+        "Production-preview URL, deployment id, inspect summary, function/log review, route QA, and form QA recorded",
+        "Current production snapshot, rollback target, promotion hold, root-route promotion plan, and redirect plan approved",
+        "Noindex removal, sitemap publication, canonical/root switch, and permanent redirect timing approved by owner"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-vercel-preview",
+        "npm run verify:dynamo-deployment-readiness",
+        "npm run verify:dynamo-promotion-cutover",
+        "BASE_URL=<production-preview-url> npm run qa:dynamo-browser"
+      ],
+      "sourceAcceptanceRows": [
+        "seo-cutover-redirect-readiness",
+        "existing-lc-site-preservation"
+      ],
+      "sourcePromotionGates": [
+        "SEO/redirect launch approval",
+        "Current site preserved"
+      ],
+      "sourceConfirmationAreas": [
+        "SEO/Cutover"
+      ],
+      "blockedLiveActions": [
+        "production deployment",
+        "root route promotion",
+        "noindex removal",
+        "permanent redirects",
+        "sitemap publication"
+      ],
+      "closureQuestion": "Can the owner promote Detroit Dynamo with a tested preview URL, rollback target, and approved redirect/noindex plan?",
+      "closureAllowed": false
+    },
+    {
+      "id": "owner-final-signoff-and-completion-claim",
+      "label": "Collect owner final signoff before completion claim",
+      "gateGroup": "Owner Closeout",
+      "ownerRole": "Master Admin",
+      "priority": "critical",
+      "status": "owner_review_required",
+      "sourceArtifacts": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-signoff-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-final-acceptance-matrix.md",
+        "artifacts/detroit-dynamo/goal-audit.json"
+      ],
+      "requiredEvidence": [
+        "Every external gate row has a real evidence location, approver, date, owner decision, and notes",
+        "Owner signoff register has signed rows only after backend, payments, waivers, proof, deployment, and cutover evidence exists",
+        "Final acceptance matrix external-evidence rows are approved and go-live allowed only after real evidence is attached",
+        "Requirement-level goal audit proves no remaining work before any completion claim is made"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-owner-signoff-register",
+        "npm run verify:dynamo-final-acceptance",
+        "npm run audit:dynamo-goal"
+      ],
+      "sourceAcceptanceRows": [
+        "documentation-and-launch-handoff"
+      ],
+      "sourcePromotionGates": [
+        "Owner launch approval"
+      ],
+      "sourceConfirmationAreas": [
+        "Owner Closeout"
+      ],
+      "blockedLiveActions": [
+        "goal completion claim",
+        "owner closeout",
+        "public launch announcement"
+      ],
+      "closureQuestion": "Has the owner signed every external gate row with evidence strong enough to claim the original objective complete?",
+      "closureAllowed": false
+    }
+  ],
+  "summary": {
+    "rowsTotal": 9,
+    "externalEvidenceRows": 8,
+    "ownerReviewRows": 1,
+    "criticalRows": 7,
+    "gateGroups": 7,
+    "ownerRoles": 4,
+    "sourceArtifacts": 21,
+    "requiredEvidenceItems": 36,
+    "verificationCommands": 22,
+    "blockedLiveActions": 27,
+    "sourcePromotionGates": 6,
+    "sourceConfirmationAreas": 6,
+    "launchEvidenceItems": 13,
+    "backendActivationSteps": 8,
+    "finalAcceptanceExternalRows": 5,
+    "readyToCloseRows": 0,
+    "closureAllowedRows": 0,
+    "liveGatesCleared": 0,
+    "publicationsUnlocked": 0,
+    "productionDeploymentsRecorded": 0,
+    "productionSubmissionsRecorded": 0,
+    "rootPromotionAllowed": false,
+    "checkoutAllowed": false,
+    "signatureCaptureAllowed": false,
+    "completionClaimAllowed": false
+  },
+  "gateGroups": {
+    "Backend/Data": 3,
+    "Payments & Packages": 1,
+    "Waivers/Legal/Safeguarding": 1,
+    "League/Facility Facts": 1,
+    "Content/Brand Proof": 1,
+    "Deployment/Cutover": 1,
+    "Owner Closeout": 1
+  },
+  "ownerRoles": {
+    "Master Admin": 6,
+    "Registrar": 1,
+    "Club Director": 1,
+    "Media/Admin Staff": 1
+  },
+  "sourceArtifacts": [
+    "artifacts/detroit-dynamo/backend-preflight.md",
+    "artifacts/detroit-dynamo/goal-audit.json",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-module-read-handoff.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-module-write-handoff.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-record-workspace.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-deployment-readiness.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-actions.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-final-acceptance-matrix.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-handoff.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-evidence-intake.csv",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-signoff-register.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-pipeline-action-handoff.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-production-preview-evidence.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-promotion-cutover.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-secret-redaction.md",
+    "artifacts/detroit-dynamo/launch/detroit-dynamo-vercel-preview-runbook.md"
+  ],
+  "verificationCommands": [
+    "BASE_URL=<preview-url> npm run verify:dynamo",
+    "BASE_URL=<production-preview-url> npm run qa:dynamo-browser",
+    "npm run audit:dynamo-goal",
+    "npm run plan:dynamo-appwrite",
+    "npm run preflight:dynamo-backend",
+    "npm run provision:dynamo-appwrite -- --apply",
+    "npm run verify:dynamo-admin-module-read",
+    "npm run verify:dynamo-admin-module-writes",
+    "npm run verify:dynamo-admin-role-grants",
+    "npm run verify:dynamo-claim-safety",
+    "npm run verify:dynamo-deployment-readiness",
+    "npm run verify:dynamo-external-confirmation-actions",
+    "npm run verify:dynamo-final-acceptance",
+    "npm run verify:dynamo-gate-contracts",
+    "npm run verify:dynamo-intake-contract",
+    "npm run verify:dynamo-owner-evidence-intake",
+    "npm run verify:dynamo-owner-signoff-register",
+    "npm run verify:dynamo-pipeline-actions",
+    "npm run verify:dynamo-promotion-cutover",
+    "npm run verify:dynamo-safeguarding",
+    "npm run verify:dynamo-secret-redaction",
+    "npm run verify:dynamo-vercel-preview"
+  ],
+  "blockedLiveActions": [
+    "Appwrite intake default",
+    "checkout activation",
+    "facility publication",
+    "fixture publication",
+    "goal completion claim",
+    "league claim publication",
+    "live lead routing",
+    "medical intake",
+    "news publication",
+    "noindex removal",
+    "owner closeout",
+    "package publication",
+    "payment collection",
+    "permanent redirects",
+    "production deployment",
+    "protected admin live reads",
+    "protected admin live writes",
+    "public launch announcement",
+    "root route promotion",
+    "roster publication",
+    "sensitive admin mutations",
+    "signature capture",
+    "sitemap publication",
+    "sponsor logo publication",
+    "staff proof publication",
+    "testimonial publication",
+    "youth registration launch"
+  ],
+  "usageRules": [
+    "Use this packet after the preview implementation passes local verification and before any live promotion meeting.",
+    "Fill real evidence locations in the owner evidence intake worksheet; this packet only names the evidence required.",
+    "Do not mark any row ready to close until its external proof, owner approver, date, and verification command output exist.",
+    "Keep completion claims, root promotion, checkout, signatures, redirects, and publication blocked until all closure rows are approved."
+  ],
+  "issues": []
+}

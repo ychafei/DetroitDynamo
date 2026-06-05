@@ -2,8 +2,8 @@
 // via Resend. Body matches the legacy Base44 function.
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = 'LC Training <support@lctrainings.com>';
-const SUPPORT_TO = 'support@lctrainings.com';
+const FROM = 'Detroit Dynamo <support@detroitdynamo.com>';
+const SUPPORT_TO = 'support@detroitdynamo.com';
 
 async function sendEmail({ to, subject, html }) {
   const r = await fetch('https://api.resend.com/emails', {

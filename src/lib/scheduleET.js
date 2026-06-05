@@ -16,7 +16,7 @@ function getEtOffsetMinutes(atUtcMs) {
   }).formatToParts(date).reduce((acc, p) => {
     if (p.type !== 'literal') acc[p.type] = p.value;
     return acc;
-  }, {});
+  }, /** @type {Record<string, string>} */ ({}));
   // Guard: some runtimes emit "24" for midnight
   const hour = parts.hour === '24' ? '00' : parts.hour;
   const asUtc = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +hour, +parts.minute, +parts.second);

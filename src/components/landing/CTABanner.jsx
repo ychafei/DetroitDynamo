@@ -6,7 +6,7 @@ import { siteContentRepo } from '@/api/repo';
 
 export default function CTABanner() {
   const [headline, setHeadline] = useState('READY TO TRAIN?');
-  const [subtext, setSubtext] = useState('Book your first session today and experience the LC Training difference.');
+  const [subtext, setSubtext] = useState('Book your first session today and experience the Detroit Dynamo difference.');
 
   useEffect(() => {
     siteContentRepo.filter({ key: 'cta_headline' }).then(res => {

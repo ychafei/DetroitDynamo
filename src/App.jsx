@@ -23,36 +23,39 @@ import CoachProfile from '@/pages/coach/CoachProfile';
 
 // Layouts
 import PublicLayout from '@/components/layout/PublicLayout';
+import DetroitDynamoLayout from '@/components/detroit-dynamo/DetroitDynamoLayout';
 
 // Public pages
-import Landing from '@/pages/Landing';
-import About from '@/pages/About';
-import Team from '@/pages/Team';
-import Lcfc from '@/pages/Lcfc';
 import VerifyCoachLink from '@/pages/VerifyCoachLink';
 import VerifyEmail from '@/pages/VerifyEmail';
-import LcfcRoster from '@/pages/lcfc/LcfcRoster';
-import LcfcSchedule from '@/pages/lcfc/LcfcSchedule';
-import LcfcTryouts from '@/pages/lcfc/LcfcTryouts';
-import LcfcStaff from '@/pages/lcfc/LcfcStaff';
-import LcfcSponsors from '@/pages/lcfc/LcfcSponsors';
-import LcfcNews from '@/pages/lcfc/LcfcNews';
-import LcfcLearnMore from '@/pages/lcfc/LcfcLearnMore';
-import TeamUPSL from '@/pages/team/TeamUPSL';
-import TeamRoster from '@/pages/team/TeamRoster';
-import TeamSchedule from '@/pages/team/TeamSchedule';
-import TeamTryouts from '@/pages/team/TeamTryouts';
-import TeamCoaches from '@/pages/team/TeamCoaches';
-import TeamGallery from '@/pages/team/TeamGallery';
 import Book from '@/pages/Book';
 import CoachDetail from '@/pages/CoachDetail';
-import Blog from '@/pages/Blog';
-import BlogPostPage from '@/pages/BlogPost';
 import Apply from '@/pages/Apply';
 import ApplyTeamPlayer from '@/pages/apply/ApplyTeamPlayer';
 import ApplyTeamCoach from '@/pages/apply/ApplyTeamCoach';
 import ApplyPrivateTrainingCoach from '@/pages/apply/ApplyPrivateTrainingCoach';
-import DetroitDynamoPreview from '@/pages/DetroitDynamoPreview';
+import DetroitDynamoHome from '@/pages/detroit-dynamo/DetroitDynamoHome';
+import DetroitDynamoBrand from '@/pages/detroit-dynamo/DetroitDynamoBrand';
+import {
+  DetroitDynamoAcademy,
+  DetroitDynamoAbout,
+  DetroitDynamoBook,
+  DetroitDynamoFC,
+  DetroitDynamoResults,
+  DetroitDynamoTraining,
+} from '@/pages/detroit-dynamo/DetroitDynamoSecondaryPages';
+import {
+  DetroitDynamoAdminFoundation,
+  DetroitDynamoCampsClinics,
+  DetroitDynamoContact,
+  DetroitDynamoScheduleResults,
+  DetroitDynamoSeniorMen,
+  DetroitDynamoSeniorWomen,
+  DetroitDynamoSponsors,
+  DetroitDynamoTeams,
+  DetroitDynamoTryouts,
+  DetroitDynamoYouthClub,
+} from '@/pages/detroit-dynamo/DetroitDynamoClubPages';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
 import Unsubscribe from '@/pages/Unsubscribe';
@@ -84,8 +87,10 @@ import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminMessages from '@/pages/admin/AdminMessages';
 import AdminUnsubscribes from '@/pages/admin/AdminUnsubscribes';
 import AdminCredits from '@/pages/admin/AdminCredits';
+import AdminDetroitDynamo from '@/pages/admin/AdminDetroitDynamo';
+import AdminDetroitDynamoModule from '@/pages/admin/AdminDetroitDynamoModule';
 
-// Public root: guests see the marketing landing page; signed-in users are
+// Public root: guests see Detroit Dynamo; signed-in users are
 // sent to their role home (admin → /admin, coach → /coach, client →
 // /dashboard) so they don't get stranded on the public site after login.
 const RootRoute = () => {
@@ -93,7 +98,7 @@ const RootRoute = () => {
   if (isAuthenticated && user) {
     return <Navigate to={homePathForRole(user)} replace />;
   }
-  return <Landing />;
+  return <Navigate to="/detroit-dynamo" replace />;
 };
 
 const AuthenticatedApp = () => {
@@ -113,36 +118,60 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
+      <Route path="/detroit-dynamo" element={<DetroitDynamoLayout />}>
+        <Route index element={<DetroitDynamoHome />} />
+        <Route path="training" element={<DetroitDynamoTraining />} />
+        <Route path="fc" element={<DetroitDynamoFC />} />
+        <Route path="club" element={<Navigate to="/detroit-dynamo/fc" replace />} />
+        <Route path="academy" element={<DetroitDynamoAcademy />} />
+        <Route path="youth-club" element={<DetroitDynamoYouthClub />} />
+        <Route path="senior-men" element={<DetroitDynamoSeniorMen />} />
+        <Route path="senior-women" element={<DetroitDynamoSeniorWomen />} />
+        <Route path="tryouts" element={<DetroitDynamoTryouts />} />
+        <Route path="teams" element={<DetroitDynamoTeams />} />
+        <Route path="schedule-results" element={<DetroitDynamoScheduleResults />} />
+        <Route path="schedule" element={<Navigate to="/detroit-dynamo/schedule-results" replace />} />
+        <Route path="camps-clinics" element={<DetroitDynamoCampsClinics />} />
+        <Route path="camps" element={<Navigate to="/detroit-dynamo/camps-clinics" replace />} />
+        <Route path="sponsors" element={<DetroitDynamoSponsors />} />
+        <Route path="book" element={<DetroitDynamoBook />} />
+        <Route path="results" element={<DetroitDynamoResults />} />
+        <Route path="contact" element={<DetroitDynamoContact />} />
+        <Route path="about" element={<DetroitDynamoAbout />} />
+        <Route path="brand" element={<DetroitDynamoBrand />} />
+        <Route path="admin-foundation" element={<DetroitDynamoAdminFoundation />} />
+      </Route>
+      <Route path="/detroit-dynamo-preview" element={<Navigate to="/detroit-dynamo" replace />} />
+
       <Route element={<PublicLayout />}>
         {/* Public routes */}
         <Route path="/" element={<RootRoute />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/team" element={<Team />} />
-        <Route path="/lcfc" element={<Lcfc />} />
+        <Route path="/about" element={<Navigate to="/detroit-dynamo/about" replace />} />
+        <Route path="/team" element={<Navigate to="/detroit-dynamo/teams" replace />} />
+        <Route path="/lcfc" element={<Navigate to="/detroit-dynamo/senior-men" replace />} />
         <Route path="/verify-coach-link" element={<VerifyCoachLink />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/lcfc/roster" element={<LcfcRoster />} />
-        <Route path="/lcfc/schedule" element={<LcfcSchedule />} />
-        <Route path="/lcfc/tryouts" element={<LcfcTryouts />} />
-        <Route path="/lcfc/staff" element={<LcfcStaff />} />
-        <Route path="/lcfc/sponsors" element={<LcfcSponsors />} />
-        <Route path="/lcfc/news" element={<LcfcNews />} />
-        <Route path="/lcfc/learn-more" element={<LcfcLearnMore />} />
-        <Route path="/team/upsl" element={<TeamUPSL />} />
-        <Route path="/team/roster" element={<TeamRoster />} />
-        <Route path="/team/schedule" element={<TeamSchedule />} />
-        <Route path="/team/tryouts" element={<TeamTryouts />} />
-        <Route path="/team/coaches" element={<TeamCoaches />} />
-        <Route path="/team/gallery" element={<TeamGallery />} />
+        <Route path="/lcfc/roster" element={<Navigate to="/detroit-dynamo/teams" replace />} />
+        <Route path="/lcfc/schedule" element={<Navigate to="/detroit-dynamo/schedule-results" replace />} />
+        <Route path="/lcfc/tryouts" element={<Navigate to="/detroit-dynamo/tryouts" replace />} />
+        <Route path="/lcfc/staff" element={<Navigate to="/detroit-dynamo/about" replace />} />
+        <Route path="/lcfc/sponsors" element={<Navigate to="/detroit-dynamo/sponsors" replace />} />
+        <Route path="/lcfc/news" element={<Navigate to="/detroit-dynamo" replace />} />
+        <Route path="/lcfc/learn-more" element={<Navigate to="/detroit-dynamo/fc" replace />} />
+        <Route path="/team/upsl" element={<Navigate to="/detroit-dynamo/senior-men" replace />} />
+        <Route path="/team/roster" element={<Navigate to="/detroit-dynamo/teams" replace />} />
+        <Route path="/team/schedule" element={<Navigate to="/detroit-dynamo/schedule-results" replace />} />
+        <Route path="/team/tryouts" element={<Navigate to="/detroit-dynamo/tryouts" replace />} />
+        <Route path="/team/coaches" element={<Navigate to="/detroit-dynamo/about" replace />} />
+        <Route path="/team/gallery" element={<Navigate to="/detroit-dynamo/teams" replace />} />
         <Route path="/book" element={<Book />} />
         <Route path="/coaches/:coachId" element={<CoachDetail />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPostPage />} />
+        <Route path="/blog" element={<Navigate to="/detroit-dynamo" replace />} />
+        <Route path="/blog/:slug" element={<Navigate to="/detroit-dynamo" replace />} />
         <Route path="/apply" element={<Apply />} />
         <Route path="/apply/team-player" element={<ApplyTeamPlayer />} />
         <Route path="/apply/team-coach" element={<ApplyTeamCoach />} />
         <Route path="/apply/private-training-coach" element={<ApplyPrivateTrainingCoach />} />
-        <Route path="/detroit-dynamo-preview" element={<DetroitDynamoPreview />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/unsubscribe" element={<Unsubscribe />} />
@@ -186,6 +215,8 @@ const AuthenticatedApp = () => {
           <Route path="/admin/coaches" element={<AdminCoaches />} />
           <Route path="/admin/team" element={<AdminTeam />} />
           <Route path="/admin/lcfc" element={<AdminLcfc />} />
+          <Route path="/admin/detroit-dynamo" element={<AdminDetroitDynamo />} />
+          <Route path="/admin/detroit-dynamo/modules/:moduleSlug" element={<AdminDetroitDynamoModule />} />
           <Route path="/admin/bookings" element={<AdminBookings />} />
           <Route path="/admin/credits" element={<AdminCredits />} />
           <Route path="/admin/content" element={<AdminContent />} />

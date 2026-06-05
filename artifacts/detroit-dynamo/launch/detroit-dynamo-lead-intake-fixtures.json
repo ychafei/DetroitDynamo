@@ -1,0 +1,504 @@
+{
+  "generatedAt": "2026-05-29T14:14:32.025Z",
+  "functionId": "detroitDynamoLeadIntake",
+  "functionExecutePermission": "any",
+  "variants": [
+    "contact",
+    "training",
+    "youth",
+    "tryout",
+    "men",
+    "women",
+    "sponsor"
+  ],
+  "successFixtures": [
+    {
+      "id": "contact-general-inquiry",
+      "label": "General contact inquiry",
+      "leadType": "contact",
+      "sourceRoute": "/detroit-dynamo/contact",
+      "ownerRole": "Media/Admin Staff",
+      "requestBody": {
+        "lead_type": "contact",
+        "source_route": "/detroit-dynamo/contact",
+        "contact_name": "Jordan Parent",
+        "email": "parent@example.com",
+        "phone": "3135550100",
+        "notes": "Looking for the best pathway for a serious U12 player."
+      },
+      "routingDestinationModels": [
+        "ContactLead"
+      ],
+      "routingCollectionIds": [
+        "dd_contact_leads"
+      ],
+      "functionCreatedModels": [
+        "ContactLead"
+      ],
+      "functionCreatedCollectionIds": [
+        "dd_contact_leads"
+      ],
+      "expectedCreatedKeys": {
+        "ContactLead": "contact_lead_id"
+      },
+      "expectedPipelineFields": [
+        "pipeline_status",
+        "pipeline_owner_role",
+        "pipeline_due_at",
+        "pipeline_updated_at",
+        "pipeline_last_note",
+        "pipeline_event_count"
+      ],
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "lead_type": "contact",
+        "created": {
+          "ContactLead": "contact_lead_id"
+        }
+      }
+    },
+    {
+      "id": "training-private-session",
+      "label": "Training academy inquiry",
+      "leadType": "training",
+      "sourceRoute": "/detroit-dynamo/training",
+      "ownerRole": "Training Director",
+      "requestBody": {
+        "lead_type": "training",
+        "source_route": "/detroit-dynamo/training",
+        "contact_name": "Avery Training Parent",
+        "player_name": "Noah Training",
+        "email": "training@example.com",
+        "phone": "3135550101",
+        "program_interest": "Private training",
+        "age_group": "U13-U19 Competitive Pathway",
+        "notes": "Needs speed of play and finishing work before tryouts."
+      },
+      "routingDestinationModels": [
+        "ContactLead",
+        "Booking"
+      ],
+      "routingCollectionIds": [
+        "dd_contact_leads",
+        "dd_bookings"
+      ],
+      "functionCreatedModels": [
+        "ContactLead",
+        "Booking"
+      ],
+      "functionCreatedCollectionIds": [
+        "dd_contact_leads",
+        "dd_bookings"
+      ],
+      "expectedCreatedKeys": {
+        "ContactLead": "contact_lead_id",
+        "Booking": "booking_id"
+      },
+      "expectedPipelineFields": [
+        "pipeline_status",
+        "pipeline_owner_role",
+        "pipeline_due_at",
+        "pipeline_updated_at",
+        "pipeline_last_note",
+        "pipeline_event_count"
+      ],
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "lead_type": "training",
+        "created": {
+          "ContactLead": "contact_lead_id",
+          "Booking": "booking_id"
+        }
+      }
+    },
+    {
+      "id": "youth-club-interest",
+      "label": "Youth club pathway interest",
+      "leadType": "youth",
+      "sourceRoute": "/detroit-dynamo/youth-club",
+      "ownerRole": "Registrar",
+      "requestBody": {
+        "lead_type": "youth",
+        "source_route": "/detroit-dynamo/youth-club",
+        "player_name": "Maya Youth",
+        "parent_guardian_name": "Taylor Youth Parent",
+        "email": "youth@example.com",
+        "phone": "3135550102",
+        "date_of_birth": "2014-08-14",
+        "team_interest": "Youth Club",
+        "position": "Midfielder",
+        "current_club": "Detroit Area Club",
+        "experience_level": "Club",
+        "notes": "Family wants a future competitive pathway."
+      },
+      "routingDestinationModels": [
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration"
+      ],
+      "routingCollectionIds": [
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_tryout_registrations"
+      ],
+      "functionCreatedModels": [
+        "ContactLead",
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration"
+      ],
+      "functionCreatedCollectionIds": [
+        "dd_contact_leads",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_tryout_registrations"
+      ],
+      "expectedCreatedKeys": {
+        "ContactLead": "contact_lead_id",
+        "Player": "player_id",
+        "ParentGuardian": "parent_guardian_id",
+        "TryoutRegistration": "tryout_registration_id"
+      },
+      "expectedPipelineFields": [
+        "pipeline_status",
+        "pipeline_owner_role",
+        "pipeline_due_at",
+        "pipeline_updated_at",
+        "pipeline_last_note",
+        "pipeline_event_count"
+      ],
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "lead_type": "youth",
+        "created": {
+          "ContactLead": "contact_lead_id",
+          "Player": "player_id",
+          "ParentGuardian": "parent_guardian_id",
+          "TryoutRegistration": "tryout_registration_id"
+        }
+      }
+    },
+    {
+      "id": "tryout-registration",
+      "label": "Open tryout registration",
+      "leadType": "tryout",
+      "sourceRoute": "/detroit-dynamo/tryouts",
+      "ownerRole": "Registrar",
+      "requestBody": {
+        "lead_type": "tryout",
+        "source_route": "/detroit-dynamo/tryouts",
+        "player_name": "Sam Tryout",
+        "parent_guardian_name": "Morgan Tryout Parent",
+        "email": "tryout@example.com",
+        "phone": "3135550103",
+        "date_of_birth": "2010-04-12",
+        "team_interest": "Youth Club",
+        "position": "Defender",
+        "current_club": "Independent",
+        "experience_level": "High school",
+        "notes": "Interested in upcoming evaluations."
+      },
+      "routingDestinationModels": [
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration"
+      ],
+      "routingCollectionIds": [
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_tryout_registrations"
+      ],
+      "functionCreatedModels": [
+        "ContactLead",
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration"
+      ],
+      "functionCreatedCollectionIds": [
+        "dd_contact_leads",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_tryout_registrations"
+      ],
+      "expectedCreatedKeys": {
+        "ContactLead": "contact_lead_id",
+        "Player": "player_id",
+        "ParentGuardian": "parent_guardian_id",
+        "TryoutRegistration": "tryout_registration_id"
+      },
+      "expectedPipelineFields": [
+        "pipeline_status",
+        "pipeline_owner_role",
+        "pipeline_due_at",
+        "pipeline_updated_at",
+        "pipeline_last_note",
+        "pipeline_event_count"
+      ],
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "lead_type": "tryout",
+        "created": {
+          "ContactLead": "contact_lead_id",
+          "Player": "player_id",
+          "ParentGuardian": "parent_guardian_id",
+          "TryoutRegistration": "tryout_registration_id"
+        }
+      }
+    },
+    {
+      "id": "senior-men-interest",
+      "label": "Senior men player interest",
+      "leadType": "men",
+      "sourceRoute": "/detroit-dynamo/senior-men",
+      "ownerRole": "Club Director",
+      "requestBody": {
+        "lead_type": "men",
+        "source_route": "/detroit-dynamo/senior-men",
+        "player_name": "Andre Senior",
+        "email": "men@example.com",
+        "phone": "3135550104",
+        "date_of_birth": "2002-03-03",
+        "team_interest": "Senior Men's Team",
+        "position": "Forward",
+        "current_club": "College Club",
+        "experience_level": "College",
+        "notes": "Looking for the senior men pro-development pathway."
+      },
+      "routingDestinationModels": [
+        "Player",
+        "TryoutRegistration",
+        "Team"
+      ],
+      "routingCollectionIds": [
+        "dd_players",
+        "dd_tryout_registrations",
+        "dd_teams"
+      ],
+      "functionCreatedModels": [
+        "ContactLead",
+        "Player",
+        "TryoutRegistration"
+      ],
+      "functionCreatedCollectionIds": [
+        "dd_contact_leads",
+        "dd_players",
+        "dd_tryout_registrations"
+      ],
+      "expectedCreatedKeys": {
+        "ContactLead": "contact_lead_id",
+        "Player": "player_id",
+        "TryoutRegistration": "tryout_registration_id"
+      },
+      "expectedPipelineFields": [
+        "pipeline_status",
+        "pipeline_owner_role",
+        "pipeline_due_at",
+        "pipeline_updated_at",
+        "pipeline_last_note",
+        "pipeline_event_count"
+      ],
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "lead_type": "men",
+        "created": {
+          "ContactLead": "contact_lead_id",
+          "Player": "player_id",
+          "TryoutRegistration": "tryout_registration_id"
+        }
+      }
+    },
+    {
+      "id": "senior-women-interest",
+      "label": "Senior women player interest",
+      "leadType": "women",
+      "sourceRoute": "/detroit-dynamo/senior-women",
+      "ownerRole": "Club Director",
+      "requestBody": {
+        "lead_type": "women",
+        "source_route": "/detroit-dynamo/senior-women",
+        "player_name": "Riley Senior",
+        "email": "women@example.com",
+        "phone": "3135550105",
+        "date_of_birth": "2001-11-20",
+        "team_interest": "Senior Women's Team",
+        "position": "Goalkeeper",
+        "current_club": "College Club",
+        "experience_level": "College",
+        "notes": "Interested in future women senior-team evaluations."
+      },
+      "routingDestinationModels": [
+        "Player",
+        "TryoutRegistration",
+        "Team"
+      ],
+      "routingCollectionIds": [
+        "dd_players",
+        "dd_tryout_registrations",
+        "dd_teams"
+      ],
+      "functionCreatedModels": [
+        "ContactLead",
+        "Player",
+        "TryoutRegistration"
+      ],
+      "functionCreatedCollectionIds": [
+        "dd_contact_leads",
+        "dd_players",
+        "dd_tryout_registrations"
+      ],
+      "expectedCreatedKeys": {
+        "ContactLead": "contact_lead_id",
+        "Player": "player_id",
+        "TryoutRegistration": "tryout_registration_id"
+      },
+      "expectedPipelineFields": [
+        "pipeline_status",
+        "pipeline_owner_role",
+        "pipeline_due_at",
+        "pipeline_updated_at",
+        "pipeline_last_note",
+        "pipeline_event_count"
+      ],
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "lead_type": "women",
+        "created": {
+          "ContactLead": "contact_lead_id",
+          "Player": "player_id",
+          "TryoutRegistration": "tryout_registration_id"
+        }
+      }
+    },
+    {
+      "id": "sponsor-inquiry",
+      "label": "Sponsor partnership inquiry",
+      "leadType": "sponsor",
+      "sourceRoute": "/detroit-dynamo/sponsors",
+      "ownerRole": "Media/Admin Staff",
+      "requestBody": {
+        "lead_type": "sponsor",
+        "source_route": "/detroit-dynamo/sponsors",
+        "contact_name": "Casey Business",
+        "organization": "Detroit Performance Co.",
+        "email": "sponsor@example.com",
+        "phone": "3135550106",
+        "package_interest": "Founding Sponsor",
+        "notes": "Interested in training and matchday sponsorship inventory."
+      },
+      "routingDestinationModels": [
+        "Sponsor",
+        "ContactLead"
+      ],
+      "routingCollectionIds": [
+        "dd_sponsors",
+        "dd_contact_leads"
+      ],
+      "functionCreatedModels": [
+        "ContactLead",
+        "Sponsor"
+      ],
+      "functionCreatedCollectionIds": [
+        "dd_contact_leads",
+        "dd_sponsors"
+      ],
+      "expectedCreatedKeys": {
+        "ContactLead": "contact_lead_id",
+        "Sponsor": "sponsor_id"
+      },
+      "expectedPipelineFields": [
+        "pipeline_status",
+        "pipeline_owner_role",
+        "pipeline_due_at",
+        "pipeline_updated_at",
+        "pipeline_last_note",
+        "pipeline_event_count"
+      ],
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "lead_type": "sponsor",
+        "created": {
+          "ContactLead": "contact_lead_id",
+          "Sponsor": "sponsor_id"
+        }
+      }
+    }
+  ],
+  "rejectionFixtures": [
+    {
+      "id": "reject-non-dynamo-source",
+      "label": "Reject non-Dynamo route",
+      "leadType": "contact",
+      "requestBody": {
+        "lead_type": "contact",
+        "source_route": "/book",
+        "contact_name": "Wrong Route",
+        "email": "wrong-route@example.com",
+        "notes": "Should be rejected because the source is outside the preview."
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "source_route must be a Detroit Dynamo route"
+      },
+      "reason": "Public intake should not accept current LC Training or arbitrary site routes."
+    },
+    {
+      "id": "reject-invalid-lead-type",
+      "label": "Reject invalid lead type",
+      "leadType": "invalid",
+      "requestBody": {
+        "lead_type": "newsletter",
+        "source_route": "/detroit-dynamo/contact",
+        "contact_name": "Unsupported Lead",
+        "email": "unsupported@example.com"
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "lead_type is invalid"
+      },
+      "reason": "Only the seven approved Detroit Dynamo form variants should be accepted."
+    },
+    {
+      "id": "reject-incomplete-tryout",
+      "label": "Reject incomplete tryout profile",
+      "leadType": "tryout",
+      "requestBody": {
+        "lead_type": "tryout",
+        "source_route": "/detroit-dynamo/tryouts",
+        "player_name": "Incomplete Player",
+        "email": "incomplete-tryout@example.com",
+        "date_of_birth": "2011-02-20",
+        "position": "Midfielder",
+        "experience_level": "Club"
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "phone is required"
+      },
+      "reason": "Tryout and team-interest leads need player identity, birth date, position, experience, and contact phone."
+    },
+    {
+      "id": "reject-incomplete-sponsor",
+      "label": "Reject incomplete sponsor inquiry",
+      "leadType": "sponsor",
+      "requestBody": {
+        "lead_type": "sponsor",
+        "source_route": "/detroit-dynamo/sponsors",
+        "organization": "No Package LLC",
+        "email": "sponsor-missing-package@example.com"
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "package_interest is required"
+      },
+      "reason": "Sponsor leads need business identity and package interest before partnership follow-up."
+    }
+  ],
+  "issues": []
+}

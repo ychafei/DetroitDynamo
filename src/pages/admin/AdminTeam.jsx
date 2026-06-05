@@ -380,7 +380,7 @@ function GalleryTab() {
   );
 }
 
-function Field({ label, value, onChange, type = 'text', placeholder }) {
+function Field({ label, value, onChange, type = 'text', placeholder = '' }) {
   return (
     <div>
       <Label className="font-oswald tracking-wider uppercase text-xs">{label}</Label>

@@ -18,7 +18,7 @@ export default function LcfcSponsors() {
   }, []);
 
   return (
-    <LcfcPage title="Sponsors" subtitle="The partners backing LCFC.">
+    <LcfcPage title="Sponsors" subtitle="The partners backing ">
       {sponsors === null ? (
         <div className="h-48 rounded-2xl bg-white border border-[#DDDAD2] animate-pulse" />
       ) : sponsors.length === 0 ? (
@@ -27,13 +27,13 @@ export default function LcfcSponsors() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           {sponsors.map((sp) => {
             const inner = (
-              <div className="bg-white rounded-2xl border border-[#DDDAD2] shadow-[0_2px_20px_-8px_rgba(0,0,0,0.15)] p-6 flex flex-col items-center justify-center text-center h-44 hover:border-[#C9A646] transition-colors">
+              <div className="bg-white rounded-2xl border border-[#DDDAD2] shadow-[0_2px_20px_-8px_rgba(0,0,0,0.15)] p-6 flex flex-col items-center justify-center text-center h-44 hover:border-[#0078FF] transition-colors">
                 {sp.logo_url ? (
                   <img src={sp.logo_url} alt={sp.name} className="max-h-20 max-w-full object-contain" />
                 ) : (
                   <span className="font-oswald text-lg tracking-wider uppercase text-[#111111]">{sp.name}</span>
                 )}
-                <span className="mt-3 text-[10px] uppercase tracking-[0.2em] text-[#A9822B]">{sp.tier}</span>
+                <span className="mt-3 text-[10px] uppercase tracking-[0.2em] text-[#005DFF]">{sp.tier}</span>
               </div>
             );
             return sp.website_url ? (

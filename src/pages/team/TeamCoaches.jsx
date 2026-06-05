@@ -16,7 +16,7 @@ export default function TeamCoaches() {
     <div>
       <TeamPageHero
         eyebrow="Technical Staff"
-        title="LCFC"
+        title="DETROIT DYNAMO FC"
         accentTitle="COACHES"
         description="The minds shaping the club's identity on and off the pitch."
       />

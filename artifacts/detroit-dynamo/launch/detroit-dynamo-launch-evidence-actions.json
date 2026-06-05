@@ -1,0 +1,235 @@
+{
+  "generatedAt": "2026-05-29T14:14:30.566Z",
+  "fixtures": [
+    {
+      "checklist_item_id": "current-site-route-snapshot",
+      "action": "attach_evidence",
+      "actor_role": "Master Admin",
+      "evidence_label": "Current route smoke and rollback snapshot",
+      "artifact_reference": "artifacts/detroit-dynamo/goal-audit.json",
+      "note": "Preview evidence only."
+    },
+    {
+      "checklist_item_id": "payment-package-approval",
+      "action": "request_owner_review",
+      "actor_role": "Master Admin",
+      "evidence_label": "Draft package matrix",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+      "note": "Owner must approve exact pricing before checkout."
+    },
+    {
+      "checklist_item_id": "league-competition-confirmation",
+      "action": "request_changes",
+      "actor_role": "Club Director",
+      "evidence_label": "League pathway wording",
+      "artifact_reference": "",
+      "note": "Keep future-pathway copy until official league documents exist."
+    },
+    {
+      "checklist_item_id": "seo-metadata-noindex-approval",
+      "action": "record_preview_signoff",
+      "actor_role": "Media/Admin Staff",
+      "evidence_label": "SEO review rehearsal",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-sitemap-preview.xml",
+      "note": "Preview signoff only; noindex stays in place."
+    }
+  ],
+  "actions": [
+    {
+      "id": "fixture-launch-evidence-1",
+      "status": "evidence_attached",
+      "destination": "Fixture preview launch evidence ledger; this does not clear promotion gates",
+      "live_gate_cleared": false,
+      "created_at": "2026-05-29T00:00:00.000Z",
+      "updated_at": "2026-05-29T00:00:00.000Z",
+      "promotion_gate": "Current LC site preservation",
+      "confirmation_area": "Current LC Site",
+      "owner_role": "Master Admin",
+      "required_artifact": "Current LC route smoke output, browser QA report, and rollback deployment id",
+      "blocked_actions": [
+        "root route promotion",
+        "permanent redirects",
+        "noindex removal"
+      ],
+      "checklist_item_id": "current-site-route-snapshot",
+      "action": "attach_evidence",
+      "actor_role": "Master Admin",
+      "evidence_label": "Current route smoke and rollback snapshot",
+      "artifact_reference": "artifacts/detroit-dynamo/goal-audit.json",
+      "note": "Preview evidence only."
+    },
+    {
+      "id": "fixture-launch-evidence-2",
+      "status": "owner_review_requested",
+      "destination": "Fixture preview launch evidence ledger; this does not clear promotion gates",
+      "live_gate_cleared": false,
+      "created_at": "2026-05-29T00:01:00.000Z",
+      "updated_at": "2026-05-29T00:01:00.000Z",
+      "promotion_gate": "Payments approved",
+      "confirmation_area": "Payments & Packages",
+      "owner_role": "Master Admin",
+      "required_artifact": "Approved package matrix with prices, session counts, taxes/fees, refund rules, and provider product ids",
+      "blocked_actions": [
+        "checkout activation",
+        "payment collection",
+        "published exact pricing"
+      ],
+      "checklist_item_id": "payment-package-approval",
+      "action": "request_owner_review",
+      "actor_role": "Master Admin",
+      "evidence_label": "Draft package matrix",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+      "note": "Owner must approve exact pricing before checkout."
+    },
+    {
+      "id": "fixture-launch-evidence-3",
+      "status": "changes_requested",
+      "destination": "Fixture preview launch evidence ledger; this does not clear promotion gates",
+      "live_gate_cleared": false,
+      "created_at": "2026-05-29T00:02:00.000Z",
+      "updated_at": "2026-05-29T00:02:00.000Z",
+      "promotion_gate": "League and facility facts confirmed",
+      "confirmation_area": "League & Competition Facts",
+      "owner_role": "Club Director",
+      "required_artifact": "Official league, competition, fixture, roster, and staff confirmation documents or owner-approved public wording",
+      "blocked_actions": [
+        "league claim publication",
+        "fixture/result publication",
+        "roster/staff proof publication"
+      ],
+      "checklist_item_id": "league-competition-confirmation",
+      "action": "request_changes",
+      "actor_role": "Club Director",
+      "evidence_label": "League pathway wording",
+      "artifact_reference": "",
+      "note": "Keep future-pathway copy until official league documents exist."
+    },
+    {
+      "id": "fixture-launch-evidence-4",
+      "status": "preview_signoff_recorded",
+      "destination": "Fixture preview launch evidence ledger; this does not clear promotion gates",
+      "live_gate_cleared": false,
+      "created_at": "2026-05-29T00:03:00.000Z",
+      "updated_at": "2026-05-29T00:03:00.000Z",
+      "promotion_gate": "SEO and redirect launch approved",
+      "confirmation_area": "Sponsors, Media & Content Proof",
+      "owner_role": "Media/Admin Staff",
+      "required_artifact": "Approved titles, descriptions, favicon, Open Graph asset, robots, sitemap, canonical URLs, and noindex removal approval",
+      "blocked_actions": [
+        "noindex removal",
+        "root metadata replacement",
+        "sitemap publication"
+      ],
+      "checklist_item_id": "seo-metadata-noindex-approval",
+      "action": "record_preview_signoff",
+      "actor_role": "Media/Admin Staff",
+      "evidence_label": "SEO review rehearsal",
+      "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-sitemap-preview.xml",
+      "note": "Preview signoff only; noindex stays in place."
+    }
+  ],
+  "summary": {
+    "totalActions": 4,
+    "checklistItemsTouched": 4,
+    "previewSignoffs": 1,
+    "changesRequested": 1,
+    "liveGatesCleared": 0,
+    "latestByItem": [
+      {
+        "id": "fixture-launch-evidence-1",
+        "status": "evidence_attached",
+        "destination": "Fixture preview launch evidence ledger; this does not clear promotion gates",
+        "live_gate_cleared": false,
+        "created_at": "2026-05-29T00:00:00.000Z",
+        "updated_at": "2026-05-29T00:00:00.000Z",
+        "promotion_gate": "Current LC site preservation",
+        "confirmation_area": "Current LC Site",
+        "owner_role": "Master Admin",
+        "required_artifact": "Current LC route smoke output, browser QA report, and rollback deployment id",
+        "blocked_actions": [
+          "root route promotion",
+          "permanent redirects",
+          "noindex removal"
+        ],
+        "checklist_item_id": "current-site-route-snapshot",
+        "action": "attach_evidence",
+        "actor_role": "Master Admin",
+        "evidence_label": "Current route smoke and rollback snapshot",
+        "artifact_reference": "artifacts/detroit-dynamo/goal-audit.json",
+        "note": "Preview evidence only."
+      },
+      {
+        "id": "fixture-launch-evidence-2",
+        "status": "owner_review_requested",
+        "destination": "Fixture preview launch evidence ledger; this does not clear promotion gates",
+        "live_gate_cleared": false,
+        "created_at": "2026-05-29T00:01:00.000Z",
+        "updated_at": "2026-05-29T00:01:00.000Z",
+        "promotion_gate": "Payments approved",
+        "confirmation_area": "Payments & Packages",
+        "owner_role": "Master Admin",
+        "required_artifact": "Approved package matrix with prices, session counts, taxes/fees, refund rules, and provider product ids",
+        "blocked_actions": [
+          "checkout activation",
+          "payment collection",
+          "published exact pricing"
+        ],
+        "checklist_item_id": "payment-package-approval",
+        "action": "request_owner_review",
+        "actor_role": "Master Admin",
+        "evidence_label": "Draft package matrix",
+        "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+        "note": "Owner must approve exact pricing before checkout."
+      },
+      {
+        "id": "fixture-launch-evidence-3",
+        "status": "changes_requested",
+        "destination": "Fixture preview launch evidence ledger; this does not clear promotion gates",
+        "live_gate_cleared": false,
+        "created_at": "2026-05-29T00:02:00.000Z",
+        "updated_at": "2026-05-29T00:02:00.000Z",
+        "promotion_gate": "League and facility facts confirmed",
+        "confirmation_area": "League & Competition Facts",
+        "owner_role": "Club Director",
+        "required_artifact": "Official league, competition, fixture, roster, and staff confirmation documents or owner-approved public wording",
+        "blocked_actions": [
+          "league claim publication",
+          "fixture/result publication",
+          "roster/staff proof publication"
+        ],
+        "checklist_item_id": "league-competition-confirmation",
+        "action": "request_changes",
+        "actor_role": "Club Director",
+        "evidence_label": "League pathway wording",
+        "artifact_reference": "",
+        "note": "Keep future-pathway copy until official league documents exist."
+      },
+      {
+        "id": "fixture-launch-evidence-4",
+        "status": "preview_signoff_recorded",
+        "destination": "Fixture preview launch evidence ledger; this does not clear promotion gates",
+        "live_gate_cleared": false,
+        "created_at": "2026-05-29T00:03:00.000Z",
+        "updated_at": "2026-05-29T00:03:00.000Z",
+        "promotion_gate": "SEO and redirect launch approved",
+        "confirmation_area": "Sponsors, Media & Content Proof",
+        "owner_role": "Media/Admin Staff",
+        "required_artifact": "Approved titles, descriptions, favicon, Open Graph asset, robots, sitemap, canonical URLs, and noindex removal approval",
+        "blocked_actions": [
+          "noindex removal",
+          "root metadata replacement",
+          "sitemap publication"
+        ],
+        "checklist_item_id": "seo-metadata-noindex-approval",
+        "action": "record_preview_signoff",
+        "actor_role": "Media/Admin Staff",
+        "evidence_label": "SEO review rehearsal",
+        "artifact_reference": "artifacts/detroit-dynamo/launch/detroit-dynamo-sitemap-preview.xml",
+        "note": "Preview signoff only; noindex stays in place."
+      }
+    ]
+  },
+  "csv": "id,created_at,status,action,checklist_item_id,promotion_gate,confirmation_area,owner_role,actor_role,evidence_label,artifact_reference,live_gate_cleared,note\n\"fixture-launch-evidence-1\",\"2026-05-29T00:00:00.000Z\",\"evidence_attached\",\"attach_evidence\",\"current-site-route-snapshot\",\"Current LC site preservation\",\"Current LC Site\",\"Master Admin\",\"Master Admin\",\"Current route smoke and rollback snapshot\",\"artifacts/detroit-dynamo/goal-audit.json\",\"false\",\"Preview evidence only.\"\n\"fixture-launch-evidence-2\",\"2026-05-29T00:01:00.000Z\",\"owner_review_requested\",\"request_owner_review\",\"payment-package-approval\",\"Payments approved\",\"Payments & Packages\",\"Master Admin\",\"Master Admin\",\"Draft package matrix\",\"artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md\",\"false\",\"Owner must approve exact pricing before checkout.\"\n\"fixture-launch-evidence-3\",\"2026-05-29T00:02:00.000Z\",\"changes_requested\",\"request_changes\",\"league-competition-confirmation\",\"League and facility facts confirmed\",\"League & Competition Facts\",\"Club Director\",\"Club Director\",\"League pathway wording\",\"\",\"false\",\"Keep future-pathway copy until official league documents exist.\"\n\"fixture-launch-evidence-4\",\"2026-05-29T00:03:00.000Z\",\"preview_signoff_recorded\",\"record_preview_signoff\",\"seo-metadata-noindex-approval\",\"SEO and redirect launch approved\",\"Sponsors, Media & Content Proof\",\"Media/Admin Staff\",\"Media/Admin Staff\",\"SEO review rehearsal\",\"artifacts/detroit-dynamo/launch/detroit-dynamo-sitemap-preview.xml\",\"false\",\"Preview signoff only; noindex stays in place.\"",
+  "csvHeader": "id,created_at,status,action,checklist_item_id,promotion_gate,confirmation_area,owner_role,actor_role,evidence_label,artifact_reference,live_gate_cleared,note",
+  "issues": []
+}

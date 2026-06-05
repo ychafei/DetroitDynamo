@@ -3,7 +3,7 @@
 // Body: { to, link, coachName }
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = 'LC Training <support@lctrainings.com>';
+const FROM = 'Detroit Dynamo <support@detroitdynamo.com>';
 
 export default async ({ req, res, error }) => {
   const diagnostics = { step: 'start', hasResendKey: !!RESEND_API_KEY };
@@ -29,10 +29,10 @@ export default async ({ req, res, error }) => {
       body: JSON.stringify({
         from: FROM,
         to,
-        subject: 'LC Training - Confirm Your Coach Account Link',
+        subject: 'Detroit Dynamo - Confirm Your Coach Account Link',
         html: `<div style="background:#050505;color:#F8F8F8;padding:40px;font-family:sans-serif;">
           <h1 style="color:#C9A646;text-transform:uppercase;letter-spacing:2px;">Confirm Coach Link</h1>
-          <p>An LC Training administrator linked <strong>${to}</strong> to <strong>${coachName}</strong>.</p>
+          <p>An Detroit Dynamo administrator linked <strong>${to}</strong> to <strong>${coachName}</strong>.</p>
           <p>Click below while signed in to this account to confirm and activate your coach access.</p>
           <div style="text-align:center;margin:32px 0;">
             <a href="${link}" style="display:inline-block;font-size:16px;font-weight:bold;color:#050505;background:#C9A646;padding:16px 28px;border-radius:8px;text-decoration:none;">Verify &amp; Activate</a>

@@ -42,10 +42,10 @@ export default function About() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <h1 className="font-oswald text-5xl sm:text-7xl font-bold tracking-tight text-foreground mb-6">
-              THE LC TRAINING STORY
+              THE DETROIT DYNAMO STORY
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Founded with a passion for developing soccer talent in Metro Detroit, LC Training brings 
+              Founded with a passion for developing soccer talent in Metro Detroit, Detroit Dynamo brings
               elite-level coaching to Oakland, Macomb, and Wayne counties. We believe every player 
               deserves access to professional training, regardless of their starting point.
             </p>
@@ -61,7 +61,7 @@ export default function About() {
             <div className="relative">
               <div className="aspect-[4/3] rounded-lg overflow-hidden bg-secondary border border-border relative group">
                 {foundersPhoto?.value ? (
-                  <img src={foundersPhoto.value} alt="LC Training Founders" className="w-full h-full object-cover" />
+                    <img src={foundersPhoto.value} alt="Detroit Dynamo Founders" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <p className="text-muted-foreground text-sm font-oswald tracking-wider uppercase">Founders Photo</p>
@@ -99,7 +99,7 @@ export default function About() {
                   and give the next generation what we wished we'd had.
                 </p>
                 <p>
-                  LC Training was born from that promise. We returned to Oakland, Macomb, and Wayne counties — the same 
+                  Detroit Dynamo was born from that promise. We returned to Oakland, Macomb, and Wayne counties — the same
                   fields where we first learned to love the game — and built something we're proud of. Not just a training 
                   program, but a community. A family.
                 </p>

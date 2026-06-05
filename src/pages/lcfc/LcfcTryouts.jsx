@@ -25,17 +25,17 @@ export default function LcfcTryouts() {
       <Card className="p-8 md:p-12">
         {!open && !closed && (
           <div className="text-center py-10">
-            <div className="w-16 h-16 rounded-2xl bg-[#C9A646]/10 flex items-center justify-center mx-auto mb-5">
-              <Calendar className="w-8 h-8 text-[#C9A646]" />
+            <div className="w-16 h-16 rounded-2xl bg-[#0078FF]/10 flex items-center justify-center mx-auto mb-5">
+              <Calendar className="w-8 h-8 text-[#0078FF]" />
             </div>
-            <p className="font-oswald text-4xl md:text-5xl font-bold tracking-wide uppercase text-[#C9A646]">Coming Soon</p>
+            <p className="font-oswald text-4xl md:text-5xl font-bold tracking-wide uppercase text-[#0078FF]">Coming Soon</p>
             <p className="text-[#666666] mt-3">Dates, time, and location will be announced soon.</p>
           </div>
         )}
 
         {closed && (
           <div className="text-center py-10">
-            <p className="font-oswald text-4xl md:text-5xl font-bold tracking-wide uppercase text-[#C9A646]">Tryouts Closed</p>
+            <p className="font-oswald text-4xl md:text-5xl font-bold tracking-wide uppercase text-[#0078FF]">Tryouts Closed</p>
             <p className="text-[#666666] mt-3">{s.tryouts_notes || 'Tryouts are currently closed. Check back for future opportunities.'}</p>
           </div>
         )}
@@ -72,7 +72,7 @@ export default function LcfcTryouts() {
               )}
               {s.tryouts_contact_email && (
                 <Detail icon={Mail} label="Contact">
-                  <a href={`mailto:${s.tryouts_contact_email}`} className="text-[#A9822B] hover:text-[#C9A646]">{s.tryouts_contact_email}</a>
+                  <a href={`mailto:${s.tryouts_contact_email}`} className="text-[#005DFF] hover:text-[#0078FF]">{s.tryouts_contact_email}</a>
                 </Detail>
               )}
               {s.tryouts_contact_phone && (
@@ -95,7 +95,7 @@ export default function LcfcTryouts() {
 function Detail({ icon: Icon, label, children }) {
   return (
     <div className="flex gap-3">
-      <Icon className="w-5 h-5 text-[#C9A646] shrink-0 mt-0.5" />
+      <Icon className="w-5 h-5 text-[#0078FF] shrink-0 mt-0.5" />
       <div>
         <p className="font-oswald text-[11px] tracking-[0.2em] uppercase text-[#666666]">{label}</p>
         <div className="text-[#2A2A2A] mt-1 leading-relaxed">{children}</div>

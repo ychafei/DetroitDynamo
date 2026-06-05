@@ -1,0 +1,492 @@
+{
+  "generatedAt": "2026-05-29T14:14:32.024Z",
+  "safeguardingTracks": [
+    {
+      "id": "minor-intake-guardian-consent",
+      "label": "Minor intake and guardian consent",
+      "ownerRole": "Registrar",
+      "publicRoutes": [
+        "/detroit-dynamo/tryouts",
+        "/detroit-dynamo/youth-club",
+        "/detroit-dynamo/camps-clinics"
+      ],
+      "relatedModels": [
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration",
+        "CampClinic",
+        "Waiver"
+      ],
+      "adminModules": [
+        "Players",
+        "Parents/guardians",
+        "Tryout registrations",
+        "Camp registrations",
+        "Waivers/forms"
+      ],
+      "protectionMode": "guardian_required",
+      "activationStatus": "policy_review_required",
+      "requiredControls": [
+        "Guardian name and contact captured for minor-facing youth, tryout, and camp records",
+        "Guardian relationship and communication preference approved before live registration",
+        "Minor records scoped to registrar, assigned coach, and approved team staff only",
+        "Consent status visible before evaluations, camps, team placement, or media publication"
+      ],
+      "blockedAction": "Do not treat a minor player as registered, rostered, or cleared for participation until guardian consent and waiver status are confirmed.",
+      "previewHandling": "Preview forms may collect interest and guardian names, but signatures and legal consent stay disabled.",
+      "collectionIds": [
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_tryout_registrations",
+        "dd_camps_clinics",
+        "dd_waivers"
+      ]
+    },
+    {
+      "id": "coach-staff-background-safeguarding",
+      "label": "Coach, staff, and background-check readiness",
+      "ownerRole": "Club Director",
+      "publicRoutes": [
+        "/detroit-dynamo/about",
+        "/detroit-dynamo/training",
+        "/detroit-dynamo/teams"
+      ],
+      "relatedModels": [
+        "Coach",
+        "StaffMember",
+        "Team",
+        "Program"
+      ],
+      "adminModules": [
+        "Coaches",
+        "Teams",
+        "Training programs",
+        "Website content sections"
+      ],
+      "protectionMode": "staff_verification_required",
+      "activationStatus": "policy_review_required",
+      "requiredControls": [
+        "Background-check status captured before assigning youth-facing responsibilities",
+        "Coach licenses, specialties, bios, and photos approved before public display",
+        "Youth communication and supervision expectations acknowledged by staff",
+        "Expired or rejected background-check states block youth-facing assignments"
+      ],
+      "blockedAction": "Do not publish staff credibility claims or assign youth-facing staff until verification and safeguarding process are approved.",
+      "previewHandling": "Preview pages can describe coaching standards without inventing names, licenses, or clearance status.",
+      "collectionIds": [
+        "dd_coaches",
+        "dd_staff_members",
+        "dd_teams",
+        "dd_programs"
+      ]
+    },
+    {
+      "id": "youth-communication-boundaries",
+      "label": "Youth communication boundaries",
+      "ownerRole": "Registrar",
+      "publicRoutes": [
+        "/detroit-dynamo/contact",
+        "/detroit-dynamo/tryouts",
+        "/detroit-dynamo/youth-club"
+      ],
+      "relatedModels": [
+        "ParentGuardian",
+        "Player",
+        "ContactLead",
+        "Team"
+      ],
+      "adminModules": [
+        "Parents/guardians",
+        "Players",
+        "Contact leads",
+        "Teams"
+      ],
+      "protectionMode": "guardian_visible_communication",
+      "activationStatus": "policy_review_required",
+      "requiredControls": [
+        "Minor communications route through guardian-approved contact methods",
+        "Team manager and coach access scoped to assigned teams or sessions",
+        "Internal notes avoid sensitive medical, disciplinary, or personal details unless required for safety",
+        "Escalation path exists for parent concerns, opt-outs, and communication corrections"
+      ],
+      "blockedAction": "Do not build direct-to-minor communication workflows until guardian-visible communication rules are approved.",
+      "previewHandling": "Preview lead follow-up stays owner-assigned and does not create live messaging threads.",
+      "collectionIds": [
+        "dd_parent_guardians",
+        "dd_players",
+        "dd_contact_leads",
+        "dd_teams"
+      ]
+    },
+    {
+      "id": "medical-emergency-data",
+      "label": "Medical and emergency data handling",
+      "ownerRole": "Registrar",
+      "publicRoutes": [
+        "/detroit-dynamo/tryouts",
+        "/detroit-dynamo/camps-clinics",
+        "/detroit-dynamo/book"
+      ],
+      "relatedModels": [
+        "Player",
+        "ParentGuardian",
+        "Waiver",
+        "TrainingSession",
+        "CampClinic"
+      ],
+      "adminModules": [
+        "Players",
+        "Parents/guardians",
+        "Waivers/forms",
+        "Training bookings",
+        "Camp registrations"
+      ],
+      "protectionMode": "restricted_health_context",
+      "activationStatus": "legal_review_required",
+      "requiredControls": [
+        "Emergency contact fields approved before collection",
+        "Medical notes limited to safety-relevant context with restricted visibility",
+        "Coach visibility limited to participation-critical information",
+        "Retention and deletion rules approved for medical and emergency records"
+      ],
+      "blockedAction": "Do not collect medical disclosures or emergency-contact legal consent until reviewed language and access rules are approved.",
+      "previewHandling": "Preview forms avoid medical intake and route health/waiver details to future approved workflows.",
+      "collectionIds": [
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_waivers",
+        "dd_training_sessions",
+        "dd_camps_clinics"
+      ]
+    },
+    {
+      "id": "waiver-version-media-release",
+      "label": "Waiver versions and media release governance",
+      "ownerRole": "Registrar",
+      "publicRoutes": [
+        "/detroit-dynamo/tryouts",
+        "/detroit-dynamo/camps-clinics",
+        "/detroit-dynamo/about",
+        "/detroit-dynamo/sponsors"
+      ],
+      "relatedModels": [
+        "Waiver",
+        "Player",
+        "ParentGuardian",
+        "NewsPost",
+        "Sponsor"
+      ],
+      "adminModules": [
+        "Waivers/forms",
+        "Players",
+        "Parents/guardians",
+        "News posts",
+        "Sponsors"
+      ],
+      "protectionMode": "versioned_release_required",
+      "activationStatus": "legal_review_required",
+      "requiredControls": [
+        "Waiver type, version, signed date, expiration, and status tracked per player",
+        "Minor media release requires guardian approval and opt-out path",
+        "Sponsor/content usage rules mapped to approved media releases",
+        "Expired or missing release status blocks public player proof and media publication"
+      ],
+      "blockedAction": "Do not publish player photos, testimonials, sponsor proof, or media clips without current release coverage.",
+      "previewHandling": "Preview proof slots remain placeholders until signed release coverage and asset permission exist.",
+      "collectionIds": [
+        "dd_waivers",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_news_posts",
+        "dd_sponsors"
+      ]
+    },
+    {
+      "id": "roster-travel-event-clearance",
+      "label": "Roster, travel, and event clearance",
+      "ownerRole": "Team Manager",
+      "publicRoutes": [
+        "/detroit-dynamo/teams",
+        "/detroit-dynamo/schedule-results",
+        "/detroit-dynamo/senior-men",
+        "/detroit-dynamo/senior-women"
+      ],
+      "relatedModels": [
+        "Team",
+        "Player",
+        "ParentGuardian",
+        "Waiver",
+        "MatchFixture"
+      ],
+      "adminModules": [
+        "Teams",
+        "Players",
+        "Parents/guardians",
+        "Waivers/forms",
+        "Schedules/results"
+      ],
+      "protectionMode": "participation_clearance_required",
+      "activationStatus": "policy_review_required",
+      "requiredControls": [
+        "Roster eligibility depends on registration, waiver, and age-group status",
+        "Travel/event consent mapped to fixture or event records where needed",
+        "Team manager visibility scoped to assigned roster and event logistics",
+        "Fixture publication does not imply player participation clearance"
+      ],
+      "blockedAction": "Do not mark players active for matches, travel, or events until roster and consent clearance are approved.",
+      "previewHandling": "Roster-ready and schedule-ready layouts remain placeholders until confirmed records exist.",
+      "collectionIds": [
+        "dd_teams",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_waivers",
+        "dd_match_fixtures"
+      ]
+    },
+    {
+      "id": "data-retention-export-deletion",
+      "label": "Data retention, export, and deletion",
+      "ownerRole": "Master Admin",
+      "publicRoutes": [
+        "/detroit-dynamo/contact",
+        "/detroit-dynamo/tryouts",
+        "/detroit-dynamo/book",
+        "/admin/detroit-dynamo"
+      ],
+      "relatedModels": [
+        "ContactLead",
+        "Player",
+        "ParentGuardian",
+        "Booking",
+        "TryoutRegistration",
+        "Sponsor"
+      ],
+      "adminModules": [
+        "Contact leads",
+        "Players",
+        "Parents/guardians",
+        "Training bookings",
+        "Tryout registrations",
+        "Sponsors"
+      ],
+      "protectionMode": "retention_policy_required",
+      "activationStatus": "policy_review_required",
+      "requiredControls": [
+        "Retention periods approved for leads, players, guardians, bookings, tryouts, sponsors, and archived records",
+        "Export workflow approved for owner/admin review without exposing unnecessary minor data",
+        "Correction and deletion request path assigned to a responsible role",
+        "Local preview storage remains clearly separate from live backend records"
+      ],
+      "blockedAction": "Do not treat browser-local preview leads as durable records or migrate them without retention and privacy approval.",
+      "previewHandling": "Preview lead export is browser-local planning data and should be cleared or migrated only after owner approval.",
+      "collectionIds": [
+        "dd_contact_leads",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_bookings",
+        "dd_tryout_registrations",
+        "dd_sponsors"
+      ]
+    },
+    {
+      "id": "admin-access-audit-trail",
+      "label": "Admin access and audit trail",
+      "ownerRole": "Master Admin",
+      "publicRoutes": [
+        "/admin/detroit-dynamo",
+        "/admin/detroit-dynamo/modules/players",
+        "/admin/detroit-dynamo/modules/waivers-forms"
+      ],
+      "relatedModels": [
+        "Player",
+        "ParentGuardian",
+        "Coach",
+        "Waiver",
+        "ContactLead"
+      ],
+      "adminModules": [
+        "Players",
+        "Parents/guardians",
+        "Coaches",
+        "Waivers/forms",
+        "Contact leads"
+      ],
+      "protectionMode": "role_scoped_audit_required",
+      "activationStatus": "backend_required",
+      "requiredControls": [
+        "Role access follows the Detroit Dynamo permission matrix",
+        "Sensitive actions on minor, waiver, staff, and medical-related records produce audit events",
+        "Coach and media/admin roles cannot see payment, waiver, or guardian data outside approved scope",
+        "Pipeline status changes keep actor role, note, timestamp, and event count"
+      ],
+      "blockedAction": "Do not enable live sensitive record mutation until role-scoped authorization and audit logging are wired server-side.",
+      "previewHandling": "Local preview transitions show the intended audit shape but do not replace live backend enforcement.",
+      "collectionIds": [
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_coaches",
+        "dd_waivers",
+        "dd_contact_leads"
+      ]
+    }
+  ],
+  "launchReadiness": [
+    {
+      "category": "Backend/Data",
+      "status": "planned",
+      "ownerRole": "Master Admin",
+      "evidenceNeeded": [
+        "Approved isolated dd_* collection plan",
+        "Valid Appwrite project credentials",
+        "Verified detroitDynamoLeadIntake fixtures for all public form variants",
+        "Deployed detroitDynamoLeadIntake function",
+        "Verified detroitDynamoLeadPipelineAction fixtures for authenticated status changes",
+        "Verified detroitDynamoAdminModuleRead fixtures for protected module reads",
+        "Verified detroitDynamoAdminRoleGrantAction fixtures for Master Admin role grant management",
+        "Verified detroitDynamoAdminModuleWriteAction fixtures for protected module writes",
+        "Active dd_admin_role_assignments grants for every live admin role",
+        "Public form writes tested from production preview"
+      ],
+      "nextAction": "Review the scaffold, replace expired credentials, run the dry run, then apply the Appwrite provisioner.",
+      "promotionGate": "Data backend live"
+    },
+    {
+      "category": "Waivers/Legal",
+      "status": "pending_confirmation",
+      "ownerRole": "Registrar",
+      "evidenceNeeded": [
+        "Youth participation waiver",
+        "Medical consent and emergency contact language",
+        "Media release and privacy language",
+        "Adult participation and team-travel consent where needed"
+      ],
+      "nextAction": "Have the owner and appropriate legal reviewer approve waiver text before collecting signatures.",
+      "promotionGate": "Waivers approved"
+    },
+    {
+      "category": "Facilities/Operations",
+      "status": "pending_confirmation",
+      "ownerRole": "Club Director",
+      "evidenceNeeded": [
+        "Confirmed training locations and permitted field access",
+        "Facility calendars for training, tryouts, camps, and matches",
+        "Insurance and safety requirements",
+        "Weather, cancellation, and communication procedures"
+      ],
+      "nextAction": "Confirm facility partners and operating rules before publishing location-specific commitments.",
+      "promotionGate": "Facilities confirmed"
+    },
+    {
+      "category": "Content/Brand Promotion",
+      "status": "preview_only",
+      "ownerRole": "Media/Admin Staff",
+      "evidenceNeeded": [
+        "Approved Detroit Dynamo launch copy",
+        "Confirmed staff, testimonials, sponsor logos, news, and media",
+        "SEO metadata, sitemap, redirects, and social images approved",
+        "LC Training migration or preservation plan signed off"
+      ],
+      "nextAction": "Keep the Dynamo site noindex and isolated until promotion timing, redirects, and real content are approved.",
+      "promotionGate": "Launch content approved"
+    }
+  ],
+  "promotionGates": [
+    {
+      "gate": "Data backend live",
+      "status": "planned",
+      "requiredEvidence": "All required dd_* collections exist, permissions are reviewed, and public forms persist to Appwrite.",
+      "nextAction": "Provision after final field review and valid credentials are available."
+    },
+    {
+      "gate": "Waivers approved",
+      "status": "pending_confirmation",
+      "requiredEvidence": "Participation, medical, media, privacy, and travel consent language is approved before signature capture.",
+      "nextAction": "Connect waiver versions to registrations, bookings, camps, and teams."
+    },
+    {
+      "gate": "League and facility facts confirmed",
+      "status": "future_pathway",
+      "requiredEvidence": "No current league, fixture, roster, facility, or staff claim is published without confirmation.",
+      "nextAction": "Maintain future-pathway language until official documents or owner-approved facts are available."
+    }
+  ],
+  "confirmationRegisters": [
+    {
+      "area": "Waivers & Legal",
+      "status": "pending_confirmation",
+      "ownerRole": "Registrar",
+      "relatedModels": [
+        "Waiver",
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration",
+        "CampClinic"
+      ],
+      "requiredFacts": [
+        "Youth participation waiver and medical consent language",
+        "Media release, privacy/terms language, and adult participation waiver",
+        "Travel, emergency contact, and camp/clinic consent requirements",
+        "Versioning, expiration, guardian signature, and retention rules"
+      ],
+      "publishRule": "Do not collect signatures or present legal text as final until owner/legal review is complete.",
+      "nextAction": "Prepare approved waiver versions and map each form/program to the right waiver requirement."
+    },
+    {
+      "area": "Facilities & Operations",
+      "status": "pending_confirmation",
+      "ownerRole": "Club Director",
+      "relatedModels": [
+        "TrainingSession",
+        "CampClinic",
+        "MatchFixture",
+        "Program"
+      ],
+      "requiredFacts": [
+        "Confirmed training locations, field permits, indoor facility access, and match venues",
+        "Calendar availability for private training, camps, tryouts, youth teams, and senior teams",
+        "Insurance, safety, weather, cancellation, check-in, and emergency procedures",
+        "Published location names, addresses, parking/access notes, and facility partner permissions"
+      ],
+      "publishRule": "Do not publish facility commitments, addresses, or schedules until operating access is confirmed.",
+      "nextAction": "Confirm facility partners, operating rules, insurance requirements, and calendar windows."
+    },
+    {
+      "area": "Staff, Rosters & Safeguarding",
+      "status": "pending_confirmation",
+      "ownerRole": "Club Director",
+      "relatedModels": [
+        "Coach",
+        "StaffMember",
+        "Team",
+        "Player"
+      ],
+      "requiredFacts": [
+        "Confirmed staff names, roles, bios, licenses, photos, and public contact rules",
+        "Background check, safeguarding, and youth communication standards",
+        "Approved rosters, player photos, bios, statuses, and parent/player release permissions",
+        "Team manager assignments and internal access levels"
+      ],
+      "publishRule": "Do not publish staff, roster, or player bio details until permissions and verification are complete.",
+      "nextAction": "Collect staff/roster approvals and map internal roles to admin permissions."
+    },
+    {
+      "area": "Sponsors, Media & Content Proof",
+      "status": "preview_only",
+      "ownerRole": "Media/Admin Staff",
+      "relatedModels": [
+        "Sponsor",
+        "NewsPost",
+        "ContactLead"
+      ],
+      "requiredFacts": [
+        "Approved sponsor packages, logos, website links, activation inventory, and display permissions",
+        "Real testimonials, player stories, media clips, and partner quotes",
+        "Launch announcements, news categories, editorial approval workflow, and image rights",
+        "SEO/social assets, redirect timing, sitemap/robots publication, and current-site migration wording"
+      ],
+      "publishRule": "Keep proof slots as placeholders until real quotes, sponsor assets, and content rights are approved.",
+      "nextAction": "Approve sponsor assets, proof content, launch copy, and publication workflow before promotion."
+    }
+  ],
+  "issues": []
+}

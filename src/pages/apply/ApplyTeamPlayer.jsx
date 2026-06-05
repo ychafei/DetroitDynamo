@@ -6,8 +6,8 @@ export default function ApplyTeamPlayer() {
     <ApplicationForm
       type="team_player"
       title="APPLY AS A TEAM PLAYER"
-      subtitle="Looking to compete for LCFC? Tell us about yourself and we'll be in touch with tryout details."
-      promptLabel="Why LCFC? *"
+      subtitle="Looking to compete for Detroit Dynamo FC? Tell us about yourself and we'll be in touch with tryout details."
+      promptLabel="Why Detroit Dynamo FC? *"
       promptPlaceholder="Tell us about your playing history, what you bring to the squad, and why you want to wear the badge."
     />
   );

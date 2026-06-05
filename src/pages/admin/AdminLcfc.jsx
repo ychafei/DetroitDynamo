@@ -19,7 +19,7 @@ import { useConfirm } from '@/components/ui/confirm-dialog';
 
 const MODULES = [
   { value: 'hero', label: 'Hero Banner' },
-  { value: 'about', label: 'About LCFC' },
+  { value: 'about', label: 'About Detroit Dynamo FC' },
   { value: 'overview', label: "Men's Team Overview" },
   { value: 'roster', label: 'Roster' },
   { value: 'schedule', label: 'Schedule / Results' },
@@ -43,7 +43,7 @@ export default function AdminLcfc() {
   return (
     <div className="py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <h1 className="font-oswald text-3xl font-bold tracking-tight text-foreground mb-1">LCFC PAGE</h1>
+        <h1 className="font-oswald text-3xl font-bold tracking-tight text-foreground mb-1">Detroit Dynamo FC PAGE</h1>
         <p className="text-muted-foreground mb-6">Control every section of the public /lcfc page.</p>
 
         <div className="flex flex-wrap items-center gap-1 mb-6 border-b border-border">
@@ -101,7 +101,7 @@ function ModuleCard({ title, enabled, onToggleEnabled, children }) {
   );
 }
 
-function Field({ label, value, onChange, type = 'text', placeholder, hint }) {
+function Field({ label, value, onChange, type = 'text', placeholder = '', hint = '' }) {
   return (
     <div>
       <Label className="font-oswald tracking-wider uppercase text-xs">{label}</Label>
@@ -117,7 +117,7 @@ function Field({ label, value, onChange, type = 'text', placeholder, hint }) {
   );
 }
 
-function Area({ label, value, onChange, rows = 3, hint }) {
+function Area({ label, value, onChange, rows = 3, hint = '' }) {
   return (
     <div>
       <Label className="font-oswald tracking-wider uppercase text-xs">{label}</Label>
@@ -132,7 +132,7 @@ function Area({ label, value, onChange, rows = 3, hint }) {
   );
 }
 
-function ImageField({ label, value, onChange, hint }) {
+function ImageField({ label, value, onChange, hint = '' }) {
   const [uploading, setUploading] = useState(false);
   const upload = async (e) => {
     const file = e.target.files[0];
@@ -216,7 +216,7 @@ function HeroModule({ settings, onChange }) {
 function AboutModule({ settings, onChange }) {
   const { form, set, save, saving } = useSettingsForm(settings, onChange);
   return (
-    <ModuleCard title="About LCFC" enabled={form.about_enabled} onToggleEnabled={(v) => set({ about_enabled: v })}>
+    <ModuleCard title="About Detroit Dynamo FC" enabled={form.about_enabled} onToggleEnabled={(v) => set({ about_enabled: v })}>
       <div className="space-y-4">
         <Field label="Heading" value={form.about_heading} onChange={(v) => set({ about_heading: v })} />
         <Area label="Paragraph" value={form.about_body} onChange={(v) => set({ about_body: v })} rows={4} />

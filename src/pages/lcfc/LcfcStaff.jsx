@@ -13,7 +13,7 @@ export default function LcfcStaff() {
   }, []);
 
   return (
-    <LcfcPage title="Coaches / Staff" subtitle="The people building the LCFC environment.">
+    <LcfcPage title="Coaches / Staff" subtitle="The people building the Detroit Dynamo FC environment.">
       {staff === null ? (
         <div className="h-64 rounded-2xl bg-white border border-[#DDDAD2] animate-pulse" />
       ) : staff.length === 0 ? (
@@ -31,11 +31,11 @@ export default function LcfcStaff() {
               </div>
               <div className="p-6">
                 <p className="font-oswald text-lg tracking-wider uppercase text-[#111111]">{m.name}</p>
-                {m.role && <p className="text-[#A9822B] text-sm uppercase tracking-wider font-semibold mt-0.5">{m.role}</p>}
+                {m.role && <p className="text-[#005DFF] text-sm uppercase tracking-wider font-semibold mt-0.5">{m.role}</p>}
                 {m.bio && <p className="text-sm text-[#2A2A2A] mt-3 leading-relaxed line-clamp-4">{m.bio}</p>}
                 <div className="flex flex-col gap-1.5 mt-4">
                   {m.email && (
-                    <a href={`mailto:${m.email}`} className="flex items-center gap-2 text-sm text-[#666666] hover:text-[#C9A646]">
+                    <a href={`mailto:${m.email}`} className="flex items-center gap-2 text-sm text-[#666666] hover:text-[#0078FF]">
                       <Mail className="w-4 h-4" /> {m.email}
                     </a>
                   )}

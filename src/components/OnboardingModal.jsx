@@ -6,14 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  LIMITS, cleanPhone, formatPhone, isValidPhone, isValidEmail, hasNumbers,
+} from '@/lib/validation';
 
 const POSITIONS = ['Goalkeeper', 'Center Back', 'Fullback', 'Defensive Midfielder', 'Central Midfielder', 'Attacking Midfielder', 'Winger', 'Striker', 'Forward', 'Other'];
 const SKILL_LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Competitive'];
-
-const cleanPhone = (val) => val.replace(/\D/g, '');
-const isValidPhone = (val) => cleanPhone(val).length === 10;
-const hasNumbers = (val) => /\d/.test(val);
-const isValidEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
 export default function OnboardingModal({ user, onComplete }) {
   // Derive initial first/last from existing data: explicit fields first, else split full_name
@@ -24,7 +22,7 @@ export default function OnboardingModal({ user, onComplete }) {
   const [form, setForm] = useState({
     first_name: derivedFirst,
     last_name: derivedLast,
-    phone: user?.phone || '',
+    phone: formatPhone(user?.phone || ''),
     dob: user?.dob || '',
     position: user?.position || '',
     skill_level: user?.skill_level || '',
@@ -37,7 +35,7 @@ export default function OnboardingModal({ user, onComplete }) {
   const [saving, setSaving] = useState(false);
 
   const isCoach = user?.role === 'coach' || user?.role === 'admin';
-  const age = form.dob ? Math.floor((Date.now() - new Date(form.dob)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
+  const age = form.dob ? Math.floor((Date.now() - new Date(form.dob).getTime()) / (365.25 * 24 * 60 * 60 * 1000)) : null;
   const isUnder18 = age !== null && age < 18;
 
   const totalSteps = isUnder18 ? 3 : 2;
@@ -81,29 +79,29 @@ export default function OnboardingModal({ user, onComplete }) {
       try {
         await emailLib.send({
           to: form.parent_email,
-          subject: 'Your Child Has Signed Up for LC Training',
+          subject: 'Your Child Has Signed Up for Detroit Dynamo',
           body: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-              <h2 style="color: #B89A45;">LC Training — Parent/Guardian Notification</h2>
+              <h2 style="color: #0078FF;">Detroit Dynamo - Parent/Guardian Notification</h2>
               <p>Hi ${form.parent_first_name},</p>
-              <p><strong>${childName}</strong> (age ${age}) has created an account on <strong>LC Training</strong>, a private soccer coaching platform.</p>
-              <h3 style="color: #B89A45;">What is LC Training?</h3>
-              <p>LC Training provides one-on-one and small group soccer coaching sessions for players of all ages and skill levels in Oakland, Macomb, and Wayne counties.</p>
-              <h3 style="color: #B89A45;">What your child can do on the platform:</h3>
+              <p><strong>${childName}</strong> (age ${age}) has created an account on <strong>Detroit Dynamo</strong>, a private soccer coaching platform.</p>
+              <h3 style="color: #0078FF;">What is Detroit Dynamo?</h3>
+              <p>Detroit Dynamo provides one-on-one and small group soccer coaching sessions for players of all ages and skill levels in Oakland, Macomb, and Wayne counties.</p>
+              <h3 style="color: #0078FF;">What your child can do on the platform:</h3>
               <ul>
                 <li>Book private coaching sessions with certified coaches</li>
                 <li>Connect with other players their age through our matching system (first name and age only are visible)</li>
                 <li>Message matched players (all messages are monitored for safety)</li>
               </ul>
-              <h3 style="color: #B89A45;">Your information on file:</h3>
+              <h3 style="color: #0078FF;">Your information on file:</h3>
               <ul>
                 <li>Name: ${form.parent_first_name} ${form.parent_last_name}</li>
                 <li>Phone: ${form.parent_phone}</li>
                 <li>Email: ${form.parent_email}</li>
               </ul>
-              <p>If you have any questions or did not authorize this, please contact us immediately at <a href="mailto:support@lctrainings.com" style="color: #B89A45;">support@lctrainings.com</a>.</p>
+              <p>If you have any questions or did not authorize this, please contact us immediately at <a href="mailto:support@detroitdynamo.com" style="color: #0078FF;">support@detroitdynamo.com</a>.</p>
               <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
-              <p style="font-size: 12px; color: #999;">LC Training — Private Soccer Coaching<br/>${window.location.origin}</p>
+              <p style="font-size: 12px; color: #999;">Detroit Dynamo - Private Soccer Coaching<br/>${window.location.origin}</p>
             </div>
           `,
         });
@@ -120,7 +118,7 @@ export default function OnboardingModal({ user, onComplete }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
       <div className="bg-card border border-border rounded-lg w-full max-w-md p-6 space-y-5">
         <div>
-          <h2 className="font-oswald text-2xl uppercase tracking-wider text-accent">Welcome to LC Training</h2>
+          <h2 className="font-oswald text-2xl uppercase tracking-wider text-accent">Welcome to Detroit Dynamo</h2>
           <p className="text-muted-foreground text-sm mt-1">Step {step} of {totalSteps} — Let's set up your profile</p>
           <div className="flex gap-1 mt-2">
             {Array.from({ length: totalSteps }).map((_, i) => (
@@ -137,6 +135,7 @@ export default function OnboardingModal({ user, onComplete }) {
                 <Label>First Name <span className="text-destructive">*</span></Label>
                 <Input
                   value={form.first_name}
+                  maxLength={LIMITS.name}
                   onChange={e => setForm({ ...form, first_name: e.target.value })}
                   placeholder="First name"
                   className="mt-1"
@@ -149,6 +148,7 @@ export default function OnboardingModal({ user, onComplete }) {
                 <Label>Last Name <span className="text-destructive">*</span></Label>
                 <Input
                   value={form.last_name}
+                  maxLength={LIMITS.name}
                   onChange={e => setForm({ ...form, last_name: e.target.value })}
                   placeholder="Last name"
                   className="mt-1"
@@ -162,7 +162,9 @@ export default function OnboardingModal({ user, onComplete }) {
               <Label>Phone Number <span className="text-destructive">*</span></Label>
               <Input
                 value={form.phone}
-                onChange={e => setForm({ ...form, phone: e.target.value })}
+                type="tel"
+                inputMode="tel"
+                onChange={e => setForm({ ...form, phone: formatPhone(e.target.value) })}
                 placeholder="(555) 000-0000"
                 className="mt-1"
               />
@@ -215,6 +217,7 @@ export default function OnboardingModal({ user, onComplete }) {
                 <Label>Parent First Name <span className="text-destructive">*</span></Label>
                 <Input
                   value={form.parent_first_name}
+                  maxLength={LIMITS.name}
                   onChange={e => setForm({ ...form, parent_first_name: e.target.value })}
                   placeholder="First name"
                   className="mt-1"
@@ -227,6 +230,7 @@ export default function OnboardingModal({ user, onComplete }) {
                 <Label>Parent Last Name <span className="text-destructive">*</span></Label>
                 <Input
                   value={form.parent_last_name}
+                  maxLength={LIMITS.name}
                   onChange={e => setForm({ ...form, parent_last_name: e.target.value })}
                   placeholder="Last name"
                   className="mt-1"
@@ -240,7 +244,9 @@ export default function OnboardingModal({ user, onComplete }) {
               <Label>Parent Phone <span className="text-destructive">*</span></Label>
               <Input
                 value={form.parent_phone}
-                onChange={e => setForm({ ...form, parent_phone: e.target.value })}
+                type="tel"
+                inputMode="tel"
+                onChange={e => setForm({ ...form, parent_phone: formatPhone(e.target.value) })}
                 placeholder="(555) 000-0000"
                 className="mt-1"
               />
@@ -252,6 +258,8 @@ export default function OnboardingModal({ user, onComplete }) {
               <Label>Parent Email <span className="text-destructive">*</span></Label>
               <Input
                 value={form.parent_email}
+                type="email"
+                maxLength={LIMITS.email}
                 onChange={e => setForm({ ...form, parent_email: e.target.value })}
                 placeholder="email@example.com"
                 className="mt-1"
@@ -278,7 +286,7 @@ export default function OnboardingModal({ user, onComplete }) {
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">Please read and agree to our terms before getting started.</p>
             <div className="bg-secondary rounded-md p-3 text-xs text-muted-foreground max-h-40 overflow-y-auto leading-relaxed">
-              By using LC Training, you agree to our{' '}
+              By using Detroit Dynamo, you agree to our{' '}
               <a href="/terms" target="_blank" className="text-accent underline">Terms of Service</a> and{' '}
               <a href="/privacy" target="_blank" className="text-accent underline">Privacy Policy</a>. Sessions are subject to cancellation policies. All communications are monitored for safety.
             </div>

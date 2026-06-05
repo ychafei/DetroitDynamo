@@ -61,6 +61,11 @@ const VAR_MATRIX = {
   'send-email':              ['RESEND_API_KEY'],
   sendBookingEmails:         ['RESEND_API_KEY'],
   sendCoachEmailVerification:['RESEND_API_KEY'],
+  detroitDynamoLeadIntake:   ['APPWRITE_API_KEY'],
+  detroitDynamoLeadPipelineAction: ['APPWRITE_API_KEY'],
+  detroitDynamoAdminModuleRead: ['APPWRITE_API_KEY'],
+  detroitDynamoAdminRoleGrantAction: ['APPWRITE_API_KEY'],
+  detroitDynamoAdminModuleWriteAction: ['APPWRITE_API_KEY'],
 };
 
 const client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT).setKey(API_KEY);

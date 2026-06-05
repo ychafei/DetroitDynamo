@@ -1,0 +1,581 @@
+{
+  "generatedAt": "2026-05-29T14:14:30.558Z",
+  "claimSafetyTracks": [
+    {
+      "id": "league-competition-pathway",
+      "label": "League and competition pathway",
+      "confirmationArea": "League & Competition Facts",
+      "publicRoutes": [
+        "/detroit-dynamo/fc",
+        "/detroit-dynamo/youth-club",
+        "/detroit-dynamo/senior-men",
+        "/detroit-dynamo/senior-women",
+        "/detroit-dynamo/teams"
+      ],
+      "relatedModels": [
+        "Team",
+        "MatchFixture",
+        "MatchResult",
+        "NewsPost"
+      ],
+      "adminModules": [
+        "Teams",
+        "Schedules/results",
+        "News posts",
+        "Website content sections"
+      ],
+      "publishMode": "future_pathway_only",
+      "confirmationStatus": "future_pathway",
+      "requiredEvidence": [
+        "Written senior men league acceptance before naming current membership",
+        "Written senior women league acceptance before naming current membership",
+        "Confirmed youth league placement before naming current competition",
+        "Owner-approved wording for every league and competition reference"
+      ],
+      "blockedClaim": "Do not state current UPSL, UPSL Women, or named youth-league membership until written acceptance is confirmed.",
+      "safeLanguage": [
+        "Goal of competing in UPSL or a similar pro-development league.",
+        "Future competitive youth pathway goal.",
+        "Club development roadmap."
+      ],
+      "collectionIds": [
+        "dd_teams",
+        "dd_match_fixtures",
+        "dd_match_results",
+        "dd_news_posts"
+      ],
+      "confirmationRegister": {
+        "area": "League & Competition Facts",
+        "status": "future_pathway",
+        "ownerRole": "Club Director",
+        "relatedModels": [
+          "Team",
+          "MatchFixture",
+          "MatchResult",
+          "NewsPost"
+        ],
+        "requiredFacts": [
+          "Confirmed senior men league acceptance before naming current UPSL or similar membership",
+          "Confirmed senior women league acceptance before naming current UPSL Women or similar membership",
+          "Confirmed youth league placement before naming current youth competition",
+          "Fixture, opponent, venue, roster, staff, and competition rules confirmed before publication"
+        ],
+        "publishRule": "Use future-pathway language until written league or competition confirmation exists.",
+        "nextAction": "Collect official league/competition documentation and owner-approved public wording."
+      }
+    },
+    {
+      "id": "facility-operations-claims",
+      "label": "Facility and operations claims",
+      "confirmationArea": "Facilities & Operations",
+      "publicRoutes": [
+        "/detroit-dynamo/training",
+        "/detroit-dynamo/book",
+        "/detroit-dynamo/tryouts",
+        "/detroit-dynamo/camps-clinics",
+        "/detroit-dynamo/schedule-results",
+        "/detroit-dynamo/contact"
+      ],
+      "relatedModels": [
+        "TrainingSession",
+        "CampClinic",
+        "MatchFixture",
+        "Program"
+      ],
+      "adminModules": [
+        "Training programs",
+        "Training bookings",
+        "Camp registrations",
+        "Schedules/results",
+        "Website content sections"
+      ],
+      "publishMode": "placeholder_only",
+      "confirmationStatus": "pending_confirmation",
+      "requiredEvidence": [
+        "Confirmed field or facility partner access",
+        "Approved calendars for training, tryouts, camps, and matches",
+        "Insurance, safety, weather, cancellation, and emergency procedures",
+        "Owner approval for public names, addresses, maps, and parking/access notes"
+      ],
+      "blockedClaim": "Do not publish facility names, addresses, schedules, or permitted-field commitments until operating access is confirmed.",
+      "safeLanguage": [
+        "Location and facility details will be confirmed with registered players and families.",
+        "Facility partnerships are being finalized.",
+        "Training windows are planned around approved field access."
+      ],
+      "collectionIds": [
+        "dd_training_sessions",
+        "dd_camps_clinics",
+        "dd_match_fixtures",
+        "dd_programs"
+      ],
+      "confirmationRegister": {
+        "area": "Facilities & Operations",
+        "status": "pending_confirmation",
+        "ownerRole": "Club Director",
+        "relatedModels": [
+          "TrainingSession",
+          "CampClinic",
+          "MatchFixture",
+          "Program"
+        ],
+        "requiredFacts": [
+          "Confirmed training locations, field permits, indoor facility access, and match venues",
+          "Calendar availability for private training, camps, tryouts, youth teams, and senior teams",
+          "Insurance, safety, weather, cancellation, check-in, and emergency procedures",
+          "Published location names, addresses, parking/access notes, and facility partner permissions"
+        ],
+        "publishRule": "Do not publish facility commitments, addresses, or schedules until operating access is confirmed.",
+        "nextAction": "Confirm facility partners, operating rules, insurance requirements, and calendar windows."
+      }
+    },
+    {
+      "id": "staff-roster-safeguarding",
+      "label": "Staff, roster, and safeguarding proof",
+      "confirmationArea": "Staff, Rosters & Safeguarding",
+      "publicRoutes": [
+        "/detroit-dynamo/about",
+        "/detroit-dynamo/academy",
+        "/detroit-dynamo/youth-club",
+        "/detroit-dynamo/teams",
+        "/detroit-dynamo/senior-men",
+        "/detroit-dynamo/senior-women"
+      ],
+      "relatedModels": [
+        "Coach",
+        "StaffMember",
+        "Team",
+        "Player",
+        "Waiver"
+      ],
+      "adminModules": [
+        "Coaches",
+        "Teams",
+        "Players",
+        "Waivers/forms",
+        "Website content sections"
+      ],
+      "publishMode": "approval_required",
+      "confirmationStatus": "pending_confirmation",
+      "requiredEvidence": [
+        "Approved staff names, titles, bios, licenses, and photos",
+        "Background-check and safeguarding process confirmed for youth-facing roles",
+        "Approved roster policy and player/guardian media releases",
+        "Team manager assignments and public-contact rules"
+      ],
+      "blockedClaim": "Do not publish staff bios, coach credentials, roster cards, player photos, or player status details until verification and permissions are complete.",
+      "safeLanguage": [
+        "Staff and roster details will be published after approval.",
+        "Coaching standards and safeguarding workflows are part of the club buildout.",
+        "Roster-ready layouts are prepared for confirmed teams."
+      ],
+      "collectionIds": [
+        "dd_coaches",
+        "dd_staff_members",
+        "dd_teams",
+        "dd_players",
+        "dd_waivers"
+      ],
+      "confirmationRegister": {
+        "area": "Staff, Rosters & Safeguarding",
+        "status": "pending_confirmation",
+        "ownerRole": "Club Director",
+        "relatedModels": [
+          "Coach",
+          "StaffMember",
+          "Team",
+          "Player"
+        ],
+        "requiredFacts": [
+          "Confirmed staff names, roles, bios, licenses, photos, and public contact rules",
+          "Background check, safeguarding, and youth communication standards",
+          "Approved rosters, player photos, bios, statuses, and parent/player release permissions",
+          "Team manager assignments and internal access levels"
+        ],
+        "publishRule": "Do not publish staff, roster, or player bio details until permissions and verification are complete.",
+        "nextAction": "Collect staff/roster approvals and map internal roles to admin permissions."
+      }
+    },
+    {
+      "id": "sponsor-media-proof",
+      "label": "Sponsor, testimonial, and media proof",
+      "confirmationArea": "Sponsors, Media & Content Proof",
+      "publicRoutes": [
+        "/detroit-dynamo",
+        "/detroit-dynamo/sponsors",
+        "/detroit-dynamo/about",
+        "/detroit-dynamo/brand"
+      ],
+      "relatedModels": [
+        "Sponsor",
+        "NewsPost",
+        "ContactLead",
+        "StaffMember"
+      ],
+      "adminModules": [
+        "Sponsors",
+        "News posts",
+        "Contact leads",
+        "Website content sections"
+      ],
+      "publishMode": "proof_placeholder_only",
+      "confirmationStatus": "preview_only",
+      "requiredEvidence": [
+        "Approved sponsor logos, links, placements, and activation inventory",
+        "Permissioned testimonials, player stories, partner quotes, and media clips",
+        "Approved image rights and media-release coverage",
+        "Editorial approval workflow for sponsor, news, and proof content"
+      ],
+      "blockedClaim": "Do not show sponsor logos, testimonials, partner quotes, player proof, or media clips as real until permissions and source assets are approved.",
+      "safeLanguage": [
+        "Sponsor opportunities are open for local businesses.",
+        "Proof slots are prepared for approved partners and media.",
+        "Testimonial-ready sections will use real approved quotes only."
+      ],
+      "collectionIds": [
+        "dd_sponsors",
+        "dd_news_posts",
+        "dd_contact_leads",
+        "dd_staff_members"
+      ],
+      "confirmationRegister": {
+        "area": "Sponsors, Media & Content Proof",
+        "status": "preview_only",
+        "ownerRole": "Media/Admin Staff",
+        "relatedModels": [
+          "Sponsor",
+          "NewsPost",
+          "ContactLead"
+        ],
+        "requiredFacts": [
+          "Approved sponsor packages, logos, website links, activation inventory, and display permissions",
+          "Real testimonials, player stories, media clips, and partner quotes",
+          "Launch announcements, news categories, editorial approval workflow, and image rights",
+          "SEO/social assets, redirect timing, sitemap/robots publication, and current-site migration wording"
+        ],
+        "publishRule": "Keep proof slots as placeholders until real quotes, sponsor assets, and content rights are approved.",
+        "nextAction": "Approve sponsor assets, proof content, launch copy, and publication workflow before promotion."
+      }
+    },
+    {
+      "id": "fixture-results-schedule",
+      "label": "Fixtures, schedules, and results",
+      "confirmationArea": "League & Competition Facts",
+      "publicRoutes": [
+        "/detroit-dynamo/schedule-results",
+        "/detroit-dynamo/results",
+        "/detroit-dynamo/teams",
+        "/detroit-dynamo/senior-men",
+        "/detroit-dynamo/senior-women"
+      ],
+      "relatedModels": [
+        "MatchFixture",
+        "MatchResult",
+        "Team",
+        "NewsPost"
+      ],
+      "adminModules": [
+        "Schedules/results",
+        "Teams",
+        "News posts",
+        "Website content sections"
+      ],
+      "publishMode": "confirmed_records_only",
+      "confirmationStatus": "future_pathway",
+      "requiredEvidence": [
+        "Confirmed team record connected to the fixture",
+        "Confirmed opponent, venue, competition, date, and kickoff time",
+        "Post-match score source and recap approval",
+        "Facility and competition permission for public publication"
+      ],
+      "blockedClaim": "Do not create fake fixtures, fake opponents, fake results, fake venues, or fake recaps to make the club look active.",
+      "safeLanguage": [
+        "No fixtures have been published yet.",
+        "Schedules and results will appear after teams and competitions are confirmed.",
+        "Placeholder states are used until real match records exist."
+      ],
+      "collectionIds": [
+        "dd_match_fixtures",
+        "dd_match_results",
+        "dd_teams",
+        "dd_news_posts"
+      ],
+      "confirmationRegister": {
+        "area": "League & Competition Facts",
+        "status": "future_pathway",
+        "ownerRole": "Club Director",
+        "relatedModels": [
+          "Team",
+          "MatchFixture",
+          "MatchResult",
+          "NewsPost"
+        ],
+        "requiredFacts": [
+          "Confirmed senior men league acceptance before naming current UPSL or similar membership",
+          "Confirmed senior women league acceptance before naming current UPSL Women or similar membership",
+          "Confirmed youth league placement before naming current youth competition",
+          "Fixture, opponent, venue, roster, staff, and competition rules confirmed before publication"
+        ],
+        "publishRule": "Use future-pathway language until written league or competition confirmation exists.",
+        "nextAction": "Collect official league/competition documentation and owner-approved public wording."
+      }
+    },
+    {
+      "id": "player-outcome-proof",
+      "label": "College, pre-pro, and player-outcome proof",
+      "confirmationArea": "Sponsors, Media & Content Proof",
+      "publicRoutes": [
+        "/detroit-dynamo/training",
+        "/detroit-dynamo/academy",
+        "/detroit-dynamo/youth-club",
+        "/detroit-dynamo/fc",
+        "/detroit-dynamo/senior-men",
+        "/detroit-dynamo/senior-women"
+      ],
+      "relatedModels": [
+        "Player",
+        "Team",
+        "NewsPost",
+        "StaffMember"
+      ],
+      "adminModules": [
+        "Players",
+        "Teams",
+        "News posts",
+        "Website content sections"
+      ],
+      "publishMode": "proof_required",
+      "confirmationStatus": "preview_only",
+      "requiredEvidence": [
+        "Confirmed player consent for any placement, achievement, or pathway story",
+        "Verified college, academy, semi-pro, or pro-development outcome before publication",
+        "Approved parent/guardian release for minor-player achievements",
+        "Owner-approved wording that avoids guarantees or misleading promises"
+      ],
+      "blockedClaim": "Do not guarantee scholarships, college placement, senior-team selection, or pre-pro outcomes.",
+      "safeLanguage": [
+        "College and pre-pro preparation pathway.",
+        "Development support for serious players.",
+        "Player outcomes will be published only when verified and permissioned."
+      ],
+      "collectionIds": [
+        "dd_players",
+        "dd_teams",
+        "dd_news_posts",
+        "dd_staff_members"
+      ],
+      "confirmationRegister": {
+        "area": "Sponsors, Media & Content Proof",
+        "status": "preview_only",
+        "ownerRole": "Media/Admin Staff",
+        "relatedModels": [
+          "Sponsor",
+          "NewsPost",
+          "ContactLead"
+        ],
+        "requiredFacts": [
+          "Approved sponsor packages, logos, website links, activation inventory, and display permissions",
+          "Real testimonials, player stories, media clips, and partner quotes",
+          "Launch announcements, news categories, editorial approval workflow, and image rights",
+          "SEO/social assets, redirect timing, sitemap/robots publication, and current-site migration wording"
+        ],
+        "publishRule": "Keep proof slots as placeholders until real quotes, sponsor assets, and content rights are approved.",
+        "nextAction": "Approve sponsor assets, proof content, launch copy, and publication workflow before promotion."
+      }
+    },
+    {
+      "id": "launch-news-seo-redirects",
+      "label": "Launch news, SEO, and redirects",
+      "confirmationArea": "Sponsors, Media & Content Proof",
+      "publicRoutes": [
+        "/detroit-dynamo",
+        "/detroit-dynamo/about",
+        "/detroit-dynamo/brand",
+        "/detroit-dynamo/admin-foundation"
+      ],
+      "relatedModels": [
+        "NewsPost",
+        "ContactLead",
+        "Sponsor",
+        "StaffMember"
+      ],
+      "adminModules": [
+        "News posts",
+        "Sponsors",
+        "Contact leads",
+        "Website content sections"
+      ],
+      "publishMode": "owner_approval_required",
+      "confirmationStatus": "preview_only",
+      "requiredEvidence": [
+        "Approved Detroit Dynamo launch copy and announcement timing",
+        "Approved sitemap, canonical routes, robots/noindex removal, and Open Graph assets",
+        "Approved redirect timing from old LC Training routes",
+        "Signed current-site migration or preservation plan"
+      ],
+      "blockedClaim": "Do not present Detroit Dynamo as the live replacement brand, remove preview noindex, or apply old-route redirects until launch approval is complete.",
+      "safeLanguage": [
+        "Preview-only brand direction.",
+        "Future promotion requires owner approval.",
+        "Redirect plan is draft-only until the current LC site migration is approved."
+      ],
+      "collectionIds": [
+        "dd_news_posts",
+        "dd_contact_leads",
+        "dd_sponsors",
+        "dd_staff_members"
+      ],
+      "confirmationRegister": {
+        "area": "Sponsors, Media & Content Proof",
+        "status": "preview_only",
+        "ownerRole": "Media/Admin Staff",
+        "relatedModels": [
+          "Sponsor",
+          "NewsPost",
+          "ContactLead"
+        ],
+        "requiredFacts": [
+          "Approved sponsor packages, logos, website links, activation inventory, and display permissions",
+          "Real testimonials, player stories, media clips, and partner quotes",
+          "Launch announcements, news categories, editorial approval workflow, and image rights",
+          "SEO/social assets, redirect timing, sitemap/robots publication, and current-site migration wording"
+        ],
+        "publishRule": "Keep proof slots as placeholders until real quotes, sponsor assets, and content rights are approved.",
+        "nextAction": "Approve sponsor assets, proof content, launch copy, and publication workflow before promotion."
+      }
+    }
+  ],
+  "confirmationRegisters": [
+    {
+      "area": "League & Competition Facts",
+      "status": "future_pathway",
+      "ownerRole": "Club Director",
+      "relatedModels": [
+        "Team",
+        "MatchFixture",
+        "MatchResult",
+        "NewsPost"
+      ],
+      "requiredFacts": [
+        "Confirmed senior men league acceptance before naming current UPSL or similar membership",
+        "Confirmed senior women league acceptance before naming current UPSL Women or similar membership",
+        "Confirmed youth league placement before naming current youth competition",
+        "Fixture, opponent, venue, roster, staff, and competition rules confirmed before publication"
+      ],
+      "publishRule": "Use future-pathway language until written league or competition confirmation exists.",
+      "nextAction": "Collect official league/competition documentation and owner-approved public wording."
+    },
+    {
+      "area": "Facilities & Operations",
+      "status": "pending_confirmation",
+      "ownerRole": "Club Director",
+      "relatedModels": [
+        "TrainingSession",
+        "CampClinic",
+        "MatchFixture",
+        "Program"
+      ],
+      "requiredFacts": [
+        "Confirmed training locations, field permits, indoor facility access, and match venues",
+        "Calendar availability for private training, camps, tryouts, youth teams, and senior teams",
+        "Insurance, safety, weather, cancellation, check-in, and emergency procedures",
+        "Published location names, addresses, parking/access notes, and facility partner permissions"
+      ],
+      "publishRule": "Do not publish facility commitments, addresses, or schedules until operating access is confirmed.",
+      "nextAction": "Confirm facility partners, operating rules, insurance requirements, and calendar windows."
+    },
+    {
+      "area": "Staff, Rosters & Safeguarding",
+      "status": "pending_confirmation",
+      "ownerRole": "Club Director",
+      "relatedModels": [
+        "Coach",
+        "StaffMember",
+        "Team",
+        "Player"
+      ],
+      "requiredFacts": [
+        "Confirmed staff names, roles, bios, licenses, photos, and public contact rules",
+        "Background check, safeguarding, and youth communication standards",
+        "Approved rosters, player photos, bios, statuses, and parent/player release permissions",
+        "Team manager assignments and internal access levels"
+      ],
+      "publishRule": "Do not publish staff, roster, or player bio details until permissions and verification are complete.",
+      "nextAction": "Collect staff/roster approvals and map internal roles to admin permissions."
+    },
+    {
+      "area": "Sponsors, Media & Content Proof",
+      "status": "preview_only",
+      "ownerRole": "Media/Admin Staff",
+      "relatedModels": [
+        "Sponsor",
+        "NewsPost",
+        "ContactLead"
+      ],
+      "requiredFacts": [
+        "Approved sponsor packages, logos, website links, activation inventory, and display permissions",
+        "Real testimonials, player stories, media clips, and partner quotes",
+        "Launch announcements, news categories, editorial approval workflow, and image rights",
+        "SEO/social assets, redirect timing, sitemap/robots publication, and current-site migration wording"
+      ],
+      "publishRule": "Keep proof slots as placeholders until real quotes, sponsor assets, and content rights are approved.",
+      "nextAction": "Approve sponsor assets, proof content, launch copy, and publication workflow before promotion."
+    }
+  ],
+  "launchReadiness": [
+    {
+      "category": "League/Competition",
+      "status": "future_pathway",
+      "ownerRole": "Club Director",
+      "evidenceNeeded": [
+        "Confirmed senior league acceptance before naming membership",
+        "Confirmed youth league placement before naming competition",
+        "Roster, staff, insurance, and rules compliance",
+        "Published schedule only after opponents, dates, and venues are confirmed"
+      ],
+      "nextAction": "Keep all UPSL, UPSL Women, and youth-league language framed as a goal until written confirmation exists.",
+      "promotionGate": "League facts confirmed"
+    },
+    {
+      "category": "Facilities/Operations",
+      "status": "pending_confirmation",
+      "ownerRole": "Club Director",
+      "evidenceNeeded": [
+        "Confirmed training locations and permitted field access",
+        "Facility calendars for training, tryouts, camps, and matches",
+        "Insurance and safety requirements",
+        "Weather, cancellation, and communication procedures"
+      ],
+      "nextAction": "Confirm facility partners and operating rules before publishing location-specific commitments.",
+      "promotionGate": "Facilities confirmed"
+    },
+    {
+      "category": "Content/Brand Promotion",
+      "status": "preview_only",
+      "ownerRole": "Media/Admin Staff",
+      "evidenceNeeded": [
+        "Approved Detroit Dynamo launch copy",
+        "Confirmed staff, testimonials, sponsor logos, news, and media",
+        "SEO metadata, sitemap, redirects, and social images approved",
+        "LC Training migration or preservation plan signed off"
+      ],
+      "nextAction": "Keep the Dynamo site noindex and isolated until promotion timing, redirects, and real content are approved.",
+      "promotionGate": "Launch content approved"
+    }
+  ],
+  "promotionGates": [
+    {
+      "gate": "League and facility facts confirmed",
+      "status": "future_pathway",
+      "requiredEvidence": "No current league, fixture, roster, facility, or staff claim is published without confirmation.",
+      "nextAction": "Maintain future-pathway language until official documents or owner-approved facts are available."
+    },
+    {
+      "gate": "SEO and redirect launch approved",
+      "status": "preview_only",
+      "requiredEvidence": "Canonical routes, sitemap, metadata, Open Graph assets, and old-route redirect timing are approved.",
+      "nextAction": "Remove noindex only when Detroit Dynamo is the approved public brand."
+    }
+  ],
+  "issues": []
+}

@@ -9,23 +9,22 @@
     --font-oswald: 'Oswald', sans-serif;
     --font-dm-sans: 'DM Sans', sans-serif;
 
-    /* Les Chèvres brand palette — premium soccer training identity.
-       Black + charcoal for surfaces, warm cream for legibility on dark,
-       muted metallic gold as the only chromatic accent. */
+    /* Detroit Dynamo brand palette - premium soccer development identity.
+       Deep navy / black surfaces, metallic silver copy, and electric blue accents. */
     --color-brand-black: #0B0B0B;
-    --color-brand-charcoal: #151515;
-    --color-brand-white: #F7F5EF;
-    --color-brand-gold: #B89A45;
-    --color-brand-gold-soft: #D1B76A;
+    --color-brand-charcoal: #061225;
+    --color-brand-white: #F8FAFC;
+    --color-brand-blue: #0078FF;
+    --color-brand-blue-soft: #62D8FF;
 
     /* HSL companions, used as Tailwind/shadcn token components. */
-    --brand-black-hsl:      0 0% 4%;
-    --brand-charcoal-hsl:   0 0% 8%;
-    --brand-charcoal-2-hsl: 0 0% 12%;       /* slightly raised surface inside cards */
-    --brand-white-hsl:      45 33% 95%;
-    --brand-gold-hsl:       44 46% 50%;
-    --brand-gold-soft-hsl:  44 53% 62%;
-    --brand-line-hsl:       40 18% 18%;     /* warm charcoal border */
+    --brand-black-hsl:      222 84% 4%;
+    --brand-charcoal-hsl:   217 68% 8%;
+    --brand-charcoal-2-hsl: 214 61% 13%;
+    --brand-white-hsl:      210 40% 98%;
+    --brand-blue-hsl:       212 100% 50%;
+    --brand-blue-soft-hsl:  193 100% 69%;
+    --brand-line-hsl:       218 24% 22%;
 
     /* shadcn / Tailwind tokens — wired to the brand palette so every
        `bg-background`, `text-accent`, `border-border` etc. picks up the new
@@ -40,8 +39,8 @@
     --popover-foreground: var(--brand-white-hsl);
 
     /* "primary" is reserved for soft/secondary informational tints
-       (confirmed badges, credits chips). Gold-soft keeps it on-palette. */
-    --primary: var(--brand-gold-soft-hsl);
+       (confirmed badges, credits chips). Blue-soft keeps it on-palette. */
+    --primary: var(--brand-blue-soft-hsl);
     --primary-foreground: var(--brand-black-hsl);
 
     /* Slightly raised surface used for chips, hover wells, secondary buttons. */
@@ -51,8 +50,8 @@
     --muted: var(--brand-charcoal-2-hsl);
     --muted-foreground: 40 8% 65%;
 
-    /* "accent" is the strong brand gold — buttons, links, dividers. */
-    --accent: var(--brand-gold-hsl);
+    /* "accent" is the strong brand blue - buttons, links, dividers. */
+    --accent: var(--brand-blue-hsl);
     --accent-foreground: var(--brand-black-hsl);
 
     --destructive: 0 75% 55%;
@@ -60,25 +59,25 @@
 
     --border: var(--brand-line-hsl);
     --input: var(--brand-line-hsl);
-    --ring: var(--brand-gold-hsl);
+    --ring: var(--brand-blue-hsl);
 
-    /* Charts — black/gold spectrum so dashboards stay on-brand. */
-    --chart-1: var(--brand-gold-hsl);
-    --chart-2: var(--brand-gold-soft-hsl);
-    --chart-3: 40 30% 78%;
-    --chart-4: 40 18% 40%;
-    --chart-5: 0 0% 25%;
+    /* Charts - navy/blue/silver spectrum so dashboards stay on-brand. */
+    --chart-1: var(--brand-blue-hsl);
+    --chart-2: var(--brand-blue-soft-hsl);
+    --chart-3: 215 35% 78%;
+    --chart-4: 214 32% 40%;
+    --chart-5: 219 55% 20%;
 
     --radius: 0.5rem;
 
     --sidebar-background: var(--brand-charcoal-hsl);
     --sidebar-foreground: var(--brand-white-hsl);
-    --sidebar-primary: var(--brand-gold-hsl);
+    --sidebar-primary: var(--brand-blue-hsl);
     --sidebar-primary-foreground: var(--brand-black-hsl);
     --sidebar-accent: var(--brand-charcoal-2-hsl);
     --sidebar-accent-foreground: var(--brand-white-hsl);
     --sidebar-border: var(--brand-line-hsl);
-    --sidebar-ring: var(--brand-gold-hsl);
+    --sidebar-ring: var(--brand-blue-hsl);
   }
 
   /* Dark theme mirrors :root — the site is dark-by-default, brand-driven. */
@@ -89,32 +88,32 @@
     --card-foreground: var(--brand-white-hsl);
     --popover: var(--brand-charcoal-hsl);
     --popover-foreground: var(--brand-white-hsl);
-    --primary: var(--brand-gold-soft-hsl);
+    --primary: var(--brand-blue-soft-hsl);
     --primary-foreground: var(--brand-black-hsl);
     --secondary: var(--brand-charcoal-2-hsl);
     --secondary-foreground: var(--brand-white-hsl);
     --muted: var(--brand-charcoal-2-hsl);
-    --muted-foreground: 40 8% 65%;
-    --accent: var(--brand-gold-hsl);
+    --muted-foreground: 216 12% 70%;
+    --accent: var(--brand-blue-hsl);
     --accent-foreground: var(--brand-black-hsl);
     --destructive: 0 75% 55%;
     --destructive-foreground: var(--brand-white-hsl);
     --border: var(--brand-line-hsl);
     --input: var(--brand-line-hsl);
-    --ring: var(--brand-gold-hsl);
-    --chart-1: var(--brand-gold-hsl);
-    --chart-2: var(--brand-gold-soft-hsl);
-    --chart-3: 40 30% 78%;
-    --chart-4: 40 18% 40%;
-    --chart-5: 0 0% 25%;
+    --ring: var(--brand-blue-hsl);
+    --chart-1: var(--brand-blue-hsl);
+    --chart-2: var(--brand-blue-soft-hsl);
+    --chart-3: 215 35% 78%;
+    --chart-4: 214 32% 40%;
+    --chart-5: 219 55% 20%;
     --sidebar-background: var(--brand-charcoal-hsl);
     --sidebar-foreground: var(--brand-white-hsl);
-    --sidebar-primary: var(--brand-gold-hsl);
+    --sidebar-primary: var(--brand-blue-hsl);
     --sidebar-primary-foreground: var(--brand-black-hsl);
     --sidebar-accent: var(--brand-charcoal-2-hsl);
     --sidebar-accent-foreground: var(--brand-white-hsl);
     --sidebar-border: var(--brand-line-hsl);
-    --sidebar-ring: var(--brand-gold-hsl);
+    --sidebar-ring: var(--brand-blue-hsl);
   }
 }
 
@@ -133,16 +132,93 @@
     letter-spacing: 0.05em;
   }
 
-  /* Brand link affordance — gold underline-on-hover matches the design language. */
+  /* Brand link affordance - electric blue hover matches the Detroit Dynamo identity. */
   a.brand-link {
-    @apply text-accent hover:text-[hsl(var(--brand-gold-soft-hsl))] transition-colors;
+    @apply text-accent hover:text-[hsl(var(--brand-blue-soft-hsl))] transition-colors;
   }
 }
 
 @layer components {
-  /* Reusable gold-section divider used under section titles. */
+  /* Reusable Dynamo divider used under section titles. */
   .brand-divider {
     height: 2px;
-    background: linear-gradient(to right, hsl(var(--brand-gold-hsl)) 0%, hsl(var(--brand-gold-hsl) / 0.4) 40%, transparent 100%);
+    background: linear-gradient(to right, hsl(var(--brand-blue-hsl)) 0%, hsl(var(--brand-blue-soft-hsl) / 0.45) 40%, transparent 100%);
+  }
+
+  .dynamo-site {
+    --dynamo-black: #020714;
+    --dynamo-navy: #061225;
+    --dynamo-panel: #081528;
+    --dynamo-panel-raised: #0B1C33;
+    --dynamo-blue: #0078FF;
+    --dynamo-blue-bright: #62D8FF;
+    --dynamo-silver: #A8B3C7;
+    --dynamo-white: #F8FAFC;
+    --dynamo-line: rgba(168, 179, 199, 0.18);
+    background:
+      radial-gradient(circle at 76% 0%, rgba(0, 120, 255, 0.2), transparent 32%),
+      linear-gradient(180deg, var(--dynamo-black) 0%, #030914 46%, var(--dynamo-black) 100%);
+    color: var(--dynamo-white);
+  }
+
+  .dynamo-site section > .mx-auto {
+    width: 100%;
+  }
+
+  .dynamo-site * {
+    min-width: 0;
+  }
+
+  .dynamo-site :is(h1, h2, h3, p, a, button, code, span) {
+    overflow-wrap: anywhere;
+  }
+
+  .dynamo-texture {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, black, transparent 78%);
+  }
+
+  .dynamo-panel {
+    border: 1px solid var(--dynamo-line);
+    background: linear-gradient(145deg, rgba(8, 21, 40, 0.92), rgba(3, 9, 20, 0.96));
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.32);
+  }
+
+  .dynamo-rule {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(98, 216, 255, 0.65), rgba(248, 250, 252, 0.22), transparent);
+  }
+
+  .dynamo-hero-watermark {
+    position: absolute;
+    right: clamp(-9rem, -5vw, -2rem);
+    top: 50%;
+    width: min(58vw, 900px);
+    transform: translateY(-50%);
+    opacity: 0.16;
+    pointer-events: none;
+    user-select: none;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 40px rgba(20, 124, 255, 0.22));
+    mask-image: radial-gradient(circle at center, black 0%, black 48%, transparent 78%);
+  }
+
+  @media (max-width: 767px) {
+    .dynamo-site h1 {
+      max-width: calc(100vw - 2rem);
+      overflow-wrap: break-word;
+      font-size: 2.15rem;
+      line-height: 0.98;
+    }
+
+    .dynamo-hero-watermark {
+      right: -8rem;
+      top: 36%;
+      width: 620px;
+      opacity: 0.08;
+    }
   }
 }

@@ -19,7 +19,7 @@ export default function BlogPost() {
         setPost(res[0]);
         // Inject SEO meta tags
         const p = res[0];
-        document.title = `${p.title} — LC Training`;
+        document.title = `${p.title} — Detroit Dynamo`;
         const setMeta = (name, content) => {
           if (!content) return;
           let el = document.querySelector(`meta[name="${name}"]`) || document.querySelector(`meta[property="${name}"]`);

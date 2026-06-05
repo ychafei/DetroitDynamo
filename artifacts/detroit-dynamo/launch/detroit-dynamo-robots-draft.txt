@@ -1,0 +1,8 @@
+# Detroit Dynamo robots.txt draft
+
+Do not publish this while the preview remains noindex.
+Use only after the Detroit Dynamo brand promotion is approved.
+
+User-agent: *
+Allow: /
+Sitemap: https://www.lctrainings.com/detroit-dynamo-sitemap.xml

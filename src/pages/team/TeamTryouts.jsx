@@ -23,7 +23,7 @@ export default function TeamTryouts() {
     <div>
       <TeamPageHero
         eyebrow="Join the Club"
-        title="LCFC"
+        title="DETROIT DYNAMO FC"
         accentTitle="TRYOUTS"
         description="Earn your place in Metro Detroit's premier semi-pro environment. Open tryouts and invite-only sessions throughout the year."
       />

@@ -72,7 +72,9 @@ export default function CoachProfilePreviewCard({ coach, className = '' }) {
             {fullName}
           </h3>
           {c.email_verified_at && (
-            <BadgeCheck className="w-4 h-4 text-accent" title="Verified contact email" />
+            <span title="Verified contact email">
+              <BadgeCheck className="w-4 h-4 text-accent" aria-hidden="true" />
+            </span>
           )}
         </div>
 

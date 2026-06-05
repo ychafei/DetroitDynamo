@@ -1,0 +1,551 @@
+{
+  "generatedAt": "2026-05-29T14:14:32.028Z",
+  "functionId": "detroitDynamoAdminModuleRead",
+  "functionExecutePermission": "users",
+  "defaultLimit": 25,
+  "roleAssignmentCollectionId": "dd_admin_role_assignments",
+  "supportedModules": [
+    {
+      "module": "Players",
+      "slug": "players",
+      "ownerRoles": [
+        "Registrar",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_players",
+        "dd_tryout_registrations",
+        "dd_teams",
+        "dd_waivers"
+      ]
+    },
+    {
+      "module": "Parents/guardians",
+      "slug": "parents-guardians",
+      "ownerRoles": [
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_parent_guardians",
+        "dd_players",
+        "dd_waivers"
+      ]
+    },
+    {
+      "module": "Coaches",
+      "slug": "coaches",
+      "ownerRoles": [
+        "Training Director",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_coaches",
+        "dd_staff_members",
+        "dd_teams",
+        "dd_programs"
+      ]
+    },
+    {
+      "module": "Teams",
+      "slug": "teams",
+      "ownerRoles": [
+        "Club Director",
+        "Team Manager",
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_teams",
+        "dd_players",
+        "dd_coaches",
+        "dd_staff_members"
+      ]
+    },
+    {
+      "module": "Age groups",
+      "slug": "age-groups",
+      "ownerRoles": [
+        "Club Director",
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_teams",
+        "dd_programs",
+        "dd_players"
+      ]
+    },
+    {
+      "module": "Training programs",
+      "slug": "training-programs",
+      "ownerRoles": [
+        "Training Director"
+      ],
+      "collectionIds": [
+        "dd_programs",
+        "dd_training_packages",
+        "dd_camps_clinics"
+      ]
+    },
+    {
+      "module": "Training bookings",
+      "slug": "training-bookings",
+      "ownerRoles": [
+        "Training Director",
+        "Coach"
+      ],
+      "collectionIds": [
+        "dd_bookings",
+        "dd_training_sessions",
+        "dd_training_packages",
+        "dd_contact_leads"
+      ]
+    },
+    {
+      "module": "Tryout registrations",
+      "slug": "tryout-registrations",
+      "ownerRoles": [
+        "Registrar",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_tryout_registrations",
+        "dd_players",
+        "dd_teams",
+        "dd_parent_guardians"
+      ]
+    },
+    {
+      "module": "Camp registrations",
+      "slug": "camp-registrations",
+      "ownerRoles": [
+        "Training Director",
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_camps_clinics",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_waivers"
+      ]
+    },
+    {
+      "module": "Payments/packages",
+      "slug": "payments-packages",
+      "ownerRoles": [
+        "Master Admin",
+        "Training Director"
+      ],
+      "collectionIds": [
+        "dd_payments",
+        "dd_training_packages",
+        "dd_camps_clinics",
+        "dd_sponsors"
+      ]
+    },
+    {
+      "module": "Waivers/forms",
+      "slug": "waivers-forms",
+      "ownerRoles": [
+        "Registrar",
+        "Master Admin"
+      ],
+      "collectionIds": [
+        "dd_waivers",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_camps_clinics"
+      ]
+    },
+    {
+      "module": "News posts",
+      "slug": "news-posts",
+      "ownerRoles": [
+        "Media/Admin Staff",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_news_posts",
+        "dd_staff_members",
+        "dd_sponsors",
+        "dd_match_results"
+      ]
+    },
+    {
+      "module": "Sponsors",
+      "slug": "sponsors",
+      "ownerRoles": [
+        "Media/Admin Staff",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_sponsors",
+        "dd_contact_leads",
+        "dd_news_posts"
+      ]
+    },
+    {
+      "module": "Schedules/results",
+      "slug": "schedules-results",
+      "ownerRoles": [
+        "Team Manager",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_match_fixtures",
+        "dd_match_results",
+        "dd_teams",
+        "dd_news_posts"
+      ]
+    },
+    {
+      "module": "Contact leads",
+      "slug": "contact-leads",
+      "ownerRoles": [
+        "Media/Admin Staff",
+        "Training Director",
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_contact_leads",
+        "dd_bookings",
+        "dd_tryout_registrations",
+        "dd_sponsors"
+      ]
+    },
+    {
+      "module": "Website content sections",
+      "slug": "website-content-sections",
+      "ownerRoles": [
+        "Media/Admin Staff",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_news_posts",
+        "dd_staff_members",
+        "dd_sponsors",
+        "dd_programs"
+      ]
+    }
+  ],
+  "successFixtures": [
+    {
+      "id": "registrar-player-read",
+      "label": "Registrar player pipeline read",
+      "module": "Players",
+      "moduleSlug": "players",
+      "collectionId": "dd_players",
+      "model": "Player",
+      "actorRole": "Registrar",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "module_slug": "players",
+        "collection_id": "dd_players",
+        "actor_role": "Registrar",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleRead",
+        "function_execute_permission": "users",
+        "module_slug": "players",
+        "module": "Players",
+        "actor_role": "Registrar",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "limit": 25,
+        "collections": [
+          {
+            "collection_id": "dd_players",
+            "model": "Player",
+            "total": "Appwrite listDocuments total",
+            "documents": "Up to 25 sanitized documents"
+          }
+        ]
+      }
+    },
+    {
+      "id": "training-director-booking-read",
+      "label": "Training director booking queue read",
+      "module": "Training bookings",
+      "moduleSlug": "training-bookings",
+      "collectionId": "dd_bookings",
+      "model": "Booking",
+      "actorRole": "Training Director",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "module_slug": "training-bookings",
+        "collection_id": "dd_bookings",
+        "actor_role": "Training Director",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleRead",
+        "function_execute_permission": "users",
+        "module_slug": "training-bookings",
+        "module": "Training bookings",
+        "actor_role": "Training Director",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "limit": 25,
+        "collections": [
+          {
+            "collection_id": "dd_bookings",
+            "model": "Booking",
+            "total": "Appwrite listDocuments total",
+            "documents": "Up to 25 sanitized documents"
+          }
+        ]
+      }
+    },
+    {
+      "id": "media-sponsor-read",
+      "label": "Media admin sponsor read",
+      "module": "Sponsors",
+      "moduleSlug": "sponsors",
+      "collectionId": "dd_sponsors",
+      "model": "Sponsor",
+      "actorRole": "Media/Admin Staff",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "module_slug": "sponsors",
+        "collection_id": "dd_sponsors",
+        "actor_role": "Media/Admin Staff",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleRead",
+        "function_execute_permission": "users",
+        "module_slug": "sponsors",
+        "module": "Sponsors",
+        "actor_role": "Media/Admin Staff",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "limit": 25,
+        "collections": [
+          {
+            "collection_id": "dd_sponsors",
+            "model": "Sponsor",
+            "total": "Appwrite listDocuments total",
+            "documents": "Up to 25 sanitized documents"
+          }
+        ]
+      }
+    },
+    {
+      "id": "club-director-team-read",
+      "label": "Club director team read",
+      "module": "Teams",
+      "moduleSlug": "teams",
+      "collectionId": "dd_teams",
+      "model": "Team",
+      "actorRole": "Club Director",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "module_slug": "teams",
+        "collection_id": "dd_teams",
+        "actor_role": "Club Director",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleRead",
+        "function_execute_permission": "users",
+        "module_slug": "teams",
+        "module": "Teams",
+        "actor_role": "Club Director",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "limit": 25,
+        "collections": [
+          {
+            "collection_id": "dd_teams",
+            "model": "Team",
+            "total": "Appwrite listDocuments total",
+            "documents": "Up to 25 sanitized documents"
+          }
+        ]
+      }
+    },
+    {
+      "id": "team-manager-fixture-read",
+      "label": "Team manager fixture read",
+      "module": "Schedules/results",
+      "moduleSlug": "schedules-results",
+      "collectionId": "dd_match_fixtures",
+      "model": "MatchFixture",
+      "actorRole": "Team Manager",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "module_slug": "schedules-results",
+        "collection_id": "dd_match_fixtures",
+        "actor_role": "Team Manager",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleRead",
+        "function_execute_permission": "users",
+        "module_slug": "schedules-results",
+        "module": "Schedules/results",
+        "actor_role": "Team Manager",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "limit": 25,
+        "collections": [
+          {
+            "collection_id": "dd_match_fixtures",
+            "model": "MatchFixture",
+            "total": "Appwrite listDocuments total",
+            "documents": "Up to 25 sanitized documents"
+          }
+        ]
+      }
+    },
+    {
+      "id": "master-admin-payment-read",
+      "label": "Master admin payment readiness read",
+      "module": "Payments/packages",
+      "moduleSlug": "payments-packages",
+      "collectionId": "dd_payments",
+      "model": "Payment",
+      "actorRole": "Master Admin",
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "module_slug": "payments-packages",
+        "collection_id": "dd_payments",
+        "actor_role": "Master Admin",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleRead",
+        "function_execute_permission": "users",
+        "module_slug": "payments-packages",
+        "module": "Payments/packages",
+        "actor_role": "Master Admin",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "limit": 25,
+        "collections": [
+          {
+            "collection_id": "dd_payments",
+            "model": "Payment",
+            "total": "Appwrite listDocuments total",
+            "documents": "Up to 25 sanitized documents"
+          }
+        ]
+      }
+    }
+  ],
+  "rejectionFixtures": [
+    {
+      "id": "reject-unauthenticated-read",
+      "label": "Reject unauthenticated module read",
+      "moduleSlug": "contact-leads",
+      "collectionId": "dd_contact_leads",
+      "actorRole": "Media/Admin Staff",
+      "requestBody": {
+        "module_slug": "contact-leads",
+        "collection_id": "dd_contact_leads",
+        "actor_role": "Media/Admin Staff",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 401,
+        "error": "Detroit Dynamo admin module read requires an authenticated Appwrite user."
+      },
+      "reason": "Protected admin data must only be read from an authenticated Appwrite user session."
+    },
+    {
+      "id": "reject-invalid-module",
+      "label": "Reject unknown module",
+      "moduleSlug": "unknown-module",
+      "collectionId": "dd_contact_leads",
+      "actorRole": "Media/Admin Staff",
+      "requestBody": {
+        "module_slug": "unknown-module",
+        "collection_id": "dd_contact_leads",
+        "actor_role": "Media/Admin Staff",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 404,
+        "error": "Detroit Dynamo admin module was not found."
+      },
+      "reason": "The request must target one of the planned protected Detroit Dynamo admin modules."
+    },
+    {
+      "id": "reject-role-without-view",
+      "label": "Reject coach payment read",
+      "moduleSlug": "payments-packages",
+      "collectionId": "dd_payments",
+      "actorRole": "Coach",
+      "requestBody": {
+        "module_slug": "payments-packages",
+        "collection_id": "dd_payments",
+        "actor_role": "Coach",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 403,
+        "error": "Actor role does not have view access to this Detroit Dynamo admin module."
+      },
+      "reason": "Coaches cannot view payment or package administration records."
+    },
+    {
+      "id": "reject-role-not-assigned",
+      "label": "Reject unassigned role",
+      "moduleSlug": "players",
+      "collectionId": "dd_players",
+      "actorRole": "Registrar",
+      "requestBody": {
+        "module_slug": "players",
+        "collection_id": "dd_players",
+        "actor_role": "Registrar",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 403,
+        "error": "Actor role is not assigned to this authenticated Appwrite user."
+      },
+      "reason": "A caller cannot self-assert a valid role unless dd_admin_role_assignments has an active grant for that Appwrite user."
+    },
+    {
+      "id": "reject-collection-outside-module",
+      "label": "Reject collection outside module",
+      "moduleSlug": "sponsors",
+      "collectionId": "dd_players",
+      "actorRole": "Media/Admin Staff",
+      "requestBody": {
+        "module_slug": "sponsors",
+        "collection_id": "dd_players",
+        "actor_role": "Media/Admin Staff",
+        "limit": 25,
+        "cursor": ""
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "collection_id must belong to the requested Detroit Dynamo admin module."
+      },
+      "reason": "A module read cannot use the Sponsors permission surface to read unrelated player records."
+    }
+  ],
+  "issues": []
+}

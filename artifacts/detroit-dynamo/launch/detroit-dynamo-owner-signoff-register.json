@@ -1,0 +1,339 @@
+{
+  "generatedAt": "2026-05-29T14:14:31.955Z",
+  "decision": {
+    "decision": "owner_signoff_required_preview_only",
+    "label": "Owner Signoff Required",
+    "launchMode": "preview_only",
+    "reason": "Every final launch approval remains unsigned until real evidence, owner approval, and external confirmations are recorded."
+  },
+  "columns": [
+    "id",
+    "label",
+    "signoffArea",
+    "signerRole",
+    "status",
+    "sourceArtifact",
+    "verifyCommand",
+    "blockedLiveActions"
+  ],
+  "signoffRows": [
+    {
+      "id": "current-site-rollback-signoff",
+      "label": "Current-site snapshot and rollback approval",
+      "signoffArea": "Current Site Preservation",
+      "signerRole": "Master Admin",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-promotion-cutover.md",
+      "requiredEvidence": [
+        "Current LC production route smoke report",
+        "Browser QA report for current LC routes and protected admin routes",
+        "Rollback deployment id or previous production target"
+      ],
+      "verifyCommand": "BASE_URL=<current-production-url> npm run test -- --run",
+      "blockedLiveActions": [
+        "root route promotion",
+        "permanent redirects",
+        "noindex removal"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "deployment-readiness-signoff",
+      "label": "Deployment and environment readiness approval",
+      "signoffArea": "Deployment Readiness",
+      "signerRole": "Master Admin",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-deployment-readiness.md",
+      "requiredEvidence": [
+        "Production-preview deployment URL and deployment id",
+        "Hosting project link, environment, and rollback target confirmation",
+        "Production-preview build, route, and browser QA proof"
+      ],
+      "verifyCommand": "npm run verify:dynamo-deployment-readiness",
+      "blockedLiveActions": [
+        "root route promotion",
+        "Appwrite intake default",
+        "permanent redirects"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "backend-appwrite-signoff",
+      "label": "Appwrite backend activation approval",
+      "signoffArea": "Backend/Data",
+      "signerRole": "Master Admin",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md",
+      "requiredEvidence": [
+        "Isolated dd_* collections provisioned in the target Appwrite project",
+        "Detroit Dynamo functions deployed with expected scopes and variables",
+        "Bootstrap Master Admin or trusted role grant evidence recorded"
+      ],
+      "verifyCommand": "npm run preflight:dynamo-backend",
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "protected admin live reads",
+        "protected admin live writes"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "production-preview-forms-signoff",
+      "label": "Production-preview public form and admin action approval",
+      "signoffArea": "Production Preview Proof",
+      "signerRole": "Registrar",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-production-preview-evidence.md",
+      "requiredEvidence": [
+        "Training, youth, tryout, men, women, sponsor, and contact form submission ids",
+        "Authenticated pipeline, module read, role grant, and module write action ids",
+        "Unauthorized admin action rejection proof and audit event ids"
+      ],
+      "verifyCommand": "BASE_URL=<production-preview-url> npm run qa:dynamo-browser",
+      "blockedLiveActions": [
+        "default live intake",
+        "status mutation workflow",
+        "protected admin live writes"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "payment-package-signoff",
+      "label": "Payment packages and provider product approval",
+      "signoffArea": "Payments & Packages",
+      "signerRole": "Master Admin",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+      "requiredEvidence": [
+        "Approved package matrix with prices, session counts, taxes, fees, and refund rules",
+        "Payment provider product ids and sandbox test proof",
+        "Payment failure, refund, cancellation, and webhook/audit handling proof"
+      ],
+      "verifyCommand": "npm run verify:dynamo-gate-contracts",
+      "blockedLiveActions": [
+        "checkout activation",
+        "payment collection",
+        "package publication"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "waiver-legal-signoff",
+      "label": "Waiver, legal, medical, and media release approval",
+      "signoffArea": "Waivers & Legal",
+      "signerRole": "Registrar",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+      "requiredEvidence": [
+        "Approved waiver/legal version register for youth, adult, medical, media, camp, and travel consent",
+        "Guardian/adult signature workflow test with audit, export, expiration, and revocation handling",
+        "Terms, privacy, refund, support, and communication ownership approval"
+      ],
+      "verifyCommand": "npm run verify:dynamo-safeguarding",
+      "blockedLiveActions": [
+        "signature capture",
+        "medical intake",
+        "youth registration launch"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "league-facility-signoff",
+      "label": "League, competition, facility, and operations fact approval",
+      "signoffArea": "Facilities & Competition",
+      "signerRole": "Club Director",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md",
+      "requiredEvidence": [
+        "League/competition status or future-pathway wording approval",
+        "Facility permits, schedule windows, emergency procedures, and insurance notes",
+        "Approved public location/facility copy"
+      ],
+      "verifyCommand": "npm run verify:dynamo-claim-safety",
+      "blockedLiveActions": [
+        "league claim publication",
+        "facility publication",
+        "fixture publication"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "staff-roster-safeguarding-signoff",
+      "label": "Staff, roster, and safeguarding publication approval",
+      "signoffArea": "Staff, Rosters & Safeguarding",
+      "signerRole": "Club Director",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+      "requiredEvidence": [
+        "Staff approval and background/safeguarding status",
+        "Roster publication approvals and media-release coverage",
+        "Youth communication, travel, medical, retention, and audit controls approved"
+      ],
+      "verifyCommand": "npm run verify:dynamo-safeguarding",
+      "blockedLiveActions": [
+        "staff proof publication",
+        "roster publication",
+        "sensitive admin mutations"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "sponsor-media-content-signoff",
+      "label": "Sponsor, media, testimonials, and news proof approval",
+      "signoffArea": "Sponsors, Media & Content Proof",
+      "signerRole": "Media/Admin Staff",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+      "requiredEvidence": [
+        "Sponsor logo permissions and approved sponsor package copy",
+        "Testimonial, media-release, news, and proof asset approvals",
+        "Publishing calendar and source-of-truth links"
+      ],
+      "verifyCommand": "npm run verify:dynamo-external-confirmation-actions",
+      "blockedLiveActions": [
+        "sponsor logo publication",
+        "testimonial publication",
+        "news proof publication"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "seo-root-redirect-signoff",
+      "label": "SEO, noindex, root promotion, and redirect approval",
+      "signoffArea": "SEO & Cutover",
+      "signerRole": "Master Admin",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-promotion-cutover.md",
+      "requiredEvidence": [
+        "Approved metadata, favicon, Open Graph image, robots draft, sitemap, and canonical URLs",
+        "Noindex removal approval tied to an approved launch window",
+        "Redirect plan approved with auth, admin, booking, payment callback, unsubscribe, and legal exclusions"
+      ],
+      "verifyCommand": "BASE_URL=<production-preview-url> npm run verify:dynamo",
+      "blockedLiveActions": [
+        "root route promotion",
+        "noindex removal",
+        "permanent redirects"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    },
+    {
+      "id": "post-launch-watch-signoff",
+      "label": "Post-launch monitoring and rollback owner approval",
+      "signoffArea": "Post-launch Monitoring",
+      "signerRole": "Master Admin",
+      "status": "not_signed",
+      "sourceArtifact": "artifacts/detroit-dynamo/launch/detroit-dynamo-deployment-readiness.md",
+      "requiredEvidence": [
+        "Post-launch browser QA and smoke commands prepared for the production URL",
+        "Rollback trigger conditions and rollback owner approved",
+        "Payment, waiver, admin, support, and legal escalation plan documented"
+      ],
+      "verifyCommand": "BASE_URL=<production-url> npm run qa:dynamo-browser",
+      "blockedLiveActions": [
+        "post-launch closeout",
+        "launch announcement",
+        "rollback window closure"
+      ],
+      "signoffRecorded": false,
+      "liveGateCleared": false,
+      "publicationUnlocked": false
+    }
+  ],
+  "summary": {
+    "signoffRows": 11,
+    "signoffAreas": 11,
+    "signerRoles": 4,
+    "signedRows": 0,
+    "unsignedRows": 11,
+    "liveGatesCleared": 0,
+    "publicationsUnlocked": 0,
+    "rootPromotionAllowed": false,
+    "checkoutAllowed": false,
+    "permanentRedirectsAllowed": false,
+    "productionDeploymentsRecorded": 0,
+    "productionSubmissionsRecorded": 0,
+    "ownerLaunchReviewSections": 9,
+    "ownerEvidenceIntakeRows": 13,
+    "deploymentReadinessTracks": 10,
+    "paymentPackageTracks": 6,
+    "waiverTracks": 6,
+    "claimSafetyTracks": 7,
+    "safeguardingTracks": 8,
+    "blockedLiveActions": 26
+  },
+  "signoffAreas": {
+    "Current Site Preservation": 1,
+    "Deployment Readiness": 1,
+    "Backend/Data": 1,
+    "Production Preview Proof": 1,
+    "Payments & Packages": 1,
+    "Waivers & Legal": 1,
+    "Facilities & Competition": 1,
+    "Staff, Rosters & Safeguarding": 1,
+    "Sponsors, Media & Content Proof": 1,
+    "SEO & Cutover": 1,
+    "Post-launch Monitoring": 1
+  },
+  "signerRoles": {
+    "Master Admin": 6,
+    "Registrar": 2,
+    "Club Director": 2,
+    "Media/Admin Staff": 1
+  },
+  "blockedLiveActions": [
+    "Appwrite intake default",
+    "checkout activation",
+    "default live intake",
+    "facility publication",
+    "fixture publication",
+    "launch announcement",
+    "league claim publication",
+    "medical intake",
+    "news proof publication",
+    "noindex removal",
+    "package publication",
+    "payment collection",
+    "permanent redirects",
+    "post-launch closeout",
+    "protected admin live reads",
+    "protected admin live writes",
+    "rollback window closure",
+    "root route promotion",
+    "roster publication",
+    "sensitive admin mutations",
+    "signature capture",
+    "sponsor logo publication",
+    "staff proof publication",
+    "status mutation workflow",
+    "testimonial publication",
+    "youth registration launch"
+  ],
+  "usageRules": [
+    "Use this register as the final owner and external approval worksheet after evidence artifacts are complete.",
+    "Do not convert not_signed rows to signed until the required evidence is attached and the approver is identified.",
+    "Every signed row must keep the matching source artifact and verification command attached to the owner review packet.",
+    "No live gate, publication, checkout, noindex, redirect, or root promotion action is allowed while any row remains unsigned."
+  ],
+  "issues": []
+}

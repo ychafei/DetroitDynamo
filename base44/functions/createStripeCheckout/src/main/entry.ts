@@ -54,6 +54,20 @@ export default async ({ req, res, error }) => {
       'Stripe-Version': '2024-12-18.acacia',
     };
 
+    // Organization API keys (sk_org_/rk_org_) aren't scoped to one account,
+    // so Stripe requires the target account ID via the Stripe-Context header.
+    if (secretKey.startsWith('sk_org_') || secretKey.startsWith('rk_org_')) {
+      const accountId = process.env.STRIPE_ACCOUNT_ID;
+      if (!accountId) {
+        return res.json({
+          error: 'STRIPE_ACCOUNT_ID not set (required for Organization API keys)',
+          diagnostics,
+        });
+      }
+      fetchHeaders['Stripe-Context'] = accountId;
+      diagnostics.push('stripe_context=' + accountId);
+    }
+
     const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: fetchHeaders,

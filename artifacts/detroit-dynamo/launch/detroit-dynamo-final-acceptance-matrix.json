@@ -1,0 +1,481 @@
+{
+  "generatedAt": "2026-05-29T14:14:32.024Z",
+  "decision": {
+    "decision": "final_acceptance_preview_audit",
+    "label": "Final Acceptance Preview Audit",
+    "launchMode": "preview_only",
+    "completionClaimAllowed": false,
+    "reason": "The Detroit Dynamo preview implementation can be audited against the original objective, but full goal completion still requires external backend, payment, waiver, league/facility, production deployment, and owner signoff evidence."
+  },
+  "columns": [
+    "id",
+    "label",
+    "acceptanceArea",
+    "ownerRole",
+    "completionStatus",
+    "verificationCommands",
+    "remainingEvidenceRequired",
+    "blockedLiveActions"
+  ],
+  "rows": [
+    {
+      "id": "repo-audit-and-current-state",
+      "label": "Repo audit and current-state inventory",
+      "acceptanceArea": "Repo Audit",
+      "ownerRole": "Master Admin",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "DETROIT_DYNAMO_REBRAND_AUDIT_AND_ROADMAP.md documents stack, routes, issues, changed files, and testing results",
+        "npm run audit:dynamo-goal writes artifacts/detroit-dynamo/goal-audit.json",
+        "npm run verify:dynamo checks route, metadata, launch, backend scaffold, and isolation contracts"
+      ],
+      "remainingEvidenceRequired": [],
+      "verificationCommands": [
+        "npm run audit:dynamo-goal",
+        "npm run verify:dynamo"
+      ],
+      "blockedLiveActions": [
+        "goal completion claim"
+      ]
+    },
+    {
+      "id": "existing-lc-site-preservation",
+      "label": "Existing LC Training site preservation",
+      "acceptanceArea": "Current Site Preservation",
+      "ownerRole": "Master Admin",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "Current LC routes remain registered in src/App.jsx",
+        "Shared navbar/footer keep LC Training shell with only subtle Dynamo preview entry points",
+        "Smoke/browser QA cover current LC home, booking, LCFC, team, legal, and protected admin routes"
+      ],
+      "remainingEvidenceRequired": [
+        "Production current-site route snapshot before any root promotion",
+        "Rollback deployment id or previous production target"
+      ],
+      "verificationCommands": [
+        "BASE_URL=<current-production-url> npm run test -- --run",
+        "BASE_URL=<current-production-url> npm run qa:dynamo-browser"
+      ],
+      "blockedLiveActions": [
+        "root route promotion",
+        "permanent redirects",
+        "noindex removal"
+      ]
+    },
+    {
+      "id": "isolated-detroit-dynamo-shell",
+      "label": "Isolated Detroit Dynamo parallel shell",
+      "acceptanceArea": "Preview Architecture",
+      "ownerRole": "Master Admin",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "/detroit-dynamo and /detroit-dynamo/* use DetroitDynamoLayout, DetroitDynamoHeader, and DetroitDynamoFooter",
+        "Detroit Dynamo styles are scoped under .dynamo-site",
+        "Browser QA confirms / and /book do not render the Detroit Dynamo shell"
+      ],
+      "remainingEvidenceRequired": [],
+      "verificationCommands": [
+        "BASE_URL=<preview-url> npm run verify:dynamo",
+        "BASE_URL=<preview-url> npm run qa:dynamo-browser"
+      ],
+      "blockedLiveActions": [
+        "root route promotion"
+      ]
+    },
+    {
+      "id": "brand-system-and-assets",
+      "label": "Detroit Dynamo brand system, logo assets, and metadata",
+      "acceptanceArea": "Brand/SEO Preview",
+      "ownerRole": "Media/Admin Staff",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "Approved Detroit Dynamo public assets live under public/detroit-dynamo/",
+        "Detroit Dynamo preview pages use route-specific metadata, social image, canonical URL, and noindex,nofollow",
+        "The current LC root metadata and PWA manifest remain LC Training while the rebrand is preview-only"
+      ],
+      "remainingEvidenceRequired": [
+        "Owner approval of final favicon, Open Graph image, canonical URL, and noindex removal timing"
+      ],
+      "verificationCommands": [
+        "BASE_URL=<preview-url> npm run verify:dynamo",
+        "BASE_URL=<preview-url> npm run qa:dynamo-browser"
+      ],
+      "blockedLiveActions": [
+        "noindex removal",
+        "root route promotion",
+        "sitemap publication"
+      ]
+    },
+    {
+      "id": "public-site-pages-and-pathway",
+      "label": "Full public Detroit Dynamo site structure and player pathway",
+      "acceptanceArea": "Public Website",
+      "ownerRole": "Club Director",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "Route manifest includes the requested home, training, youth, senior, tryout, teams, schedule, camps, sponsors, about, contact, book, brand, and admin-foundation routes",
+        "Public pages explain Training Academy, Youth Club, Senior Men, Senior Women, camps, sponsors, and the Dynamo Development Pathway",
+        "League and youth-club language remains future-pathway or approval-gated where memberships are not confirmed"
+      ],
+      "remainingEvidenceRequired": [
+        "Owner-approved final copy for league, facility, roster, staff, sponsor, testimonial, and news claims"
+      ],
+      "verificationCommands": [
+        "BASE_URL=<preview-url> npm run test -- --run",
+        "BASE_URL=<preview-url> npm run verify:dynamo"
+      ],
+      "blockedLiveActions": [
+        "league claim publication",
+        "facility publication",
+        "roster publication",
+        "sponsor logo publication"
+      ]
+    },
+    {
+      "id": "public-lead-forms-and-routing",
+      "label": "Validated public lead forms and routing",
+      "acceptanceArea": "Forms/Lead System",
+      "ownerRole": "Registrar",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "DetroitDynamoLeadForm supports contact, training, youth, tryout, men, women, and sponsor variants",
+        "Forms include validation, loading, success, error, and accessible field error states",
+        "Browser QA submits all seven public forms and verifies validation plus storage-error probes"
+      ],
+      "remainingEvidenceRequired": [
+        "Production-preview submission ids for each form after Appwrite intake is deployed"
+      ],
+      "verificationCommands": [
+        "BASE_URL=<preview-url> npm run qa:dynamo-browser",
+        "npm run verify:dynamo-intake-contract"
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "public launch announcement"
+      ]
+    },
+    {
+      "id": "admin-data-model-foundation",
+      "label": "Admin roles, modules, data models, and records foundation",
+      "acceptanceArea": "Admin/Data Foundation",
+      "ownerRole": "Master Admin",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "Data model covers Player, ParentGuardian, Coach, Team, Program, TrainingPackage, TrainingSession, Booking, TryoutRegistration, CampClinic, Payment, Waiver, Sponsor, NewsPost, MatchFixture, MatchResult, ContactLead, and StaffMember",
+        "Admin foundation covers 7 roles and 16 planned admin modules",
+        "Protected module detail pages include read/write contracts, record workspace, audit ledgers, external gates, and safeguarding guards"
+      ],
+      "remainingEvidenceRequired": [
+        "Live Appwrite records and role-scoped dashboard workflows for daily operations"
+      ],
+      "verificationCommands": [
+        "npm run plan:dynamo-appwrite",
+        "npm run verify:dynamo-admin-record-workspace",
+        "BASE_URL=<preview-url> npm run verify:dynamo"
+      ],
+      "blockedLiveActions": [
+        "protected admin live reads",
+        "protected admin live writes"
+      ]
+    },
+    {
+      "id": "backend-appwrite-scaffold",
+      "label": "Appwrite schema and function scaffold",
+      "acceptanceArea": "Backend/Data",
+      "ownerRole": "Master Admin",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "Appwrite collection plan uses isolated dd_* collection ids",
+        "Function scaffolds exist for public intake, pipeline actions, admin module reads, role grants, and module writes",
+        "Preflight and dry-run provision commands validate local readiness without mutating production state"
+      ],
+      "remainingEvidenceRequired": [
+        "Valid Appwrite credentials",
+        "Provisioned dd_* collections in the target Appwrite project",
+        "Deployed functions with production-preview invocation proof"
+      ],
+      "verificationCommands": [
+        "npm run preflight:dynamo-backend",
+        "npm run provision:dynamo-appwrite",
+        "node scripts/configure-functions.mjs"
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ]
+    },
+    {
+      "id": "payments-and-packages",
+      "label": "Payments, packages, and checkout readiness",
+      "acceptanceArea": "Payments & Packages",
+      "ownerRole": "Master Admin",
+      "completionStatus": "external_evidence_required",
+      "currentEvidence": [
+        "Payment/package gate contract keeps provider status disconnected and checkout disabled",
+        "Promotion cutover and owner signoff register require payment/package approval before go-live",
+        "Exact prices and packages remain gated rather than falsely published as approved live products"
+      ],
+      "remainingEvidenceRequired": [
+        "Approved package matrix with prices, taxes, fees, refund rules, and payment provider product ids",
+        "Sandbox checkout, webhook, refund, failure, and audit proof"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-gate-contracts",
+        "npm run verify:dynamo-owner-signoff-register"
+      ],
+      "blockedLiveActions": [
+        "checkout activation",
+        "payment collection",
+        "package publication"
+      ]
+    },
+    {
+      "id": "waivers-legal-safeguarding",
+      "label": "Waivers, legal, youth safeguarding, and privacy readiness",
+      "acceptanceArea": "Waivers/Legal/Safeguarding",
+      "ownerRole": "Registrar",
+      "completionStatus": "external_evidence_required",
+      "currentEvidence": [
+        "Safeguarding/privacy contract covers guardian consent, medical data, staff verification, roster clearance, retention, export, deletion, and audit controls",
+        "Waiver tracks keep signature capture disabled in preview",
+        "Owner signoff register requires waiver/legal approval before launch"
+      ],
+      "remainingEvidenceRequired": [
+        "Approved legal waiver versions and signature workflow tests",
+        "Guardian/adult signature audit, export, expiration, and revocation proof",
+        "Approved terms, privacy, refund, support, and communications ownership"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-safeguarding",
+        "npm run verify:dynamo-gate-contracts"
+      ],
+      "blockedLiveActions": [
+        "signature capture",
+        "medical intake",
+        "youth registration launch",
+        "sensitive admin mutations"
+      ]
+    },
+    {
+      "id": "league-facility-staff-sponsor-proof",
+      "label": "League, facility, staff, roster, sponsor, and media proof",
+      "acceptanceArea": "External Confirmation",
+      "ownerRole": "Club Director",
+      "completionStatus": "external_evidence_required",
+      "currentEvidence": [
+        "External confirmation register keeps league, facility, staff, roster, sponsor, media, testimonial, and proof claims approval-gated",
+        "Claim-safety contract keeps unconfirmed UPSL/youth league language future-pathway only",
+        "Public pages avoid false current league-membership claims"
+      ],
+      "remainingEvidenceRequired": [
+        "Confirmed league/facility status or owner-approved future-pathway wording",
+        "Staff, roster, sponsor logo, testimonial, media-release, and news proof approvals"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-claim-safety",
+        "npm run verify:dynamo-external-confirmation-actions"
+      ],
+      "blockedLiveActions": [
+        "league claim publication",
+        "facility publication",
+        "staff proof publication",
+        "roster publication",
+        "sponsor logo publication"
+      ]
+    },
+    {
+      "id": "seo-cutover-redirect-readiness",
+      "label": "SEO, noindex, root promotion, redirects, and rollback",
+      "acceptanceArea": "SEO/Cutover",
+      "ownerRole": "Master Admin",
+      "completionStatus": "external_evidence_required",
+      "currentEvidence": [
+        "Promotion cutover, deployment readiness, live readiness, and owner signoff artifacts keep root promotion blocked",
+        "Redirect plan exists as a draft artifact only",
+        "Detroit Dynamo preview stays noindex,nofollow"
+      ],
+      "remainingEvidenceRequired": [
+        "Production-preview deployment id and URL",
+        "Owner-approved noindex removal, sitemap publication, canonical/root switch, redirect plan, and rollback target"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-promotion-cutover",
+        "npm run verify:dynamo-deployment-readiness",
+        "BASE_URL=<production-preview-url> npm run verify:dynamo"
+      ],
+      "blockedLiveActions": [
+        "root route promotion",
+        "noindex removal",
+        "permanent redirects",
+        "sitemap publication"
+      ]
+    },
+    {
+      "id": "verification-and-browser-qa",
+      "label": "Lint, typecheck, build, smoke, full verifier, and browser QA",
+      "acceptanceArea": "Verification",
+      "ownerRole": "Master Admin",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "lint, typecheck, build, smoke, full verifier, audit, and browser QA commands exist in package.json",
+        "Browser QA verifies desktop/mobile layout, links, buttons, forms, route states, admin sign-in guards, and console cleanliness",
+        "Roadmap records latest command results and known large-chunk build warning"
+      ],
+      "remainingEvidenceRequired": [
+        "Production-preview rerun of the same commands after deployment"
+      ],
+      "verificationCommands": [
+        "npm run lint",
+        "npm run typecheck",
+        "npm run build",
+        "BASE_URL=<preview-url> npm run qa:dynamo-browser"
+      ],
+      "blockedLiveActions": [
+        "launch announcement",
+        "post-launch closeout"
+      ]
+    },
+    {
+      "id": "documentation-and-launch-handoff",
+      "label": "Documentation and launch handoff artifacts",
+      "acceptanceArea": "Documentation",
+      "ownerRole": "Master Admin",
+      "completionStatus": "preview_complete",
+      "currentEvidence": [
+        "DETROIT_DYNAMO_REBRAND_AUDIT_AND_ROADMAP.md follows the requested final response format",
+        "Launch artifact generator writes owner, backend, evidence, cutover, SEO, role, admin, and verification handoffs",
+        "Launch artifact index maps handoffs to owner roles, paths, verify commands, and blocked live actions"
+      ],
+      "remainingEvidenceRequired": [
+        "Owner review of generated handoffs before any live launch meeting"
+      ],
+      "verificationCommands": [
+        "npm run generate:dynamo-launch-assets",
+        "npm run verify:dynamo-launch-artifact-index"
+      ],
+      "blockedLiveActions": [
+        "owner closeout",
+        "promotion decision"
+      ]
+    },
+    {
+      "id": "owner-final-signoff",
+      "label": "Owner final signoff and go-live authority",
+      "acceptanceArea": "Owner Decision",
+      "ownerRole": "Master Admin",
+      "completionStatus": "external_evidence_required",
+      "currentEvidence": [
+        "Owner signoff register has 11 rows and keeps every row not_signed in preview",
+        "Live readiness board keeps go-live allowed rows at zero",
+        "Goal audit reports implemented preview scope as 7/8 with external gates pending"
+      ],
+      "remainingEvidenceRequired": [
+        "Every owner signoff row signed by a named approver with evidence attached",
+        "Live readiness board converted from no-go to go only after evidence approval",
+        "Production deployment, form, payment, waiver, league/facility, SEO, redirect, and rollback proof attached"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-owner-signoff-register",
+        "npm run verify:dynamo-live-readiness-board",
+        "npm run audit:dynamo-goal"
+      ],
+      "blockedLiveActions": [
+        "goal completion claim",
+        "root route promotion",
+        "checkout activation",
+        "signature capture",
+        "public claim publication",
+        "permanent redirects"
+      ]
+    }
+  ],
+  "summary": {
+    "acceptanceRows": 15,
+    "previewCompleteRows": 10,
+    "externalEvidenceRequiredRows": 5,
+    "acceptanceAreas": 15,
+    "ownerRoles": 4,
+    "publicRoutes": 18,
+    "sitemapRoutes": 16,
+    "dataModels": 20,
+    "adminModules": 16,
+    "promotionGates": 6,
+    "externalConfirmationAreas": 6,
+    "productionPreviewTracks": 30,
+    "deploymentReadinessTracks": 10,
+    "ownerSignoffRows": 11,
+    "ownerSignedRows": 0,
+    "ownerUnsignedRows": 11,
+    "liveReadinessRows": 11,
+    "goLiveAllowedRows": 0,
+    "liveGatesCleared": 0,
+    "publicationsUnlocked": 0,
+    "productionDeploymentsRecorded": 0,
+    "productionSubmissionsRecorded": 0,
+    "rootPromotionAllowed": false,
+    "checkoutAllowed": false,
+    "permanentRedirectsAllowed": false,
+    "blockedLiveActions": 27
+  },
+  "acceptanceAreas": {
+    "Repo Audit": 1,
+    "Current Site Preservation": 1,
+    "Preview Architecture": 1,
+    "Brand/SEO Preview": 1,
+    "Public Website": 1,
+    "Forms/Lead System": 1,
+    "Admin/Data Foundation": 1,
+    "Backend/Data": 1,
+    "Payments & Packages": 1,
+    "Waivers/Legal/Safeguarding": 1,
+    "External Confirmation": 1,
+    "SEO/Cutover": 1,
+    "Verification": 1,
+    "Documentation": 1,
+    "Owner Decision": 1
+  },
+  "ownerRoles": {
+    "Master Admin": 10,
+    "Media/Admin Staff": 1,
+    "Club Director": 2,
+    "Registrar": 2
+  },
+  "blockedLiveActions": [
+    "Appwrite intake default",
+    "checkout activation",
+    "facility publication",
+    "goal completion claim",
+    "launch announcement",
+    "league claim publication",
+    "live lead routing",
+    "medical intake",
+    "noindex removal",
+    "owner closeout",
+    "package publication",
+    "payment collection",
+    "permanent redirects",
+    "post-launch closeout",
+    "promotion decision",
+    "protected admin live reads",
+    "protected admin live writes",
+    "public claim publication",
+    "public launch announcement",
+    "root route promotion",
+    "roster publication",
+    "sensitive admin mutations",
+    "signature capture",
+    "sitemap publication",
+    "sponsor logo publication",
+    "staff proof publication",
+    "youth registration launch"
+  ],
+  "usageRules": [
+    "Use this matrix as the requirement-by-requirement completion audit for the original Detroit Dynamo objective.",
+    "Rows marked preview_complete are complete for the isolated preview only; production-preview evidence may still be required before promotion.",
+    "Rows marked external_evidence_required cannot be closed by code changes alone; they need real owner, legal, payment, backend, league, facility, deployment, or production evidence.",
+    "Do not mark the full goal complete while ownerSignedRows, goLiveAllowedRows, liveGatesCleared, publicationsUnlocked, production deployments, and production submissions remain at zero."
+  ],
+  "issues": []
+}

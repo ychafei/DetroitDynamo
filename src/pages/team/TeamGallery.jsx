@@ -14,7 +14,7 @@ export default function TeamGallery() {
     <div>
       <TeamPageHero
         eyebrow="From the Pitch"
-        title="LCFC"
+        title="DETROIT DYNAMO FC"
         accentTitle="GALLERY"
         description="Photos and video from training sessions, matchdays, and team moments."
       />
@@ -36,7 +36,7 @@ export default function TeamGallery() {
                   {item.media_url && (
                     <img
                       src={item.media_url}
-                      alt={item.caption || 'LCFC gallery'}
+                      alt={item.caption || 'Detroit Dynamo FC gallery'}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   )}

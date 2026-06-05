@@ -13,7 +13,7 @@ export default function LcfcRoster() {
   }, []);
 
   return (
-    <LcfcPage title="Roster" subtitle="The competitive men's squad of LCFC.">
+    <LcfcPage title="Roster" subtitle="The competitive men's squad of ">
       {players === null ? (
         <div className="h-64 rounded-2xl bg-white border border-[#DDDAD2] animate-pulse" />
       ) : players.length === 0 ? (
@@ -31,7 +31,7 @@ export default function LcfcRoster() {
                   </span>
                 )}
                 {p.jersey_number != null && p.jersey_number !== '' && (
-                  <span className="absolute top-2 left-2 font-oswald text-sm text-[#C9A646] bg-black/60 px-2 py-0.5 rounded">
+                  <span className="absolute top-2 left-2 font-oswald text-sm text-[#62D8FF] bg-black/60 px-2 py-0.5 rounded">
                     #{p.jersey_number}
                   </span>
                 )}
@@ -41,7 +41,7 @@ export default function LcfcRoster() {
                   {p.first_name} {p.last_name}
                 </p>
                 <div className="flex gap-2 mt-1 text-[11px] uppercase tracking-wider text-[#666666]">
-                  {p.position && <span className="text-[#A9822B] font-semibold">{p.position}</span>}
+                  {p.position && <span className="text-[#005DFF] font-semibold">{p.position}</span>}
                   {p.hometown && <span className="truncate">· {p.hometown}</span>}
                 </div>
                 {p.bio && <p className="text-sm text-[#2A2A2A] mt-3 line-clamp-3 leading-relaxed">{p.bio}</p>}

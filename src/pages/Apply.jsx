@@ -8,7 +8,7 @@ const PATHS = [
     to: '/apply/team-player',
     icon: Users,
     title: 'Apply as Team Player',
-    desc: 'Compete for LCFC — UPSL squad and age-group teams.',
+    desc: 'Compete for Detroit Dynamo FC - UPSL squad and age-group teams.',
   },
   {
     to: '/apply/team-coach',
@@ -20,7 +20,7 @@ const PATHS = [
     to: '/apply/private-training-coach',
     icon: Briefcase,
     title: 'Apply as Private Training Coach',
-    desc: '1-on-1 and small-group LC Training sessions.',
+    desc: '1-on-1 and small-group Detroit Dynamo sessions.',
   },
 ];
 

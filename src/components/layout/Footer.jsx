@@ -7,19 +7,19 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <h3 className="font-oswald text-2xl font-bold tracking-wider text-accent mb-3">LC TRAINING</h3>
+            <h3 className="font-oswald text-2xl font-bold tracking-wider text-accent mb-3">DETROIT DYNAMO</h3>
             <p className="text-muted-foreground text-sm max-w-md">
-              Elite soccer coaching across Metro Detroit. Oakland, Macomb, and Wayne counties.
+              Detroit's player development pathway: training academy, youth club growth, and senior team ambition.
             </p>
           </div>
           <div>
             <h4 className="font-oswald text-sm font-semibold tracking-wider text-foreground mb-4">QUICK LINKS</h4>
             <div className="space-y-2">
-              <Link to="/about" className="block text-sm text-muted-foreground hover:text-accent transition-colors">About Us</Link>
-              <Link to="/blog" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Blog</Link>
-              <Link to="/apply" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Become a Coach</Link>
-              <Link to="/book" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Book a Session</Link>
-              <Link to="/detroit-dynamo-preview" className="block text-sm text-muted-foreground/75 hover:text-[#6FE7FF] transition-colors">Rebrand Preview</Link>
+              <Link to="/detroit-dynamo/about" className="block text-sm text-muted-foreground hover:text-accent transition-colors">About</Link>
+              <Link to="/detroit-dynamo/training" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Training Academy</Link>
+              <Link to="/detroit-dynamo/youth-club" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Youth Club</Link>
+              <Link to="/detroit-dynamo/tryouts" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Tryouts</Link>
+              <Link to="/detroit-dynamo/book" className="block text-sm text-muted-foreground hover:text-accent transition-colors">Book Training</Link>
             </div>
           </div>
           <div>
@@ -33,7 +33,7 @@ export default function Footer() {
         </div>
         <div className="mt-10 pt-6 border-t border-border">
           <p className="text-center text-xs text-muted-foreground">
-            © {new Date().getFullYear()} LC Training. All rights reserved.
+            © {new Date().getFullYear()} Detroit Dynamo. All rights reserved.
           </p>
         </div>
       </div>

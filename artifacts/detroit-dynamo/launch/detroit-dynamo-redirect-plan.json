@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-05-29T14:14:30.552Z",
+  "siteUrl": "https://www.lctrainings.com",
+  "note": "Draft only. Do not apply until Detroit Dynamo promotion gates are approved and the current LC Training site migration is signed off.",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/detroit-dynamo",
+      "status": "planned",
+      "timing": "Only after full rebrand promotion",
+      "note": "Do not replace the current homepage while the preview is being compared.",
+      "permanent": true,
+      "applyWhen": "Only after full rebrand promotion"
+    },
+    {
+      "source": "/book",
+      "destination": "/detroit-dynamo/book",
+      "status": "planned",
+      "timing": "After booking/payment migration",
+      "note": "Current live booking remains the source of truth until Dynamo payments/packages are approved.",
+      "permanent": true,
+      "applyWhen": "After booking/payment migration"
+    },
+    {
+      "source": "/lcfc",
+      "destination": "/detroit-dynamo/fc",
+      "status": "planned",
+      "timing": "After club-pathway promotion",
+      "note": "Use future-pathway language until league/team status is confirmed.",
+      "permanent": true,
+      "applyWhen": "After club-pathway promotion"
+    },
+    {
+      "source": "/lcfc/tryouts",
+      "destination": "/detroit-dynamo/tryouts",
+      "status": "planned",
+      "timing": "After tryout intake migration",
+      "note": "Redirect only once Appwrite-backed tryout intake is live.",
+      "permanent": true,
+      "applyWhen": "After tryout intake migration"
+    },
+    {
+      "source": "/team",
+      "destination": "/detroit-dynamo/teams",
+      "status": "planned",
+      "timing": "After roster/team content migration",
+      "note": "Preserve existing team pages until confirmed rosters and staff exist.",
+      "permanent": true,
+      "applyWhen": "After roster/team content migration"
+    },
+    {
+      "source": "/team/schedule",
+      "destination": "/detroit-dynamo/schedule-results",
+      "status": "planned",
+      "timing": "After fixture/result confirmation",
+      "note": "Avoid publishing unconfirmed schedules or league commitments.",
+      "permanent": true,
+      "applyWhen": "After fixture/result confirmation"
+    },
+    {
+      "source": "/about",
+      "destination": "/detroit-dynamo/about",
+      "status": "planned",
+      "timing": "After legal/support/content migration",
+      "note": "Current company content stays live until full rebrand approval.",
+      "permanent": true,
+      "applyWhen": "After legal/support/content migration"
+    }
+  ]
+}

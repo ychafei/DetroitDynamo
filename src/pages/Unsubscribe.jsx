@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { unsubscribeRepo } from '@/api/repo';
+import { LIMITS, isValidEmail, normalizeEmail } from '@/lib/validation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,11 +12,17 @@ export default function Unsubscribe() {
   const [reason, setReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isValidEmail(email)) {
+      setError('Enter a valid email address.');
+      return;
+    }
+    setError(null);
     setSubmitting(true);
-    await unsubscribeRepo.create({ email, reason });
+    await unsubscribeRepo.create({ email: normalizeEmail(email), reason });
     setSubmitting(false);
     setDone(true);
   };
@@ -40,7 +47,8 @@ export default function Unsubscribe() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label className="font-oswald tracking-wider uppercase text-xs">Email</Label>
-            <Input required type="email" value={email} onChange={e => setEmail(e.target.value)} className="bg-card border-border mt-1" />
+            <Input required type="email" maxLength={LIMITS.email} value={email} onChange={e => { setEmail(e.target.value); if (error) setError(null); }} className="bg-card border-border mt-1" />
+            {error && <p className="text-xs text-destructive mt-1">{error}</p>}
           </div>
           <div>
             <Label className="font-oswald tracking-wider uppercase text-xs">Reason (optional)</Label>

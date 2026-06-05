@@ -1,0 +1,574 @@
+{
+  "generatedAt": "2026-05-29T14:14:30.559Z",
+  "cutoverTracks": [
+    {
+      "id": "current-site-snapshot-rollback",
+      "label": "Current LC site snapshot and rollback",
+      "phase": "Pre-promotion",
+      "ownerRole": "Master Admin",
+      "status": "preview_ready",
+      "affectedRoutes": [
+        "/",
+        "/about",
+        "/book",
+        "/lcfc",
+        "/team",
+        "/blog",
+        "/apply",
+        "/admin"
+      ],
+      "currentState": "Current LC Training routes, booking, auth, blog, team, LCFC, and admin flows remain live.",
+      "cutoverAction": "Capture route screenshots, smoke-test outputs, current metadata, env values, and deployment id before any promotion change.",
+      "rollbackAction": "Revert the routing change to the last known LC Training deployment and keep `/detroit-dynamo` as the preview shell.",
+      "requiredEvidence": [
+        "Passing current-site route smoke test",
+        "Passing current LC booking/auth/admin checks",
+        "Production deployment id or rollback target",
+        "Owner approval that a promotion window is open"
+      ],
+      "blockedUntil": "Do not switch the root experience until current-site preservation evidence and rollback instructions are saved.",
+      "relatedPromotionGates": [
+        {
+          "gate": "Current LC site preservation",
+          "status": "passing_in_preview",
+          "requiredEvidence": "Root LC routes, booking, auth, forms, navigation, manifest, and footer continue to work before launch.",
+          "nextAction": "Keep running current-site isolation checks before every promotion decision."
+        }
+      ]
+    },
+    {
+      "id": "root-route-shell-promotion",
+      "label": "Root route and public shell promotion",
+      "phase": "Promotion window",
+      "ownerRole": "Master Admin",
+      "status": "blocked_until_approval",
+      "affectedRoutes": [
+        "/",
+        "/detroit-dynamo",
+        "/detroit-dynamo/*"
+      ],
+      "currentState": "Detroit Dynamo remains isolated under `/detroit-dynamo` and root still renders the current LC Training shell.",
+      "cutoverAction": "Promote the Detroit Dynamo layout to the approved public entry point only after all promotion gates pass.",
+      "rollbackAction": "Restore the current LC Training root route and keep Dynamo available only under the preview route.",
+      "requiredEvidence": [
+        "Owner-approved launch timing",
+        "Verified Detroit Dynamo root shell on desktop and mobile",
+        "No old LC header/footer inside Dynamo routes",
+        "No broken current LC route after rollback rehearsal"
+      ],
+      "blockedUntil": "Owner signs off on the full brand switch and all external promotion gates are cleared.",
+      "relatedPromotionGates": [
+        {
+          "gate": "Current LC site preservation",
+          "status": "passing_in_preview",
+          "requiredEvidence": "Root LC routes, booking, auth, forms, navigation, manifest, and footer continue to work before launch.",
+          "nextAction": "Keep running current-site isolation checks before every promotion decision."
+        }
+      ]
+    },
+    {
+      "id": "seo-metadata-indexing",
+      "label": "SEO, metadata, robots, and indexing",
+      "phase": "Promotion window",
+      "ownerRole": "Media/Admin Staff",
+      "status": "blocked_until_approval",
+      "affectedRoutes": [
+        "/detroit-dynamo",
+        "/detroit-dynamo/*",
+        "/detroit-dynamo-sitemap.xml"
+      ],
+      "currentState": "Dynamo preview pages intentionally use preview metadata and noindex/noindex-style launch controls.",
+      "cutoverAction": "Apply approved Detroit Dynamo titles, descriptions, favicon, social image, canonical URLs, robots, and sitemap publication.",
+      "rollbackAction": "Reapply preview noindex and restore current LC Training metadata at root if the launch is reversed.",
+      "requiredEvidence": [
+        "Approved metadata and Open Graph assets",
+        "Approved sitemap and robots draft",
+        "Noindex removal approval",
+        "Search-console or SEO-owner launch acknowledgement"
+      ],
+      "blockedUntil": "Do not remove preview noindex or publish Dynamo root SEO until the owner approves launch metadata.",
+      "relatedPromotionGates": [
+        {
+          "gate": "Data backend live",
+          "status": "planned",
+          "requiredEvidence": "All required dd_* collections exist, permissions are reviewed, and public forms persist to Appwrite.",
+          "nextAction": "Provision after final field review and valid credentials are available."
+        },
+        {
+          "gate": "SEO and redirect launch approved",
+          "status": "preview_only",
+          "requiredEvidence": "Canonical routes, sitemap, metadata, Open Graph assets, and old-route redirect timing are approved.",
+          "nextAction": "Remove noindex only when Detroit Dynamo is the approved public brand."
+        }
+      ]
+    },
+    {
+      "id": "redirect-alias-migration",
+      "label": "Redirect and alias migration",
+      "phase": "Promotion window",
+      "ownerRole": "Master Admin",
+      "status": "blocked_until_approval",
+      "affectedRoutes": [
+        "/book",
+        "/lcfc",
+        "/team",
+        "/apply",
+        "/detroit-dynamo/book",
+        "/detroit-dynamo/fc"
+      ],
+      "currentState": "Old LC routes remain real routes, and Detroit Dynamo redirect plans are draft-only launch artifacts.",
+      "cutoverAction": "Apply approved redirects from old LC public paths to Dynamo equivalents without breaking auth, admin, or payment callbacks.",
+      "rollbackAction": "Disable the redirect rules and restore old LC public paths as canonical routes.",
+      "requiredEvidence": [
+        "Approved redirect plan",
+        "Booking/payment callback exclusions reviewed",
+        "Admin/auth route exclusions reviewed",
+        "Post-cutover 200/301 route verification"
+      ],
+      "blockedUntil": "Do not apply permanent redirects while the preview is still used for comparison.",
+      "relatedPromotionGates": []
+    },
+    {
+      "id": "backend-intake-cutover",
+      "label": "Backend intake and admin data cutover",
+      "phase": "Backend activation",
+      "ownerRole": "Master Admin",
+      "status": "blocked_until_backend",
+      "affectedRoutes": [
+        "/detroit-dynamo/contact",
+        "/detroit-dynamo/tryouts",
+        "/detroit-dynamo/book",
+        "/admin/detroit-dynamo"
+      ],
+      "currentState": "Dynamo public forms use local preview storage with optional Appwrite intake mode and fallback.",
+      "cutoverAction": "Use live Appwrite intake after `dd_*` collections, functions, permissions, and status-action workflows are deployed and tested.",
+      "rollbackAction": "Switch the admin intake mode back to local preview/fallback and stop writing Dynamo records until the backend is repaired.",
+      "requiredEvidence": [
+        "Provisioned isolated `dd_*` collections",
+        "Deployed lead intake and pipeline action functions",
+        "Production-preview submissions for every lead type",
+        "Admin pipeline status updates verified with authenticated users"
+      ],
+      "blockedUntil": "Appwrite credentials, collections, functions, permissions, and production-preview submissions are verified.",
+      "relatedPromotionGates": []
+    },
+    {
+      "id": "booking-payment-waiver-cutover",
+      "label": "Booking, payment, package, and waiver cutover",
+      "phase": "External approvals",
+      "ownerRole": "Master Admin",
+      "status": "blocked_until_external_approval",
+      "affectedRoutes": [
+        "/book",
+        "/detroit-dynamo/book",
+        "/detroit-dynamo/training",
+        "/detroit-dynamo/camps-clinics",
+        "/detroit-dynamo/tryouts"
+      ],
+      "currentState": "Current LC booking/payment flows remain live, and Dynamo packages/waivers remain inquiry-only or approval-gated.",
+      "cutoverAction": "Connect approved Dynamo packages, payment provider products, refund rules, waivers, and signature workflows.",
+      "rollbackAction": "Disable Dynamo checkout/signature entry points and route visitors back to inquiry forms or the current LC booking fallback.",
+      "requiredEvidence": [
+        "Approved package matrix and provider product ids",
+        "Approved refund/cancellation rules",
+        "Approved waiver versions and signature workflow",
+        "Successful payment and waiver sandbox tests"
+      ],
+      "blockedUntil": "Payments/packages and waivers/legal external gates are approved.",
+      "relatedPromotionGates": [
+        {
+          "gate": "Payments approved",
+          "status": "pending_confirmation",
+          "requiredEvidence": "Products, packages, taxes/fees, refunds, and settlement handling are approved by the business owner.",
+          "nextAction": "Map approved packages to checkout flows and payment records."
+        },
+        {
+          "gate": "Waivers approved",
+          "status": "pending_confirmation",
+          "requiredEvidence": "Participation, medical, media, privacy, and travel consent language is approved before signature capture.",
+          "nextAction": "Connect waiver versions to registrations, bookings, camps, and teams."
+        }
+      ]
+    },
+    {
+      "id": "legal-support-communications",
+      "label": "Legal, support, and communications cutover",
+      "phase": "External approvals",
+      "ownerRole": "Media/Admin Staff",
+      "status": "blocked_until_external_approval",
+      "affectedRoutes": [
+        "/terms",
+        "/privacy",
+        "/contact",
+        "/detroit-dynamo/contact"
+      ],
+      "currentState": "Legacy LC Training legal/support references remain in place until support, legal, payment, and email sender changes are approved.",
+      "cutoverAction": "Update support inboxes, sender names, legal pages, transactional emails, receipts, unsubscribe wording, and public contact copy.",
+      "rollbackAction": "Restore LC Training legal/support copy and transactional sender settings if the brand switch is paused.",
+      "requiredEvidence": [
+        "Approved Detroit Dynamo support inbox and sender identity",
+        "Approved legal entity, terms, privacy, and refund/support language",
+        "Transactional email and receipt templates reviewed",
+        "Unsubscribe and contact routing tested"
+      ],
+      "blockedUntil": "Legal/support ownership and sender-domain readiness are approved.",
+      "relatedPromotionGates": []
+    },
+    {
+      "id": "content-proof-publication",
+      "label": "Content proof publication",
+      "phase": "External approvals",
+      "ownerRole": "Club Director",
+      "status": "blocked_until_external_approval",
+      "affectedRoutes": [
+        "/detroit-dynamo/about",
+        "/detroit-dynamo/teams",
+        "/detroit-dynamo/schedule-results",
+        "/detroit-dynamo/sponsors"
+      ],
+      "currentState": "Dynamo pages use honest future-pathway language, roster-ready layouts, proof slots, and placeholder states.",
+      "cutoverAction": "Publish confirmed staff, rosters, sponsors, facilities, fixtures, news, testimonials, and proof assets.",
+      "rollbackAction": "Remove unapproved proof content and return the affected sections to placeholder or interest-only states.",
+      "requiredEvidence": [
+        "Approved staff, roster, and sponsor assets",
+        "Media releases and proof permissions",
+        "Confirmed fixtures/results/facilities before publication",
+        "Club director approval for public claims"
+      ],
+      "blockedUntil": "Claim-safety and external confirmation gates clear for each public proof item.",
+      "relatedPromotionGates": []
+    },
+    {
+      "id": "monitoring-qa-postlaunch",
+      "label": "Monitoring, QA, and post-launch watch",
+      "phase": "Post-promotion",
+      "ownerRole": "Master Admin",
+      "status": "blocked_until_promotion",
+      "affectedRoutes": [
+        "/",
+        "/book",
+        "/admin",
+        "/detroit-dynamo/*"
+      ],
+      "currentState": "Preview QA runs against the isolated Dynamo shell while the current LC site remains public.",
+      "cutoverAction": "Run post-launch route, mobile, console, link, form, booking, admin, payment, waiver, and analytics checks.",
+      "rollbackAction": "Trigger rollback if core routes, forms, payments, auth, admin, or legal/support workflows fail after launch.",
+      "requiredEvidence": [
+        "Passing browser QA after promotion",
+        "Passing lint/build/typecheck/smoke tests",
+        "No critical console errors or dead public CTAs",
+        "Owner sign-off after the first launch verification pass"
+      ],
+      "blockedUntil": "Do not close the promotion window until post-launch QA and rollback readiness are documented.",
+      "relatedPromotionGates": []
+    }
+  ],
+  "launchReadiness": [
+    {
+      "category": "Backend/Data",
+      "status": "planned",
+      "ownerRole": "Master Admin",
+      "evidenceNeeded": [
+        "Approved isolated dd_* collection plan",
+        "Valid Appwrite project credentials",
+        "Verified detroitDynamoLeadIntake fixtures for all public form variants",
+        "Deployed detroitDynamoLeadIntake function",
+        "Verified detroitDynamoLeadPipelineAction fixtures for authenticated status changes",
+        "Verified detroitDynamoAdminModuleRead fixtures for protected module reads",
+        "Verified detroitDynamoAdminRoleGrantAction fixtures for Master Admin role grant management",
+        "Verified detroitDynamoAdminModuleWriteAction fixtures for protected module writes",
+        "Active dd_admin_role_assignments grants for every live admin role",
+        "Public form writes tested from production preview"
+      ],
+      "nextAction": "Review the scaffold, replace expired credentials, run the dry run, then apply the Appwrite provisioner.",
+      "promotionGate": "Data backend live"
+    },
+    {
+      "category": "Payments/Packages",
+      "status": "pending_confirmation",
+      "ownerRole": "Master Admin",
+      "evidenceNeeded": [
+        "Approved training package pricing",
+        "Camp, tryout, club dues, and sponsor package rules",
+        "Stripe or PayPal product mapping",
+        "Refund, cancellation, and failed-payment handling"
+      ],
+      "nextAction": "Confirm business pricing and provider choice before connecting checkout or package purchase flows.",
+      "promotionGate": "Payments approved"
+    },
+    {
+      "category": "Waivers/Legal",
+      "status": "pending_confirmation",
+      "ownerRole": "Registrar",
+      "evidenceNeeded": [
+        "Youth participation waiver",
+        "Medical consent and emergency contact language",
+        "Media release and privacy language",
+        "Adult participation and team-travel consent where needed"
+      ],
+      "nextAction": "Have the owner and appropriate legal reviewer approve waiver text before collecting signatures.",
+      "promotionGate": "Waivers approved"
+    },
+    {
+      "category": "League/Competition",
+      "status": "future_pathway",
+      "ownerRole": "Club Director",
+      "evidenceNeeded": [
+        "Confirmed senior league acceptance before naming membership",
+        "Confirmed youth league placement before naming competition",
+        "Roster, staff, insurance, and rules compliance",
+        "Published schedule only after opponents, dates, and venues are confirmed"
+      ],
+      "nextAction": "Keep all UPSL, UPSL Women, and youth-league language framed as a goal until written confirmation exists.",
+      "promotionGate": "League facts confirmed"
+    },
+    {
+      "category": "Facilities/Operations",
+      "status": "pending_confirmation",
+      "ownerRole": "Club Director",
+      "evidenceNeeded": [
+        "Confirmed training locations and permitted field access",
+        "Facility calendars for training, tryouts, camps, and matches",
+        "Insurance and safety requirements",
+        "Weather, cancellation, and communication procedures"
+      ],
+      "nextAction": "Confirm facility partners and operating rules before publishing location-specific commitments.",
+      "promotionGate": "Facilities confirmed"
+    },
+    {
+      "category": "Content/Brand Promotion",
+      "status": "preview_only",
+      "ownerRole": "Media/Admin Staff",
+      "evidenceNeeded": [
+        "Approved Detroit Dynamo launch copy",
+        "Confirmed staff, testimonials, sponsor logos, news, and media",
+        "SEO metadata, sitemap, redirects, and social images approved",
+        "LC Training migration or preservation plan signed off"
+      ],
+      "nextAction": "Keep the Dynamo site noindex and isolated until promotion timing, redirects, and real content are approved.",
+      "promotionGate": "Launch content approved"
+    }
+  ],
+  "promotionGates": [
+    {
+      "gate": "Current LC site preservation",
+      "status": "passing_in_preview",
+      "requiredEvidence": "Root LC routes, booking, auth, forms, navigation, manifest, and footer continue to work before launch.",
+      "nextAction": "Keep running current-site isolation checks before every promotion decision."
+    },
+    {
+      "gate": "Data backend live",
+      "status": "planned",
+      "requiredEvidence": "All required dd_* collections exist, permissions are reviewed, and public forms persist to Appwrite.",
+      "nextAction": "Provision after final field review and valid credentials are available."
+    },
+    {
+      "gate": "Payments approved",
+      "status": "pending_confirmation",
+      "requiredEvidence": "Products, packages, taxes/fees, refunds, and settlement handling are approved by the business owner.",
+      "nextAction": "Map approved packages to checkout flows and payment records."
+    },
+    {
+      "gate": "Waivers approved",
+      "status": "pending_confirmation",
+      "requiredEvidence": "Participation, medical, media, privacy, and travel consent language is approved before signature capture.",
+      "nextAction": "Connect waiver versions to registrations, bookings, camps, and teams."
+    },
+    {
+      "gate": "League and facility facts confirmed",
+      "status": "future_pathway",
+      "requiredEvidence": "No current league, fixture, roster, facility, or staff claim is published without confirmation.",
+      "nextAction": "Maintain future-pathway language until official documents or owner-approved facts are available."
+    },
+    {
+      "gate": "SEO and redirect launch approved",
+      "status": "preview_only",
+      "requiredEvidence": "Canonical routes, sitemap, metadata, Open Graph assets, and old-route redirect timing are approved.",
+      "nextAction": "Remove noindex only when Detroit Dynamo is the approved public brand."
+    }
+  ],
+  "backendActivationSteps": [
+    {
+      "step": 1,
+      "title": "Run Local Backend Preflight",
+      "ownerRole": "Master Admin",
+      "command": "npm run preflight:dynamo-backend",
+      "evidence": "Backend preflight report shows schema, function config, function source, pipeline-action fixture coverage, admin-module-read fixture coverage, admin-role-grant fixture coverage, admin-module-write fixture coverage, and env-key presence without printing secrets.",
+      "nextAction": "Resolve any failing local checks before attempting networked backend work."
+    },
+    {
+      "step": 2,
+      "title": "Review Appwrite Collection Plan",
+      "ownerRole": "Master Admin",
+      "command": "npm run plan:dynamo-appwrite",
+      "evidence": "Plan confirms the 18 requested operational dd_* collections plus admin audit event and admin role assignment collections with expected attributes, indexes, access policies, and public/function write paths.",
+      "nextAction": "Approve fields, indexes, owner roles, public-form destinations, and audit-event retention before applying."
+    },
+    {
+      "step": 3,
+      "title": "Provision Isolated Collections",
+      "ownerRole": "Master Admin",
+      "command": "npm run provision:dynamo-appwrite -- --apply",
+      "evidence": "Appwrite contains the dd_* collections, attributes, indexes, and permissions required by the Detroit Dynamo model.",
+      "nextAction": "Use valid Appwrite credentials and do not mutate legacy LC Training collections."
+    },
+    {
+      "step": 4,
+      "title": "Configure Function Variables",
+      "ownerRole": "Master Admin",
+      "command": "node scripts/configure-functions.mjs",
+      "evidence": "detroitDynamoLeadIntake, detroitDynamoLeadPipelineAction, detroitDynamoAdminModuleRead, detroitDynamoAdminRoleGrantAction, and detroitDynamoAdminModuleWriteAction have APPWRITE_API_KEY configured in Appwrite without exposing the key in logs or client code.",
+      "nextAction": "Confirm function variables after replacing any expired Appwrite key; set DETROIT_DYNAMO_BOOTSTRAP_ADMIN_USER_ID before first live Master Admin grant."
+    },
+    {
+      "step": 5,
+      "title": "Deploy Lead Intake, Pipeline, Module Read, Role Grant, and Module Write Functions",
+      "ownerRole": "Master Admin",
+      "command": "appwrite push functions --all",
+      "evidence": "detroitDynamoLeadIntake, detroitDynamoLeadPipelineAction, detroitDynamoAdminModuleRead, detroitDynamoAdminRoleGrantAction, and detroitDynamoAdminModuleWriteAction are deployed and enabled with database/document scopes from appwrite.json.",
+      "nextAction": "Deploy only after preflight, provisioning, and function variable configuration pass."
+    },
+    {
+      "step": 6,
+      "title": "Enable Appwrite Intake in Admin",
+      "ownerRole": "Media/Admin Staff",
+      "command": "Use /admin/detroit-dynamo Form Intake Mode",
+      "evidence": "Protected admin mode is switched from Local Preview to Appwrite Intake after backend deployment.",
+      "nextAction": "Keep local preview fallback available until production-preview form submissions are verified."
+    },
+    {
+      "step": 7,
+      "title": "Submit Production-Preview Test Leads and Pipeline Actions",
+      "ownerRole": "Registrar",
+      "command": "npm run verify:dynamo-intake-contract && npm run verify:dynamo-pipeline-actions, then submit training, tryout, youth, senior, sponsor, and contact forms from /detroit-dynamo/*",
+      "evidence": "Pipeline action fixtures validate locally, test submissions create ContactLead plus expected TryoutRegistration or Sponsor records in the dd_* collections, and authenticated pipeline actions update allowed statuses.",
+      "nextAction": "Verify no console errors, no broken success states, valid status transitions, and clear admin routing for every lead type."
+    },
+    {
+      "step": 8,
+      "title": "Lock Promotion Gate Evidence",
+      "ownerRole": "Club Director",
+      "command": "npm run audit:dynamo-goal",
+      "evidence": "Goal audit still passes implemented scope and keeps external gates visible until payments, waivers, facilities, and league facts are confirmed.",
+      "nextAction": "Do not remove preview-only noindex or redirect the current LC site until all promotion gates are approved."
+    }
+  ],
+  "confirmationRegisters": [
+    {
+      "area": "Payments & Packages",
+      "status": "pending_confirmation",
+      "ownerRole": "Master Admin",
+      "relatedModels": [
+        "TrainingPackage",
+        "Payment",
+        "Booking",
+        "CampClinic",
+        "Sponsor"
+      ],
+      "requiredFacts": [
+        "Approved private, small-group, team-training, camp, tryout, dues, and sponsor package pricing",
+        "Selected payment provider, checkout flow, refund policy, and failed-payment handling",
+        "Tax/fee treatment, discount policy, and settlement ownership",
+        "Admin reporting needs for packages, payments, refunds, and outstanding balances"
+      ],
+      "publishRule": "Do not publish checkout links or exact package commitments until pricing and provider setup are approved.",
+      "nextAction": "Owner approves package matrix, provider, refund rules, and admin payment fields."
+    },
+    {
+      "area": "Waivers & Legal",
+      "status": "pending_confirmation",
+      "ownerRole": "Registrar",
+      "relatedModels": [
+        "Waiver",
+        "Player",
+        "ParentGuardian",
+        "TryoutRegistration",
+        "CampClinic"
+      ],
+      "requiredFacts": [
+        "Youth participation waiver and medical consent language",
+        "Media release, privacy/terms language, and adult participation waiver",
+        "Travel, emergency contact, and camp/clinic consent requirements",
+        "Versioning, expiration, guardian signature, and retention rules"
+      ],
+      "publishRule": "Do not collect signatures or present legal text as final until owner/legal review is complete.",
+      "nextAction": "Prepare approved waiver versions and map each form/program to the right waiver requirement."
+    },
+    {
+      "area": "League & Competition Facts",
+      "status": "future_pathway",
+      "ownerRole": "Club Director",
+      "relatedModels": [
+        "Team",
+        "MatchFixture",
+        "MatchResult",
+        "NewsPost"
+      ],
+      "requiredFacts": [
+        "Confirmed senior men league acceptance before naming current UPSL or similar membership",
+        "Confirmed senior women league acceptance before naming current UPSL Women or similar membership",
+        "Confirmed youth league placement before naming current youth competition",
+        "Fixture, opponent, venue, roster, staff, and competition rules confirmed before publication"
+      ],
+      "publishRule": "Use future-pathway language until written league or competition confirmation exists.",
+      "nextAction": "Collect official league/competition documentation and owner-approved public wording."
+    },
+    {
+      "area": "Facilities & Operations",
+      "status": "pending_confirmation",
+      "ownerRole": "Club Director",
+      "relatedModels": [
+        "TrainingSession",
+        "CampClinic",
+        "MatchFixture",
+        "Program"
+      ],
+      "requiredFacts": [
+        "Confirmed training locations, field permits, indoor facility access, and match venues",
+        "Calendar availability for private training, camps, tryouts, youth teams, and senior teams",
+        "Insurance, safety, weather, cancellation, check-in, and emergency procedures",
+        "Published location names, addresses, parking/access notes, and facility partner permissions"
+      ],
+      "publishRule": "Do not publish facility commitments, addresses, or schedules until operating access is confirmed.",
+      "nextAction": "Confirm facility partners, operating rules, insurance requirements, and calendar windows."
+    },
+    {
+      "area": "Staff, Rosters & Safeguarding",
+      "status": "pending_confirmation",
+      "ownerRole": "Club Director",
+      "relatedModels": [
+        "Coach",
+        "StaffMember",
+        "Team",
+        "Player"
+      ],
+      "requiredFacts": [
+        "Confirmed staff names, roles, bios, licenses, photos, and public contact rules",
+        "Background check, safeguarding, and youth communication standards",
+        "Approved rosters, player photos, bios, statuses, and parent/player release permissions",
+        "Team manager assignments and internal access levels"
+      ],
+      "publishRule": "Do not publish staff, roster, or player bio details until permissions and verification are complete.",
+      "nextAction": "Collect staff/roster approvals and map internal roles to admin permissions."
+    },
+    {
+      "area": "Sponsors, Media & Content Proof",
+      "status": "preview_only",
+      "ownerRole": "Media/Admin Staff",
+      "relatedModels": [
+        "Sponsor",
+        "NewsPost",
+        "ContactLead"
+      ],
+      "requiredFacts": [
+        "Approved sponsor packages, logos, website links, activation inventory, and display permissions",
+        "Real testimonials, player stories, media clips, and partner quotes",
+        "Launch announcements, news categories, editorial approval workflow, and image rights",
+        "SEO/social assets, redirect timing, sitemap/robots publication, and current-site migration wording"
+      ],
+      "publishRule": "Keep proof slots as placeholders until real quotes, sponsor assets, and content rights are approved.",
+      "nextAction": "Approve sponsor assets, proof content, launch copy, and publication workflow before promotion."
+    }
+  ],
+  "issues": []
+}

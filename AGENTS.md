@@ -1,18 +1,21 @@
 # AGENTS.md
 
 ## Project Context
-This repository powers LCTrainings.com, the current website for LC Training. The owner is exploring a future rebrand into Detroit Dynamo / Detroit Dynamo Training / Detroit Dynamo FC.
+This repository now promotes the former LC Training site into Detroit Dynamo / Detroit Dynamo Training / Detroit Dynamo FC.
 
 ## Current Priority
-Add rebrand-preview functionality without replacing the existing LC Training website.
+Keep Detroit Dynamo as the primary public brand and remove old LC Training / Les Chèvres public design remnants without breaking the working booking, auth, admin, payment, email, legal, or data flows.
 
 ## Non-Negotiables
-- Do not delete current pages, content, styles, routes, forms, or booking flows.
-- Do not replace the homepage yet.
-- Do not globally rename LC Training to Detroit Dynamo.
+- Do not destructively delete working booking, auth, payment, email, admin, coach, client, or legal functionality.
+- The homepage and public shell should use Detroit Dynamo branding.
+- Public metadata, favicon, manifest, navigation, footer, and CTAs should use Detroit Dynamo.
 - Do not break existing SEO, navigation, booking, contact, or forms.
-- Keep rebrand preview code isolated and easy to remove or promote later.
-- Prefer new components, new route, scoped styles, and local assets.
+- Keep launch-gated admin/backend/payment/waiver/league work explicit until real approvals are confirmed.
+- Prefer Detroit Dynamo components, route redirects, scoped styles, and local assets.
+- `/detroit-dynamo` and `/detroit-dynamo/*` routes must keep their own header, footer, navigation, and layout.
+- Do not use the goat logo, Les Chèvres wordmark, LC Training footer, old gold/black shell, or legacy navigation in the public experience.
+- Do not break booking, sign in, sign up, blog, teams, or existing navigation.
 
 ## Design Direction
 Detroit Dynamo should feel professional, modern, premium, athletic, competitive, and scalable.
@@ -23,6 +26,12 @@ Visual identity direction:
 - Metallic silver / white typography
 - Clean pro soccer club feel
 - Strong Detroit energy without cliches
+
+## Detroit Dynamo Public Site
+- Detroit Dynamo is the primary public experience.
+- Required routes include home, training, youth club, senior men, senior women, tryouts, teams, schedule/results, camps/clinics, sponsors, contact, brand/kits/digital identity, and about.
+- Legacy public routes may remain registered for compatibility, but they should redirect into the Detroit Dynamo experience or render Detroit Dynamo-branded functionality.
+- Do not falsely claim league memberships, facilities, rosters, sponsors, or payments/waivers until they are confirmed.
 
 ## Engineering Expectations
 - First inspect the framework and repo structure.
@@ -46,9 +55,9 @@ Before finishing:
 
 ## Definition of Done
 The work is done when:
-- Existing LC Training site still works.
-- New Detroit Dynamo preview route works.
-- Preview can be accessed from a subtle link/button.
-- Preview looks premium on desktop and mobile.
+- Working booking/auth/admin functionality still works.
+- Detroit Dynamo is the global public brand.
+- Legacy public design routes redirect or render Detroit Dynamo-branded screens.
+- Detroit Dynamo looks premium on desktop and mobile.
 - No console/build/lint errors are introduced.
 - Summary documentation is created.

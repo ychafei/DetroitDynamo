@@ -11,20 +11,16 @@ import {
 import { useAuth } from '@/lib/AuthContext';
 import { getBrandLabel } from '@/lib/brand';
 
-const LCFC_ITEMS = [
-  { label: 'Roster', path: '/lcfc/roster' },
-  { label: 'Schedule', path: '/lcfc/schedule' },
-  { label: 'Tryouts', path: '/lcfc/tryouts' },
-  { label: 'Coaches/Staff', path: '/lcfc/staff' },
-  { label: 'Sponsors', path: '/lcfc/sponsors' },
-  { label: 'News/Matchday', path: '/lcfc/news' },
-  { label: 'Learn More', path: '/lcfc/learn-more' },
+const TEAM_ITEMS = [
+  { label: 'Team Directory', path: '/detroit-dynamo/teams' },
+  { label: 'Schedule & Results', path: '/detroit-dynamo/schedule-results' },
+  { label: 'Tryouts', path: '/detroit-dynamo/tryouts' },
+  { label: 'Senior Men', path: '/detroit-dynamo/senior-men' },
+  { label: 'Senior Women', path: '/detroit-dynamo/senior-women' },
+  { label: 'Youth Club', path: '/detroit-dynamo/youth-club' },
+  { label: 'Sponsors', path: '/detroit-dynamo/sponsors' },
 ];
 
-// LCFC nav item: the label links to /lcfc; the dropdown opens on hover and
-// keyboard focus, and disappears the moment the pointer leaves the item and
-// menu. Pure CSS (group-hover / focus-within) so it can never get stuck open.
-// Styled with the LCFC palette: #080808 panel, muted-gold accents.
 function HoverLinkDropdown({ link, isActive }) {
   const active = isActive(link.path);
   return (
@@ -33,7 +29,7 @@ function HoverLinkDropdown({ link, isActive }) {
         to={link.path}
         className={`px-4 py-2 text-sm font-oswald tracking-wide uppercase transition-colors border-b-2 flex items-center gap-1.5 outline-none ${
           active
-            ? 'text-[#C9A646] border-[#C9A646]'
+            ? 'text-[var(--dynamo-blue-bright)] border-[var(--dynamo-blue-bright)]'
             : 'text-[#E8E8E8] border-transparent hover:text-white'
         }`}
       >
@@ -42,12 +38,12 @@ function HoverLinkDropdown({ link, isActive }) {
       </Link>
       {/* pt-2 keeps a hover bridge so the menu doesn't flicker closed */}
       <div className="absolute left-0 top-full pt-2 min-w-[230px] z-50 opacity-0 invisible translate-y-1 transition-all duration-150 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0">
-        <div className="rounded-md border border-[#C9A646]/35 bg-[#080808] shadow-xl shadow-black/50 p-1">
+        <div className="rounded-md border border-[rgba(98,216,255,0.32)] bg-[#020714] shadow-xl shadow-black/50 p-1">
           {link.items.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className="block px-3 py-2 text-sm font-oswald tracking-wide uppercase rounded-sm text-[#F7F7F5] outline-none hover:bg-[#C9A646]/[0.12] hover:text-[#C9A646] focus:bg-[#C9A646]/[0.12] focus:text-[#C9A646]"
+              className="block px-3 py-2 text-sm font-oswald tracking-wide uppercase rounded-sm text-[#F7F7F5] outline-none hover:bg-[rgba(98,216,255,0.12)] hover:text-[var(--dynamo-blue-bright)] focus:bg-[rgba(98,216,255,0.12)] focus:text-[var(--dynamo-blue-bright)]"
             >
               {item.label}
             </Link>
@@ -66,15 +62,14 @@ export default function Navbar() {
   const location = useLocation();
 
   const getNavLinks = () => {
-    // Guests: marketing nav. "Teams" is the LCFC section (same dropdown).
     if (!authenticated || !user) {
       return [
-        { label: 'Home', path: '/' },
-        { label: 'Book', path: '/book' },
-        { label: 'Teams', path: '/lcfc', items: LCFC_ITEMS, linkTrigger: true },
-        { label: 'Blog', path: '/blog' },
-        { label: 'About', path: '/about' },
-        { label: 'Preview', path: '/detroit-dynamo-preview', subtle: true },
+        { label: 'Home', path: '/detroit-dynamo' },
+        { label: 'Training', path: '/detroit-dynamo/training' },
+        { label: 'Teams', path: '/detroit-dynamo/teams', items: TEAM_ITEMS, linkTrigger: true },
+        { label: 'Camps', path: '/detroit-dynamo/camps-clinics' },
+        { label: 'Sponsors', path: '/detroit-dynamo/sponsors' },
+        { label: 'About', path: '/detroit-dynamo/about' },
       ];
     }
 
@@ -119,11 +114,10 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/detroit-dynamo" className="flex items-center gap-3" aria-label="Detroit Dynamo home">
             <img
-              src="/logo-shield.png"
-              alt=""
-              aria-hidden="true"
+              src="/detroit-dynamo/logo-primary.png"
+              alt="Detroit Dynamo"
               className="h-12 md:h-14 w-auto object-contain"
             />
             <span className="font-oswald text-2xl md:text-3xl font-bold tracking-wider text-accent whitespace-nowrap">
@@ -228,7 +222,7 @@ export default function Navbar() {
                     onClick={() => navigateToLogin()}
                     className="bg-accent text-accent-foreground font-oswald tracking-wide uppercase text-xs hover:bg-accent/90"
                   >
-                    Sign Up
+                    Join Dynamo
                   </Button>
                 </div>
               )}

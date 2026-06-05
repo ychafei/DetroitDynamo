@@ -11,16 +11,25 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserCircle, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  LIMITS, cleanPhone, formatPhone, normalizeEmail, validateForm,
+} from '@/lib/validation';
 
 export default function Settings() {
   const { user, isCoach, refetch } = useCurrentUser();
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState(/** @type {Record<string, any>} */ ({}));
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState(/** @type {Record<string, string | undefined>} */ ({}));
+
+  const setField = (key, value) => {
+    setProfile((p) => ({ ...p, [key]: value }));
+    if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }));
+  };
 
   useEffect(() => {
     if (user) {
       setProfile({
-        phone: user.phone || '',
+        phone: formatPhone(user.phone || ''),
         dob: user.dob || '',
         position: user.position || '',
         skill_level: user.skill_level || '',
@@ -28,7 +37,7 @@ export default function Settings() {
         parent_first_name: user.parent_first_name || '',
         parent_last_name: user.parent_last_name || '',
         parent_email: user.parent_email || '',
-        parent_phone: user.parent_phone || '',
+        parent_phone: formatPhone(user.parent_phone || ''),
         parent_relationship: user.parent_relationship || '',
         matching_opted_in: user.matching_opted_in || false,
         matching_age_group: user.matching_age_group || '',
@@ -37,12 +46,36 @@ export default function Settings() {
   }, [user]);
 
   const saveProfile = async () => {
+    // All optional, but anything filled in must be the right shape — a phone
+    // that isn't 10 digits or a malformed parent email is worse than blank.
+    const { valid, errors: found } = validateForm(profile, {
+      phone: { label: 'Phone', phone: true },
+      bio: { label: 'Bio', maxLength: LIMITS.bio },
+      parent_first_name: { label: 'Parent first name', name: true },
+      parent_last_name: { label: 'Parent last name', name: true },
+      parent_email: { label: 'Parent email', email: true },
+      parent_phone: { label: 'Parent phone', phone: true },
+    });
+    if (!valid) {
+      setErrors(/** @type {Record<string, string | undefined>} */ (found));
+      toast.error('Please fix the highlighted fields.');
+      return;
+    }
+    setErrors(/** @type {Record<string, string | undefined>} */ ({}));
+
     setSaving(true);
-    await auth.updateCurrentUser(profile);
+    await auth.updateCurrentUser({
+      ...profile,
+      phone: profile.phone ? cleanPhone(profile.phone) : '',
+      parent_email: profile.parent_email ? normalizeEmail(profile.parent_email) : '',
+      parent_phone: profile.parent_phone ? cleanPhone(profile.parent_phone) : '',
+    });
     await refetch();
     setSaving(false);
     toast.success('Profile saved');
   };
+
+  const errText = 'text-xs text-destructive mt-1';
 
   return (
     <div className="py-12">
@@ -80,7 +113,8 @@ export default function Settings() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label className="font-oswald tracking-wider uppercase text-xs">Phone</Label>
-                <Input value={profile.phone} onChange={e => setProfile({...profile, phone: e.target.value})} className="bg-card border-border mt-1" />
+                <Input type="tel" inputMode="tel" placeholder="(555) 000-0000" value={profile.phone || ''} onChange={e => setField('phone', formatPhone(e.target.value))} className="bg-card border-border mt-1" />
+                {errors.phone && <p className={errText}>{errors.phone}</p>}
               </div>
               <div>
                 <Label className="font-oswald tracking-wider uppercase text-xs">Date of Birth</Label>
@@ -115,30 +149,37 @@ export default function Settings() {
             )}
             <div>
               <Label className="font-oswald tracking-wider uppercase text-xs">Bio</Label>
-              <Textarea value={profile.bio} onChange={e => setProfile({...profile, bio: e.target.value})} className="bg-card border-border mt-1" rows={3} />
+              <Textarea maxLength={LIMITS.bio} value={profile.bio || ''} onChange={e => setField('bio', e.target.value)} className="bg-card border-border mt-1" rows={3} />
+              <div className="flex justify-end mt-1">
+                <span className="text-xs text-muted-foreground">{(profile.bio || '').length}/{LIMITS.bio}</span>
+              </div>
             </div>
 
             {!isCoach && (() => {
-              const age = profile.dob ? Math.floor((Date.now() - new Date(profile.dob)) / (365.25 * 24 * 60 * 60 * 1000)) : null;
+              const age = profile.dob ? Math.floor((Date.now() - new Date(profile.dob).getTime()) / (365.25 * 24 * 60 * 60 * 1000)) : null;
               return age !== null && age < 18 ? (
                 <div className="border-t border-border pt-6">
                   <h3 className="font-oswald text-sm tracking-widest uppercase text-muted-foreground mb-4">Parent / Guardian Info</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label className="font-oswald tracking-wider uppercase text-xs">Parent First Name</Label>
-                      <Input value={profile.parent_first_name} onChange={e => setProfile({...profile, parent_first_name: e.target.value})} className="bg-card border-border mt-1" />
+                      <Input maxLength={LIMITS.name} value={profile.parent_first_name || ''} onChange={e => setField('parent_first_name', e.target.value)} className="bg-card border-border mt-1" />
+                      {errors.parent_first_name && <p className={errText}>{errors.parent_first_name}</p>}
                     </div>
                     <div>
                       <Label className="font-oswald tracking-wider uppercase text-xs">Parent Last Name</Label>
-                      <Input value={profile.parent_last_name} onChange={e => setProfile({...profile, parent_last_name: e.target.value})} className="bg-card border-border mt-1" />
+                      <Input maxLength={LIMITS.name} value={profile.parent_last_name || ''} onChange={e => setField('parent_last_name', e.target.value)} className="bg-card border-border mt-1" />
+                      {errors.parent_last_name && <p className={errText}>{errors.parent_last_name}</p>}
                     </div>
                     <div>
                       <Label className="font-oswald tracking-wider uppercase text-xs">Parent Email</Label>
-                      <Input value={profile.parent_email} onChange={e => setProfile({...profile, parent_email: e.target.value})} className="bg-card border-border mt-1" />
+                      <Input type="email" maxLength={LIMITS.email} value={profile.parent_email || ''} onChange={e => setField('parent_email', e.target.value)} className="bg-card border-border mt-1" />
+                      {errors.parent_email && <p className={errText}>{errors.parent_email}</p>}
                     </div>
                     <div>
                       <Label className="font-oswald tracking-wider uppercase text-xs">Parent Phone</Label>
-                      <Input value={profile.parent_phone} onChange={e => setProfile({...profile, parent_phone: e.target.value})} className="bg-card border-border mt-1" />
+                      <Input type="tel" inputMode="tel" placeholder="(555) 000-0000" value={profile.parent_phone || ''} onChange={e => setField('parent_phone', formatPhone(e.target.value))} className="bg-card border-border mt-1" />
+                      {errors.parent_phone && <p className={errText}>{errors.parent_phone}</p>}
                     </div>
                   </div>
                 </div>

@@ -81,7 +81,7 @@ export default function TrustFaqSection() {
         </Accordion>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          Still wondering something? <a href="mailto:hello@lctrainings.com" className="text-accent hover:underline">Email us</a> — we read every message.
+          Still wondering something? <a href="mailto:hello@detroitdynamo.com" className="text-accent hover:underline">Email us</a> — we read every message.
         </p>
       </div>
     </section>

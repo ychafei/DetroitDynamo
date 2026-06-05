@@ -27,7 +27,7 @@ function shortDate(yyyyMmDd) {
   return new Intl.DateTimeFormat('en-US', { timeZone: 'America/Detroit', month: 'short', day: 'numeric' }).format(d);
 }
 
-function TrendTooltip({ active, payload }) {
+function TrendTooltip({ active = false, payload = [] }) {
   if (!active || !payload?.length) return null;
   const b = payload[0].payload;
   return (

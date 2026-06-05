@@ -198,7 +198,7 @@ export default function Dashboard() {
         subject: `Session Cancelled — ${dateLabel}`,
         body: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-            <h2 style="color: #B89A45;">Session Cancelled</h2>
+            <h2 style="color: #0078FF;">Session Cancelled</h2>
             <p>Hi ${clientFullName},</p>
             <p>Your ${durLabel} session with <strong>${coachFullName}</strong> on <strong>${dateLabel}</strong> (${timeRange}) has been successfully cancelled.</p>
             ${creditRefunded
@@ -207,9 +207,9 @@ export default function Dashboard() {
                   ? `<p style="padding:12px; background:#3a1f1f; border-left:4px solid #f87171; color:#e5e7eb;"><strong>Please note:</strong> This cancellation was within the 24-hour window, so no session credit was returned. Contact support if you believe this is an exception.</p>`
                   : `<p>No credit was returned for this session.</p>`)
             }
-            <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#B89A45; color:#000; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">Go to Dashboard</a></p>
+            <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#0078FF; color:#fff; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">Go to Dashboard</a></p>
             <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
-            <p style="font-size: 12px; color: #999;">LC Training — Private Soccer Coaching<br/>${window.location.origin}</p>
+            <p style="font-size: 12px; color: #999;">Detroit Dynamo - Private Soccer Coaching<br/>${window.location.origin}</p>
           </div>
         `,
       }));
@@ -221,16 +221,16 @@ export default function Dashboard() {
           subject: `Session Cancelled — ${clientFullName} on ${dateLabel}`,
           body: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-              <h2 style="color: #B89A45;">Session Cancelled</h2>
+              <h2 style="color: #0078FF;">Session Cancelled</h2>
               <p>Hi ${coach.first_name},</p>
               <p>The ${durLabel} session with <strong>${clientFullName}</strong> on <strong>${dateLabel}</strong> (${timeRange}) in ${session.county} County was cancelled by ${cancelledByLabel}.</p>
               ${creditRefunded
                 ? `<p>The client's session credit has been returned automatically.</p>`
                 : (isLateCancel ? `<p>This was a late cancellation (within 24 hours) — no credit was returned to the client.</p>` : '')
               }
-              <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#B89A45; color:#000; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">View Dashboard</a></p>
+              <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#0078FF; color:#fff; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">View Dashboard</a></p>
               <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
-              <p style="font-size: 12px; color: #999;">LC Training — Coach Portal<br/>${window.location.origin}</p>
+              <p style="font-size: 12px; color: #999;">Detroit Dynamo - Coach Portal<br/>${window.location.origin}</p>
             </div>
           `,
         }));
@@ -289,7 +289,7 @@ export default function Dashboard() {
         subject: `Session Rescheduled — ${formatLongDateET(newDate)}`,
         body: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-            <h2 style="color: #B89A45;">Session Rescheduled</h2>
+            <h2 style="color: #0078FF;">Session Rescheduled</h2>
             <p>Hi ${clientFullName},</p>
             <p>Your ${durLabel} session with <strong>${coachFullName}</strong> has been successfully rescheduled.</p>
             <table style="width:100%; border-collapse:collapse; margin:16px 0;">
@@ -299,16 +299,16 @@ export default function Dashboard() {
               </tr>
               <tr>
                 <td style="padding:10px; border:1px solid #ddd;"><strong>New:</strong></td>
-                <td style="padding:10px; border:1px solid #ddd; color:#B89A45;"><strong>${newWhen}</strong></td>
+                <td style="padding:10px; border:1px solid #ddd; color:#0078FF;"><strong>${newWhen}</strong></td>
               </tr>
               <tr>
                 <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8;"><strong>Location:</strong></td>
                 <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8;">${rescheduleSession.county} County</td>
               </tr>
             </table>
-            <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#B89A45; color:#000; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">View Session</a></p>
+            <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#0078FF; color:#fff; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">View Session</a></p>
             <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
-            <p style="font-size: 12px; color: #999;">LC Training — Private Soccer Coaching<br/>${window.location.origin}</p>
+            <p style="font-size: 12px; color: #999;">Detroit Dynamo - Private Soccer Coaching<br/>${window.location.origin}</p>
           </div>
         `,
       }));
@@ -320,7 +320,7 @@ export default function Dashboard() {
           subject: `Session Rescheduled — ${clientFullName}`,
           body: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-              <h2 style="color: #B89A45;">Session Rescheduled</h2>
+              <h2 style="color: #0078FF;">Session Rescheduled</h2>
               <p>Hi ${coach.first_name},</p>
               <p><strong>${clientFullName}</strong> has rescheduled their ${durLabel} session.</p>
               <table style="width:100%; border-collapse:collapse; margin:16px 0;">
@@ -330,16 +330,16 @@ export default function Dashboard() {
                 </tr>
                 <tr>
                   <td style="padding:10px; border:1px solid #ddd;"><strong>New:</strong></td>
-                  <td style="padding:10px; border:1px solid #ddd; color:#B89A45;"><strong>${newWhen}</strong></td>
+                  <td style="padding:10px; border:1px solid #ddd; color:#0078FF;"><strong>${newWhen}</strong></td>
                 </tr>
                 <tr>
                   <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8;"><strong>County:</strong></td>
                   <td style="padding:10px; border:1px solid #ddd; background:#f8f8f8;">${rescheduleSession.county}</td>
                 </tr>
               </table>
-              <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#B89A45; color:#000; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">View Dashboard</a></p>
+              <p style="margin-top:20px;"><a href="${window.location.origin}/dashboard" style="background:#0078FF; color:#fff; padding:10px 18px; text-decoration:none; border-radius:6px; font-weight:bold;">View Dashboard</a></p>
               <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
-              <p style="font-size: 12px; color: #999;">LC Training — Coach Portal<br/>${window.location.origin}</p>
+              <p style="font-size: 12px; color: #999;">Detroit Dynamo - Coach Portal<br/>${window.location.origin}</p>
             </div>
           `,
         }));
@@ -616,7 +616,7 @@ export default function Dashboard() {
         {/* New user welcome prompt */}
         {!isCoach && !isAdmin && sessions.length === 0 && credits.length === 0 && (
           <div className="mb-8 p-5 bg-primary/10 border border-primary/20 rounded-lg">
-            <h3 className="font-oswald text-lg font-bold tracking-wider text-foreground mb-1">WELCOME TO LC TRAINING!</h3>
+            <h3 className="font-oswald text-lg font-bold tracking-wider text-foreground mb-1">WELCOME TO DETROIT DYNAMO!</h3>
             <p className="text-sm text-muted-foreground mb-4">You're all set. Here's what you can do to get started:</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <Link to="/book">
@@ -956,7 +956,7 @@ export default function Dashboard() {
                 </div>
                 <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed">
                   Receipts for electronic payments are emailed by the processor. Need a copy or a billing fix?{' '}
-                  <a href="mailto:support@lctrainings.com" className="text-accent hover:underline">Contact support</a>.
+                  <a href="mailto:support@detroitdynamo.com" className="text-accent hover:underline">Contact support</a>.
                 </p>
               </div>
             )}
@@ -989,7 +989,7 @@ export default function Dashboard() {
                     <Settings className="w-4 h-4 mr-2" /> Settings
                   </Button>
                 </Link>
-                <a href="mailto:support@lctrainings.com" className="block">
+                <a href="mailto:support@detroitdynamo.com" className="block">
                   <Button variant="ghost" className="w-full justify-start text-sm">
                     <LifeBuoy className="w-4 h-4 mr-2" /> Contact Support
                   </Button>

@@ -8,7 +8,16 @@ export default function PricingSection() {
   const [packages, setPackages] = useState([]);
 
   useEffect(() => {
-    pricingPackageRepo.filter({ is_visible: true }, 'display_order').then(setPackages);
+    let cancelled = false;
+    pricingPackageRepo
+      .filter({ is_visible: true }, 'display_order')
+      .then((nextPackages) => {
+        if (!cancelled) setPackages(nextPackages);
+      })
+      .catch(() => {
+        if (!cancelled) setPackages([]);
+      });
+    return () => { cancelled = true; };
   }, []);
 
   if (packages.length === 0) return null;

@@ -1,0 +1,325 @@
+{
+  "checkedAt": "2026-05-29T14:14:32.028Z",
+  "fixtureCollections": [
+    {
+      "collection_id": "dd_players",
+      "model": "Player",
+      "documents": [
+        {
+          "id": "player-ava-01",
+          "title": "Ava \"The Standard\" Rivera",
+          "first_name": "Ava",
+          "last_name": "Rivera",
+          "date_of_birth": "2011-05-01T00:00:00.000Z",
+          "primary_position": "Midfielder",
+          "status": "active",
+          "pipeline_status": "qualified",
+          "updated_at": "2026-05-29T00:00:00.000Z"
+        },
+        {
+          "id": "player-missing-dob",
+          "title": "Required Field Review Player",
+          "first_name": "Review",
+          "last_name": "Player",
+          "status": "lead"
+        }
+      ]
+    },
+    {
+      "collection_id": "dd_sponsors",
+      "model": "Sponsor",
+      "documents": [
+        {
+          "id": "sponsor-detroit-01",
+          "business_name": "Detroit Partner Co.",
+          "contact_name": "Maya Chen",
+          "email": "maya@example.com",
+          "status": "new",
+          "source": "sponsor_form"
+        }
+      ]
+    }
+  ],
+  "flattenedRecords": [
+    {
+      "key": "dd_players:player-ava-01:0",
+      "id": "player-ava-01",
+      "title": "Ava \"The Standard\" Rivera",
+      "status": "active",
+      "source": "module_record",
+      "updatedAt": "2026-05-29T00:00:00.000Z",
+      "collectionId": "dd_players",
+      "model": "Player",
+      "document": {
+        "id": "player-ava-01",
+        "title": "Ava \"The Standard\" Rivera",
+        "first_name": "Ava",
+        "last_name": "Rivera",
+        "date_of_birth": "2011-05-01T00:00:00.000Z",
+        "primary_position": "Midfielder",
+        "status": "active",
+        "pipeline_status": "qualified",
+        "updated_at": "2026-05-29T00:00:00.000Z"
+      },
+      "searchText": "player-ava-01 ava \"the standard\" rivera active module_record dd_players player {\"id\":\"player-ava-01\",\"title\":\"ava \\\"the standard\\\" rivera\",\"first_name\":\"ava\",\"last_name\":\"rivera\",\"date_of_birth\":\"2011-05-01t00:00:00.000z\",\"primary_position\":\"midfielder\",\"status\":\"active\",\"pipeline_status\":\"qualified\",\"updated_at\":\"2026-05-29t00:00:00.000z\"}"
+    },
+    {
+      "key": "dd_players:player-missing-dob:1",
+      "id": "player-missing-dob",
+      "title": "Required Field Review Player",
+      "status": "lead",
+      "source": "module_record",
+      "updatedAt": "",
+      "collectionId": "dd_players",
+      "model": "Player",
+      "document": {
+        "id": "player-missing-dob",
+        "title": "Required Field Review Player",
+        "first_name": "Review",
+        "last_name": "Player",
+        "status": "lead"
+      },
+      "searchText": "player-missing-dob required field review player lead module_record dd_players player {\"id\":\"player-missing-dob\",\"title\":\"required field review player\",\"first_name\":\"review\",\"last_name\":\"player\",\"status\":\"lead\"}"
+    },
+    {
+      "key": "dd_sponsors:sponsor-detroit-01:0",
+      "id": "sponsor-detroit-01",
+      "title": "Maya Chen",
+      "status": "new",
+      "source": "sponsor_form",
+      "updatedAt": "",
+      "collectionId": "dd_sponsors",
+      "model": "Sponsor",
+      "document": {
+        "id": "sponsor-detroit-01",
+        "business_name": "Detroit Partner Co.",
+        "contact_name": "Maya Chen",
+        "email": "maya@example.com",
+        "status": "new",
+        "source": "sponsor_form"
+      },
+      "searchText": "sponsor-detroit-01 maya chen new sponsor_form dd_sponsors sponsor {\"id\":\"sponsor-detroit-01\",\"business_name\":\"detroit partner co.\",\"contact_name\":\"maya chen\",\"email\":\"maya@example.com\",\"status\":\"new\",\"source\":\"sponsor_form\"}"
+    }
+  ],
+  "csv": "\"record_id\",\"collection_id\",\"model\",\"title\",\"status\",\"source\",\"updated_at\",\"payload_json\"\n\"player-ava-01\",\"dd_players\",\"Player\",\"Ava \"\"The Standard\"\" Rivera\",\"active\",\"module_record\",\"2026-05-29T00:00:00.000Z\",\"{\"\"id\"\":\"\"player-ava-01\"\",\"\"title\"\":\"\"Ava \\\"\"The Standard\\\"\" Rivera\"\",\"\"first_name\"\":\"\"Ava\"\",\"\"last_name\"\":\"\"Rivera\"\",\"\"date_of_birth\"\":\"\"2011-05-01T00:00:00.000Z\"\",\"\"primary_position\"\":\"\"Midfielder\"\",\"\"status\"\":\"\"active\"\",\"\"pipeline_status\"\":\"\"qualified\"\",\"\"updated_at\"\":\"\"2026-05-29T00:00:00.000Z\"\"}\"\n\"player-missing-dob\",\"dd_players\",\"Player\",\"Required Field Review Player\",\"lead\",\"module_record\",\"Not set\",\"{\"\"id\"\":\"\"player-missing-dob\"\",\"\"title\"\":\"\"Required Field Review Player\"\",\"\"first_name\"\":\"\"Review\"\",\"\"last_name\"\":\"\"Player\"\",\"\"status\"\":\"\"lead\"\"}\"\n\"sponsor-detroit-01\",\"dd_sponsors\",\"Sponsor\",\"Maya Chen\",\"new\",\"sponsor_form\",\"Not set\",\"{\"\"id\"\":\"\"sponsor-detroit-01\"\",\"\"business_name\"\":\"\"Detroit Partner Co.\"\",\"\"contact_name\"\":\"\"Maya Chen\"\",\"\"email\"\":\"\"maya@example.com\"\",\"\"status\"\":\"\"new\"\",\"\"source\"\":\"\"sponsor_form\"\"}\"",
+  "csvHeader": "\"record_id\",\"collection_id\",\"model\",\"title\",\"status\",\"source\",\"updated_at\",\"payload_json\"",
+  "completePlayerProfile": {
+    "schemaFieldCount": 16,
+    "requiredFieldCount": 3,
+    "missingRequiredFields": [],
+    "missingRequiredFieldCount": 0,
+    "indexedFieldCount": 3,
+    "unknownFieldCount": 2
+  },
+  "incompletePlayerProfile": {
+    "schemaFieldCount": 16,
+    "requiredFieldCount": 3,
+    "missingRequiredFields": [
+      "date_of_birth"
+    ],
+    "missingRequiredFieldCount": 1,
+    "indexedFieldCount": 3,
+    "unknownFieldCount": 1
+  },
+  "completePlayerFields": [
+    {
+      "key": "first_name",
+      "label": "First Name",
+      "value": "Ava",
+      "group": "Profile",
+      "type": "string",
+      "required": true,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 0
+    },
+    {
+      "key": "last_name",
+      "label": "Last Name",
+      "value": "Rivera",
+      "group": "Profile",
+      "type": "string",
+      "required": true,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 1
+    },
+    {
+      "key": "date_of_birth",
+      "label": "Date Of Birth",
+      "value": "2011-05-01T00:00:00.000Z",
+      "group": "Profile",
+      "type": "datetime",
+      "required": true,
+      "indexed": true,
+      "array": false,
+      "schemaOrder": 2
+    },
+    {
+      "key": "primary_position",
+      "label": "Primary Position",
+      "value": "Midfielder",
+      "group": "Operations",
+      "type": "enum",
+      "required": false,
+      "indexed": true,
+      "array": false,
+      "schemaOrder": 4
+    },
+    {
+      "key": "status",
+      "label": "Status",
+      "value": "active",
+      "group": "Operations",
+      "type": "enum",
+      "required": false,
+      "indexed": true,
+      "array": false,
+      "schemaOrder": 12
+    },
+    {
+      "key": "updated_at",
+      "label": "Updated At",
+      "value": "2026-05-29T00:00:00.000Z",
+      "group": "Lifecycle",
+      "type": "datetime",
+      "required": false,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 15
+    },
+    {
+      "key": "id",
+      "label": "Id",
+      "value": "player-ava-01",
+      "group": "Identity",
+      "type": "payload",
+      "required": false,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 16
+    },
+    {
+      "key": "title",
+      "label": "Title",
+      "value": "Ava \"The Standard\" Rivera",
+      "group": "Profile",
+      "type": "payload",
+      "required": false,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 17
+    },
+    {
+      "key": "pipeline_status",
+      "label": "Pipeline Status",
+      "value": "qualified",
+      "group": "Pipeline",
+      "type": "payload",
+      "required": false,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 23
+    }
+  ],
+  "sponsorFields": [
+    {
+      "key": "business_name",
+      "label": "Business Name",
+      "value": "Detroit Partner Co.",
+      "group": "Profile",
+      "type": "string",
+      "required": true,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 0
+    },
+    {
+      "key": "contact_name",
+      "label": "Contact Name",
+      "value": "Maya Chen",
+      "group": "Contact",
+      "type": "string",
+      "required": false,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 1
+    },
+    {
+      "key": "email",
+      "label": "Email",
+      "value": "maya@example.com",
+      "group": "Contact",
+      "type": "email",
+      "required": false,
+      "indexed": true,
+      "array": false,
+      "schemaOrder": 2
+    },
+    {
+      "key": "status",
+      "label": "Status",
+      "value": "new",
+      "group": "Operations",
+      "type": "enum",
+      "required": false,
+      "indexed": true,
+      "array": false,
+      "schemaOrder": 7
+    },
+    {
+      "key": "id",
+      "label": "Id",
+      "value": "sponsor-detroit-01",
+      "group": "Identity",
+      "type": "payload",
+      "required": false,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 17
+    },
+    {
+      "key": "source",
+      "label": "Source",
+      "value": "sponsor_form",
+      "group": "Profile",
+      "type": "payload",
+      "required": false,
+      "indexed": false,
+      "array": false,
+      "schemaOrder": 22
+    }
+  ],
+  "preparedUpdate": {
+    "title": "Ava \"The Standard\" Rivera",
+    "first_name": "Ava",
+    "last_name": "Rivera",
+    "date_of_birth": "2011-05-01T00:00:00.000Z",
+    "primary_position": "Midfielder",
+    "status": "active",
+    "pipeline_status": "qualified",
+    "updated_at": "2026-05-29T00:00:00.000Z",
+    "source": "protected-module-record-workspace"
+  },
+  "preparedArchive": {
+    "status": "archived",
+    "previous_status": "active",
+    "source": "protected-module-record-workspace"
+  },
+  "helperOutputs": {
+    "explicitTitle": "Ava \"The Standard\" Rivera",
+    "sponsorTitleFallback": "Fallback Sponsor",
+    "arrayString": "A, B",
+    "emptyString": "Not set",
+    "dateLabel": "Date Of Birth"
+  },
+  "coveredHelpers": [
+    "flattenDetroitDynamoModuleRecordCollections",
+    "buildDetroitDynamoModuleRecordCsv",
+    "buildDetroitDynamoRecordFieldRows",
+    "buildDetroitDynamoCollectionDisplayProfile",
+    "buildDetroitDynamoPreparedRecordPayload",
+    "stringifyDetroitDynamoRecordValue",
+    "labelDetroitDynamoRecordField"
+  ]
+}

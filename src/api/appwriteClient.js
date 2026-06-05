@@ -16,6 +16,30 @@ export { Query, ID };
 
 export const DB_ID = 'lctraining';
 
+export function isAppwriteBrowserEnabled() {
+  if (import.meta.env.VITE_DISABLE_APPWRITE === 'true') return false;
+  if (typeof window === 'undefined') return true;
+  if (import.meta.env.VITE_ENABLE_APPWRITE_LOCAL === 'true') return true;
+
+  const localHosts = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
+  const pageHost = window.location.hostname;
+  if (!localHosts.has(pageHost)) return true;
+
+  try {
+    const endpointHost = new URL(ENDPOINT).hostname;
+    return localHosts.has(endpointHost) || endpointHost === pageHost;
+  } catch {
+    return false;
+  }
+}
+
+export function createAppwriteDisabledError() {
+  /** @type {Error & { code?: string }} */
+  const error = new Error('Appwrite browser calls are disabled for local preview. Set VITE_ENABLE_APPWRITE_LOCAL=true to opt in.');
+  error.code = 'APPWRITE_BROWSER_DISABLED';
+  return error;
+}
+
 // Logical entity name → Appwrite collection id. Names match the Base44 entity
 // names so legacy callers keep working.
 export const COL = {

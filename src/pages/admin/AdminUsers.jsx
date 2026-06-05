@@ -186,8 +186,8 @@ export default function AdminUsers() {
     if (!warnMessage.trim()) { toast.error('Please enter a warning message'); return; }
     await emailLib.send({
       to: warnDialog.email,
-      subject: 'Account Warning — LC Training',
-      body: `<p>Hi ${warnDialog.full_name || warnDialog.email},</p><p>${warnMessage}</p><p>If you have questions, reply to this email or contact support@lctrainings.com.</p><p>— LC Training Team</p>`,
+      subject: 'Account Warning - Detroit Dynamo',
+      body: `<p>Hi ${warnDialog.full_name || warnDialog.email},</p><p>${warnMessage}</p><p>If you have questions, reply to this email or contact support@detroitdynamo.com.</p><p>- Detroit Dynamo Team</p>`,
     });
     await logAdminAction({
       actor: me,

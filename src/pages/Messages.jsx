@@ -3,6 +3,7 @@ import { coachRepo, conversationRepo, messageRepo } from '@/api/repo';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LIMITS } from '@/lib/validation';
 import { Send, ArrowLeft, AlertTriangle, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -224,6 +225,7 @@ export default function Messages() {
                         onChange={e => setNewMsg(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
                         placeholder="Type a message..."
+                        maxLength={LIMITS.message}
                         className="bg-secondary border-border"
                       />
                       <Button onClick={handleSend} disabled={sending || !newMsg.trim()} className="bg-accent text-accent-foreground hover:bg-accent/90">

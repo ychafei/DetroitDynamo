@@ -21,19 +21,19 @@ export const SETTINGS_FIELDS = [
 // yet (pre-provisioning) or a field is blank, so /lcfc always renders.
 export const LCFC_DEFAULTS = {
   hero_image_url: '',
-  hero_heading: "LCFC Men's Team",
-  hero_subheading: 'The competitive club division of LC Training.',
+  hero_heading: "Detroit Dynamo FC Men's Team",
+  hero_subheading: 'The competitive club division of Detroit Dynamo.',
   hero_primary_text: 'Tryouts Coming Soon',
   hero_primary_link: '#tryouts',
-  hero_secondary_text: 'Follow LCFC',
+  hero_secondary_text: 'Follow Detroit Dynamo FC',
   hero_secondary_link: '#news',
   hero_enabled: true,
 
-  about_heading: 'About LCFC',
+  about_heading: 'About Detroit Dynamo FC',
   about_body:
-    'LCFC is the competitive men’s team division of LC Training. LC Training develops players through private and small-group training, while LCFC gives committed players a platform to compete in a serious team environment.',
+    'Detroit Dynamo FC is the competitive men’s team division of Detroit Dynamo. Detroit Dynamo develops players through private and small-group training, while Detroit Dynamo FC gives committed players a platform to compete in a serious team environment.',
   quote_text:
-    'LC Training develops the player.\nLCFC gives the player a platform to compete.',
+    'Detroit Dynamo develops the player.\nDetroit Dynamo FC gives the player a platform to compete.',
   about_enabled: true,
 
   overview_title: "Men's Team Overview",
@@ -84,7 +84,7 @@ export async function loadLcfcSettings() {
   try {
     const rows = await lcfcSettingsRepo.list();
     const doc = rows?.[0] || {};
-    const merged = { ...LCFC_DEFAULTS };
+    const merged = /** @type {Record<string, any>} */ ({ ...LCFC_DEFAULTS });
     for (const [k, v] of Object.entries(doc)) {
       if (v !== null && v !== undefined && v !== '') merged[k] = v;
     }

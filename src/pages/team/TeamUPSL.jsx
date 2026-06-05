@@ -8,9 +8,9 @@ export default function TeamUPSL() {
     <div>
       <TeamPageHero
         eyebrow="United Premier Soccer League"
-        title="LCFC"
+        title="Detroit Dynamo FC"
         accentTitle="UPSL"
-        description="LCFC competes in the United Premier Soccer League — the largest national pro-development league in the United States."
+        description="Detroit Dynamo FC competes in the United Premier Soccer League - the largest national pro-development league in the United States."
       />
 
       <section className="py-16 border-b border-border">
@@ -59,7 +59,7 @@ export default function TeamUPSL() {
 
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader eyebrow="Quick Links" title="EXPLORE LCFC" />
+          <SectionHeader eyebrow="Quick Links" title="EXPLORE Detroit Dynamo FC" />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link to="/team/roster" className="group flex items-center justify-between gap-4 bg-card border border-border rounded-lg p-5 hover:border-accent/50 transition-colors">
               <div className="flex items-center gap-3">

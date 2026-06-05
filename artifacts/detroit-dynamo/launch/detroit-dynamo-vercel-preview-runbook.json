@@ -1,0 +1,298 @@
+{
+  "generatedAt": "2026-05-29T14:14:31.145Z",
+  "decision": {
+    "decision": "vercel_preview_evidence_required",
+    "label": "Vercel Preview Evidence Required",
+    "launchMode": "preview_only",
+    "productionPromotionAllowed": false,
+    "reason": "Vercel preview deployment evidence, CLI readiness, route QA, rollback proof, and owner signoff must be recorded before Detroit Dynamo can replace the current LC Training root site."
+  },
+  "columns": [
+    "id",
+    "label",
+    "ownerRole",
+    "phase",
+    "status",
+    "commands",
+    "requiredEvidence",
+    "blockedLiveActions",
+    "rollbackNote"
+  ],
+  "steps": [
+    {
+      "id": "cli-upgrade-and-auth-context",
+      "label": "Upgrade and record Vercel CLI context",
+      "ownerRole": "Master Admin",
+      "phase": "CLI",
+      "status": "evidence_required",
+      "commands": [
+        "vercel --version",
+        "npm i -g vercel@latest",
+        "pnpm add -g vercel@latest"
+      ],
+      "requiredEvidence": [
+        "Vercel CLI version recorded after upgrade",
+        "Authenticated Vercel user/team confirmed without exposing tokens",
+        "Deployment operator confirms the latest CLI is available before preview deployment work"
+      ],
+      "blockedLiveActions": [
+        "production deployment",
+        "root route promotion"
+      ],
+      "rollbackNote": "Use the prior production deployment as the rollback target if preview deployment checks fail."
+    },
+    {
+      "id": "repo-link-redaction-check",
+      "label": "Confirm linked project without exposing ids",
+      "ownerRole": "Master Admin",
+      "phase": "Project Link",
+      "status": "preview_ready",
+      "commands": [
+        "test -f .vercel/repo.json || test -f .vercel/project.json"
+      ],
+      "requiredEvidence": [
+        ".vercel link file exists locally",
+        "Project directory is the repo root",
+        "Org and project identifiers are redacted from public handoff docs"
+      ],
+      "blockedLiveActions": [
+        "production deployment"
+      ],
+      "rollbackNote": "Pause deployment if the link points at the wrong team or project."
+    },
+    {
+      "id": "preview-env-pull",
+      "label": "Pull preview environment safely",
+      "ownerRole": "Master Admin",
+      "phase": "Environment",
+      "status": "evidence_required",
+      "commands": [
+        "vercel pull --yes --environment=preview"
+      ],
+      "requiredEvidence": [
+        "Preview environment pull completed without printing secrets",
+        "Client Appwrite endpoint and project id are present for preview only",
+        "Server-side secrets remain in Vercel/Appwrite environments and are not committed"
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "protected admin live writes"
+      ],
+      "rollbackNote": "Revert to local preview intake if preview env values are missing or wrong."
+    },
+    {
+      "id": "local-verification-before-deploy",
+      "label": "Run local verification before deployment",
+      "ownerRole": "Master Admin",
+      "phase": "Verification",
+      "status": "preview_ready",
+      "commands": [
+        "npm run lint",
+        "npm run typecheck",
+        "npm run build",
+        "npm run audit:dynamo-goal"
+      ],
+      "requiredEvidence": [
+        "Lint, typecheck, and build pass locally",
+        "Goal audit remains 7/8 with external gates visible",
+        "Build warning, if any, is documented before deployment"
+      ],
+      "blockedLiveActions": [
+        "preview deployment",
+        "production deployment"
+      ],
+      "rollbackNote": "Do not deploy a build that fails local verification."
+    },
+    {
+      "id": "vercel-prebuilt-build",
+      "label": "Create Vercel prebuilt output",
+      "ownerRole": "Master Admin",
+      "phase": "Build",
+      "status": "evidence_required",
+      "commands": [
+        "vercel build"
+      ],
+      "requiredEvidence": [
+        "Vercel build output created from the linked project",
+        "SPA rewrite continues to send routes to /index.html",
+        "No production redirects or root promotion rules are introduced"
+      ],
+      "blockedLiveActions": [
+        "preview deployment",
+        "production deployment"
+      ],
+      "rollbackNote": "Delete failed prebuilt output and rerun local verification before rebuilding."
+    },
+    {
+      "id": "deploy-prebuilt-preview",
+      "label": "Deploy prebuilt preview",
+      "ownerRole": "Master Admin",
+      "phase": "Preview Deployment",
+      "status": "evidence_required",
+      "commands": [
+        "vercel deploy --prebuilt"
+      ],
+      "requiredEvidence": [
+        "Preview deployment URL recorded",
+        "Preview deployment id recorded in owner evidence intake",
+        "Deployment protection remains enabled unless owner explicitly approves an alternate QA access path"
+      ],
+      "blockedLiveActions": [
+        "production deployment",
+        "root route promotion",
+        "noindex removal"
+      ],
+      "rollbackNote": "Abandon the preview deployment if route QA, form QA, or admin guards fail."
+    },
+    {
+      "id": "inspect-preview-deployment",
+      "label": "Inspect preview deployment and logs",
+      "ownerRole": "Master Admin",
+      "phase": "Preview Deployment",
+      "status": "evidence_required",
+      "commands": [
+        "vercel inspect <preview-url>",
+        "vercel logs <preview-url>"
+      ],
+      "requiredEvidence": [
+        "Deployment inspect output confirms the expected project and build",
+        "Logs show no unexpected build/runtime errors during smoke testing",
+        "Inspection output is summarized without exposing secrets"
+      ],
+      "blockedLiveActions": [
+        "production deployment",
+        "owner launch decision"
+      ],
+      "rollbackNote": "Do not promote a preview deployment with unresolved deployment or runtime errors."
+    },
+    {
+      "id": "preview-route-and-form-qa",
+      "label": "Run preview route, link, form, and console QA",
+      "ownerRole": "Registrar",
+      "phase": "Preview QA",
+      "status": "evidence_required",
+      "commands": [
+        "BASE_URL=<preview-url> npm run verify:dynamo",
+        "BASE_URL=<preview-url> npm run qa:dynamo-browser"
+      ],
+      "requiredEvidence": [
+        "Full verifier passes against the preview URL",
+        "Browser QA submits all seven public lead forms against the preview URL",
+        "No console, mobile overflow, broken link, route, or protected-admin guard failures are recorded"
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "public launch announcement",
+        "owner launch decision"
+      ],
+      "rollbackNote": "Keep the preview isolated and fix issues before owner review if QA fails."
+    },
+    {
+      "id": "current-production-snapshot-before-promotion",
+      "label": "Record current production snapshot before any promotion",
+      "ownerRole": "Master Admin",
+      "phase": "Current Site Preservation",
+      "status": "evidence_required",
+      "commands": [
+        "BASE_URL=<current-production-url> npm run test -- --run",
+        "BASE_URL=<current-production-url> npm run qa:dynamo-browser"
+      ],
+      "requiredEvidence": [
+        "Current LC Training root, booking, auth, LCFC, team, blog, legal, and admin route snapshot recorded",
+        "Rollback deployment id or previous production target recorded",
+        "Current-site screenshots/report saved before any root-route change"
+      ],
+      "blockedLiveActions": [
+        "root route promotion",
+        "permanent redirects",
+        "noindex removal"
+      ],
+      "rollbackNote": "Restore the recorded LC deployment or routing target if promotion fails."
+    },
+    {
+      "id": "promotion-command-hold",
+      "label": "Hold production promotion until owner signoff",
+      "ownerRole": "Master Admin",
+      "phase": "Promotion Hold",
+      "status": "blocked_until_owner_signoff",
+      "commands": [
+        "vercel promote <preview-url>",
+        "vercel rollback <deployment-url-or-id>"
+      ],
+      "requiredEvidence": [
+        "Owner signoff register has every row signed with evidence attached",
+        "Live readiness board reports go-live rows and live gates only after external evidence is approved",
+        "Rollback owner and rollback deployment target are recorded before promotion"
+      ],
+      "blockedLiveActions": [
+        "production promotion",
+        "permanent redirects",
+        "checkout activation",
+        "signature capture",
+        "public claim publication"
+      ],
+      "rollbackNote": "Rollback must be ready before any promote command is allowed."
+    }
+  ],
+  "summary": {
+    "stepsTotal": 10,
+    "phases": 9,
+    "ownerRoles": 2,
+    "evidenceRequiredSteps": 7,
+    "previewReadySteps": 2,
+    "blockedSteps": 1,
+    "commandCount": 19,
+    "observedVercelCliVersion": "not_checked_by_browser_report",
+    "recommendedVercelCliVersion": "54.6.1",
+    "cliUpgradeRecommended": true,
+    "projectLinkType": "not_checked_by_browser_report",
+    "linkedProjectCount": 0,
+    "projectIdentifiersRedacted": true,
+    "spaRewritePresent": false,
+    "requiredPackageScriptsPresent": true,
+    "previewDeploymentRecorded": 0,
+    "productionDeploymentRecorded": 0,
+    "productionPromotionAllowed": false,
+    "rollbackTargetRecorded": false,
+    "liveGatesCleared": 0,
+    "publicationsUnlocked": 0,
+    "blockedLiveActions": 13
+  },
+  "phases": {
+    "CLI": 1,
+    "Project Link": 1,
+    "Environment": 1,
+    "Verification": 1,
+    "Build": 1,
+    "Preview Deployment": 2,
+    "Preview QA": 1,
+    "Current Site Preservation": 1,
+    "Promotion Hold": 1
+  },
+  "ownerRoles": {
+    "Master Admin": 9,
+    "Registrar": 1
+  },
+  "blockedLiveActions": [
+    "Appwrite intake default",
+    "checkout activation",
+    "noindex removal",
+    "owner launch decision",
+    "permanent redirects",
+    "preview deployment",
+    "production deployment",
+    "production promotion",
+    "protected admin live writes",
+    "public claim publication",
+    "public launch announcement",
+    "root route promotion",
+    "signature capture"
+  ],
+  "usageRules": [
+    "Use this runbook after local verification passes and before requesting an owner launch decision.",
+    "Record Vercel preview URL, deployment id, inspect summary, browser QA, and rollback target in owner evidence artifacts.",
+    "Do not commit Vercel org ids, project ids, tokens, environment values, or deployment-protection bypass secrets.",
+    "Do not run promotion, redirect, noindex-removal, checkout, waiver-signature, or public-claim publication commands until owner signoff is complete."
+  ],
+  "issues": []
+}

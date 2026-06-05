@@ -3,6 +3,7 @@ import { coachRepo } from '@/api/repo';
 import { storage } from '@/lib/storage';
 import { rpc } from '@/lib/rpc';
 import { email as emailLib } from '@/lib/email';
+import { LIMITS, isValidEmail, normalizeEmail } from '@/lib/validation';
 import { useAuth } from '@/lib/AuthContext';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,7 +24,7 @@ const EDITABLE_KEYS = ['bio', 'quote', 'training_area', 'specializations'];
 
 function pickEditable(coach) {
   if (!coach) return { specializations: [] };
-  const out = {};
+  const out = /** @type {{ specializations: any[], [key: string]: any }} */ ({ specializations: [] });
   EDITABLE_KEYS.forEach(k => { out[k] = coach[k] ?? (k === 'specializations' ? [] : ''); });
   return out;
 }
@@ -44,7 +45,7 @@ function shallowEqual(a, b) {
 export default function CoachProfile() {
   const { user } = useAuth();
   const [coach, setCoach] = useState(null);
-  const [draft, setDraft] = useState({ specializations: [] });
+  const [draft, setDraft] = useState(/** @type {{ specializations: any[], [key: string]: any }} */ ({ specializations: [] }));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -129,9 +130,9 @@ export default function CoachProfile() {
 
   // ---- Email verification flow (lifted from Settings.jsx) ----
   const sendVerificationCode = async () => {
-    const email = pendingEmail.trim().toLowerCase();
+    const email = normalizeEmail(pendingEmail);
     setEmailStatus(null);
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!isValidEmail(email)) {
       setEmailStatus({ kind: 'error', message: 'Enter a valid email address.' });
       return;
     }
@@ -144,7 +145,7 @@ export default function CoachProfile() {
 
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; background: #0A0E14; color: #F8FAFC;">
-        <h2 style="color: #F59E0B; margin: 0 0 16px;">Verify your LC Training coach email</h2>
+        <h2 style="color: #0078FF; margin: 0 0 16px;">Verify your Detroit Dynamo coach email</h2>
         <p style="color: #E2E8F0; line-height: 1.5;">Enter this 6-digit code in your Profile page to confirm <strong>${email}</strong> as your coach contact address.</p>
         <div style="text-align:center; margin: 24px 0;">
           <span style="display:inline-block; font-size: 32px; letter-spacing: 8px; font-weight: bold; color: #F59E0B; background:#1a1a1a; padding: 16px 24px; border-radius: 8px;">${code}</span>
@@ -175,7 +176,7 @@ export default function CoachProfile() {
 
     if (!delivered) {
       try {
-        await emailLib.send({ to: email, subject: 'LC Training — Email Verification Code', body: emailHtml });
+        await emailLib.send({ to: email, subject: 'Detroit Dynamo - Email Verification Code', body: emailHtml });
         delivered = true;
       } catch (err) {
         coreError = err?.message || String(err);
@@ -203,7 +204,7 @@ export default function CoachProfile() {
     }
     setEmailFlow('verifying');
     try {
-      const newEmail = pendingEmail.trim().toLowerCase();
+      const newEmail = normalizeEmail(pendingEmail);
       const verifiedAt = new Date().toISOString();
       await coachRepo.update(coach.id, { email: newEmail, email_verified_at: verifiedAt });
       setCoach(prev => prev ? { ...prev, email: newEmail, email_verified_at: verifiedAt } : prev);
@@ -301,16 +302,21 @@ export default function CoachProfile() {
               <Label className="font-oswald tracking-wider uppercase text-xs">Bio</Label>
               <Textarea
                 value={draft.bio || ''}
+                maxLength={LIMITS.bio}
                 onChange={e => updateDraft({ bio: e.target.value })}
                 className="bg-secondary border-border mt-1"
                 rows={4}
                 placeholder="A few sentences about your background and coaching style."
               />
+              <div className="flex justify-end mt-1">
+                <span className="text-xs text-muted-foreground">{(draft.bio || '').length}/{LIMITS.bio}</span>
+              </div>
             </div>
             <div className="mt-4">
               <Label className="font-oswald tracking-wider uppercase text-xs">Quote</Label>
               <Input
                 value={draft.quote || ''}
+                maxLength={LIMITS.shortText}
                 onChange={e => updateDraft({ quote: e.target.value })}
                 className="bg-secondary border-border mt-1"
                 placeholder="A short line that captures how you coach."
@@ -320,6 +326,7 @@ export default function CoachProfile() {
               <Label className="font-oswald tracking-wider uppercase text-xs">Training Area</Label>
               <Input
                 value={draft.training_area || ''}
+                maxLength={LIMITS.shortText}
                 onChange={e => updateDraft({ training_area: e.target.value })}
                 className="bg-secondary border-border mt-1"
                 placeholder="e.g. Royal Oak, Beaumont Park"
@@ -330,6 +337,7 @@ export default function CoachProfile() {
               <div className="flex gap-2 mt-1">
                 <Input
                   value={specInput}
+                  maxLength={LIMITS.tag}
                   onChange={e => setSpecInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSpec())}
                   className="bg-secondary border-border"
@@ -392,7 +400,8 @@ export default function CoachProfile() {
               <div className="flex flex-col sm:flex-row gap-2 mt-3">
                 <Input
                   type="email"
-                  placeholder="you@lctrainings.com"
+                  maxLength={LIMITS.email}
+                  placeholder="you@detroitdynamo.com"
                   value={pendingEmail}
                   onChange={e => setPendingEmail(e.target.value)}
                   className="bg-secondary border-border"
@@ -500,7 +509,7 @@ export default function CoachProfile() {
   );
 }
 
-function Section({ title, icon: Icon, children }) {
+function Section({ title, icon: Icon = null, children }) {
   return (
     <div className="bg-card border border-border rounded-lg p-5">
       <div className="flex items-center gap-2 mb-3">

@@ -3,7 +3,7 @@
 // exposed to clients). Body: { to, subject, body }.
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM = 'LC Training <support@lctrainings.com>';
+const FROM = 'Detroit Dynamo <support@detroitdynamo.com>';
 
 export default async ({ req, res, error }) => {
   try {

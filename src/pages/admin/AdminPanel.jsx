@@ -12,7 +12,8 @@ import { formatDistanceToNow } from 'date-fns';
 const adminLinks = [
   { label: 'Coaches', path: '/admin/coaches', icon: Users, desc: 'Manage private + team coaches' },
   { label: 'Team', path: '/admin/team', icon: Trophy, desc: 'Roster, schedule, gallery' },
-  { label: 'LCFC Page', path: '/admin/lcfc', icon: Trophy, desc: 'Hero, about, roster, tryouts, news, sponsors' },
+  { label: 'Detroit Dynamo FC Page', path: '/admin/lcfc', icon: Trophy, desc: 'Hero, about, roster, tryouts, news, sponsors' },
+  { label: 'Detroit Dynamo Ops', path: '/admin/detroit-dynamo', icon: Zap, desc: 'Leads, roles, modules, data map' },
   { label: 'Bookings', path: '/admin/bookings', icon: Calendar, desc: 'View all sessions' },
   { label: 'Credits', path: '/admin/credits', icon: Zap, desc: 'Add, refund, or remove credits' },
   { label: 'Content', path: '/admin/content', icon: FileText, desc: 'Edit site content' },
@@ -198,7 +199,7 @@ export default function AdminPanel() {
         <div className="flex items-end justify-between flex-wrap gap-3 mb-2">
           <div>
             <h1 className="font-oswald text-4xl font-bold tracking-tight text-foreground">ADMIN PANEL</h1>
-            <p className="text-muted-foreground">Operations overview for LC Training.</p>
+            <p className="text-muted-foreground">Operations overview for Detroit Dynamo.</p>
           </div>
           {user?.email && (
             <p className="text-xs font-oswald tracking-widest uppercase text-muted-foreground">

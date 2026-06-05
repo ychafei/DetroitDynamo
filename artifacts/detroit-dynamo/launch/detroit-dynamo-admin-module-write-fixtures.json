@@ -1,0 +1,870 @@
+{
+  "generatedAt": "2026-05-29T14:14:32.033Z",
+  "functionId": "detroitDynamoAdminModuleWriteAction",
+  "functionExecutePermission": "users",
+  "roleAssignmentCollectionId": "dd_admin_role_assignments",
+  "auditEventCollectionId": "dd_admin_audit_events",
+  "mutations": [
+    "create_record",
+    "update_record",
+    "archive_record"
+  ],
+  "supportedModules": [
+    {
+      "module": "Players",
+      "slug": "players",
+      "status": "intake_ready_after_backend",
+      "ownerRoles": [
+        "Registrar",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_players",
+        "dd_tryout_registrations",
+        "dd_teams",
+        "dd_waivers"
+      ],
+      "enabledActions": [
+        "Review player leads",
+        "Assign status",
+        "Connect guardians",
+        "Prepare roster eligibility"
+      ]
+    },
+    {
+      "module": "Parents/guardians",
+      "slug": "parents-guardians",
+      "status": "intake_ready_after_backend",
+      "ownerRoles": [
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_parent_guardians",
+        "dd_players",
+        "dd_waivers"
+      ],
+      "enabledActions": [
+        "Review guardian records",
+        "Connect players",
+        "Track consent readiness",
+        "Route family communication"
+      ]
+    },
+    {
+      "module": "Coaches",
+      "slug": "coaches",
+      "status": "admin_dashboard_needed",
+      "ownerRoles": [
+        "Training Director",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_coaches",
+        "dd_staff_members",
+        "dd_teams",
+        "dd_programs"
+      ],
+      "enabledActions": [
+        "Create coach profiles",
+        "Assign programs",
+        "Assign teams",
+        "Review background-check status"
+      ]
+    },
+    {
+      "module": "Teams",
+      "slug": "teams",
+      "status": "admin_dashboard_needed",
+      "ownerRoles": [
+        "Club Director",
+        "Team Manager",
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_teams",
+        "dd_players",
+        "dd_coaches",
+        "dd_staff_members"
+      ],
+      "enabledActions": [
+        "Create team shells",
+        "Assign coaches",
+        "Assign managers",
+        "Prepare roster cards"
+      ]
+    },
+    {
+      "module": "Age groups",
+      "slug": "age-groups",
+      "status": "admin_dashboard_needed",
+      "ownerRoles": [
+        "Club Director",
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_teams",
+        "dd_programs",
+        "dd_players"
+      ],
+      "enabledActions": [
+        "Define age-group cohorts",
+        "Map players by birth year",
+        "Publish pathway language",
+        "Review capacity"
+      ]
+    },
+    {
+      "module": "Training programs",
+      "slug": "training-programs",
+      "status": "admin_dashboard_needed",
+      "ownerRoles": [
+        "Training Director"
+      ],
+      "collectionIds": [
+        "dd_programs",
+        "dd_training_packages",
+        "dd_camps_clinics"
+      ],
+      "enabledActions": [
+        "Create programs",
+        "Draft package options",
+        "Set public visibility",
+        "Connect booking CTAs"
+      ]
+    },
+    {
+      "module": "Training bookings",
+      "slug": "training-bookings",
+      "status": "intake_ready_after_backend",
+      "ownerRoles": [
+        "Training Director",
+        "Coach"
+      ],
+      "collectionIds": [
+        "dd_bookings",
+        "dd_training_sessions",
+        "dd_training_packages",
+        "dd_contact_leads"
+      ],
+      "enabledActions": [
+        "Review booking leads",
+        "Assign coach follow-up",
+        "Capture requested focus",
+        "Prepare session records"
+      ]
+    },
+    {
+      "module": "Tryout registrations",
+      "slug": "tryout-registrations",
+      "status": "intake_ready_after_backend",
+      "ownerRoles": [
+        "Registrar",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_tryout_registrations",
+        "dd_players",
+        "dd_teams",
+        "dd_parent_guardians"
+      ],
+      "enabledActions": [
+        "Review registrations",
+        "Set status",
+        "Route by pathway",
+        "Prepare invite/waitlist decisions"
+      ]
+    },
+    {
+      "module": "Camp registrations",
+      "slug": "camp-registrations",
+      "status": "admin_dashboard_needed",
+      "ownerRoles": [
+        "Training Director",
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_camps_clinics",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_waivers"
+      ],
+      "enabledActions": [
+        "Create camp shells",
+        "Track interest",
+        "Manage capacity",
+        "Confirm waiver readiness"
+      ]
+    },
+    {
+      "module": "Payments/packages",
+      "slug": "payments-packages",
+      "status": "external_gate",
+      "ownerRoles": [
+        "Master Admin",
+        "Training Director"
+      ],
+      "collectionIds": [
+        "dd_payments",
+        "dd_training_packages",
+        "dd_camps_clinics",
+        "dd_sponsors"
+      ],
+      "enabledActions": [
+        "Draft packages",
+        "Map provider products",
+        "Review payment status",
+        "Prepare refund rules"
+      ]
+    },
+    {
+      "module": "Waivers/forms",
+      "slug": "waivers-forms",
+      "status": "external_gate",
+      "ownerRoles": [
+        "Registrar",
+        "Master Admin"
+      ],
+      "collectionIds": [
+        "dd_waivers",
+        "dd_players",
+        "dd_parent_guardians",
+        "dd_camps_clinics"
+      ],
+      "enabledActions": [
+        "Draft waiver versions",
+        "Track signature status",
+        "Review expirations",
+        "Gate participation readiness"
+      ]
+    },
+    {
+      "module": "News posts",
+      "slug": "news-posts",
+      "status": "admin_dashboard_needed",
+      "ownerRoles": [
+        "Media/Admin Staff",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_news_posts",
+        "dd_staff_members",
+        "dd_sponsors",
+        "dd_match_results"
+      ],
+      "enabledActions": [
+        "Draft posts",
+        "Approve claims",
+        "Schedule publication",
+        "Archive old posts"
+      ]
+    },
+    {
+      "module": "Sponsors",
+      "slug": "sponsors",
+      "status": "intake_ready_after_backend",
+      "ownerRoles": [
+        "Media/Admin Staff",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_sponsors",
+        "dd_contact_leads",
+        "dd_news_posts"
+      ],
+      "enabledActions": [
+        "Review sponsor leads",
+        "Track package interest",
+        "Approve logos",
+        "Prepare partnership content"
+      ]
+    },
+    {
+      "module": "Schedules/results",
+      "slug": "schedules-results",
+      "status": "external_gate",
+      "ownerRoles": [
+        "Team Manager",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_match_fixtures",
+        "dd_match_results",
+        "dd_teams",
+        "dd_news_posts"
+      ],
+      "enabledActions": [
+        "Create fixture drafts",
+        "Confirm venues",
+        "Publish results",
+        "Connect recaps"
+      ]
+    },
+    {
+      "module": "Contact leads",
+      "slug": "contact-leads",
+      "status": "intake_ready_after_backend",
+      "ownerRoles": [
+        "Media/Admin Staff",
+        "Training Director",
+        "Registrar"
+      ],
+      "collectionIds": [
+        "dd_contact_leads",
+        "dd_bookings",
+        "dd_tryout_registrations",
+        "dd_sponsors"
+      ],
+      "enabledActions": [
+        "Review leads",
+        "Assign owner",
+        "Set status",
+        "Export follow-up queue"
+      ]
+    },
+    {
+      "module": "Website content sections",
+      "slug": "website-content-sections",
+      "status": "external_gate",
+      "ownerRoles": [
+        "Media/Admin Staff",
+        "Club Director"
+      ],
+      "collectionIds": [
+        "dd_news_posts",
+        "dd_staff_members",
+        "dd_sponsors",
+        "dd_programs"
+      ],
+      "enabledActions": [
+        "Draft content sections",
+        "Approve launch copy",
+        "Update proof slots",
+        "Prepare sitemap/redirect promotion"
+      ]
+    }
+  ],
+  "successFixtures": [
+    {
+      "id": "club-director-create-team-shell",
+      "label": "Create senior team shell",
+      "module": "Teams",
+      "moduleSlug": "teams",
+      "collectionId": "dd_teams",
+      "model": "Team",
+      "mutation": "create_record",
+      "moduleAction": "Create team shells",
+      "requiredAccess": "manage",
+      "actorRole": "Club Director",
+      "externalGateConfirmed": false,
+      "requestBody": {
+        "module_slug": "teams",
+        "collection_id": "dd_teams",
+        "model": "Team",
+        "mutation": "create_record",
+        "module_action": "Create team shells",
+        "actor_role": "Club Director",
+        "record_id": "",
+        "external_gate_confirmed": false,
+        "payload": {
+          "name": "Detroit Dynamo Senior Men",
+          "program_pillar": "Senior Men",
+          "league_status": "future_pathway",
+          "tryout_status": "interest_open"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleWriteAction",
+        "function_execute_permission": "users",
+        "mutation": "create_record",
+        "module_slug": "teams",
+        "module": "Teams",
+        "actor_role": "Club Director",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "collection_id": "dd_teams",
+        "model": "Team",
+        "record_id": "created dd_teams document id",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "admin_module_write_action",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Club Director",
+        "target_model": "Team",
+        "target_collection_id": "dd_teams",
+        "target_record_id": "created dd_teams document id",
+        "metadata_json": "module, mutation, action, required access, and payload keys JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "registrar-update-player-status",
+      "label": "Update player intake status",
+      "module": "Players",
+      "moduleSlug": "players",
+      "collectionId": "dd_players",
+      "model": "Player",
+      "mutation": "update_record",
+      "moduleAction": "Assign status",
+      "requiredAccess": "manage",
+      "actorRole": "Registrar",
+      "externalGateConfirmed": false,
+      "requestBody": {
+        "module_slug": "players",
+        "collection_id": "dd_players",
+        "model": "Player",
+        "mutation": "update_record",
+        "module_action": "Assign status",
+        "actor_role": "Registrar",
+        "record_id": "player_preview_001",
+        "external_gate_confirmed": false,
+        "payload": {
+          "status": "active",
+          "waiver_status": "pending"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleWriteAction",
+        "function_execute_permission": "users",
+        "mutation": "update_record",
+        "module_slug": "players",
+        "module": "Players",
+        "actor_role": "Registrar",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "collection_id": "dd_players",
+        "model": "Player",
+        "record_id": "player_preview_001",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "admin_module_write_action",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Registrar",
+        "target_model": "Player",
+        "target_collection_id": "dd_players",
+        "target_record_id": "player_preview_001",
+        "metadata_json": "module, mutation, action, required access, and payload keys JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "media-draft-news-post",
+      "label": "Draft club news post",
+      "module": "News posts",
+      "moduleSlug": "news-posts",
+      "collectionId": "dd_news_posts",
+      "model": "NewsPost",
+      "mutation": "create_record",
+      "moduleAction": "Draft posts",
+      "requiredAccess": "contribute",
+      "actorRole": "Media/Admin Staff",
+      "externalGateConfirmed": false,
+      "requestBody": {
+        "module_slug": "news-posts",
+        "collection_id": "dd_news_posts",
+        "model": "NewsPost",
+        "mutation": "create_record",
+        "module_action": "Draft posts",
+        "actor_role": "Media/Admin Staff",
+        "record_id": "",
+        "external_gate_confirmed": false,
+        "payload": {
+          "title": "Detroit Dynamo tryout interest opens",
+          "slug": "tryout-interest-opens",
+          "status": "draft",
+          "category": "Tryouts"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleWriteAction",
+        "function_execute_permission": "users",
+        "mutation": "create_record",
+        "module_slug": "news-posts",
+        "module": "News posts",
+        "actor_role": "Media/Admin Staff",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "collection_id": "dd_news_posts",
+        "model": "NewsPost",
+        "record_id": "created dd_news_posts document id",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "admin_module_write_action",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Media/Admin Staff",
+        "target_model": "NewsPost",
+        "target_collection_id": "dd_news_posts",
+        "target_record_id": "created dd_news_posts document id",
+        "metadata_json": "module, mutation, action, required access, and payload keys JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "club-director-approve-sponsor-logo",
+      "label": "Approve sponsor logo placement",
+      "module": "Sponsors",
+      "moduleSlug": "sponsors",
+      "collectionId": "dd_sponsors",
+      "model": "Sponsor",
+      "mutation": "update_record",
+      "moduleAction": "Approve logos",
+      "requiredAccess": "approve",
+      "actorRole": "Club Director",
+      "externalGateConfirmed": false,
+      "requestBody": {
+        "module_slug": "sponsors",
+        "collection_id": "dd_sponsors",
+        "model": "Sponsor",
+        "mutation": "update_record",
+        "module_action": "Approve logos",
+        "actor_role": "Club Director",
+        "record_id": "sponsor_preview_001",
+        "external_gate_confirmed": false,
+        "payload": {
+          "status": "approved",
+          "logo_url": "/detroit-dynamo/sponsor-placeholder.png"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleWriteAction",
+        "function_execute_permission": "users",
+        "mutation": "update_record",
+        "module_slug": "sponsors",
+        "module": "Sponsors",
+        "actor_role": "Club Director",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "collection_id": "dd_sponsors",
+        "model": "Sponsor",
+        "record_id": "sponsor_preview_001",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "admin_module_write_action",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Club Director",
+        "target_model": "Sponsor",
+        "target_collection_id": "dd_sponsors",
+        "target_record_id": "sponsor_preview_001",
+        "metadata_json": "module, mutation, action, required access, and payload keys JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "team-manager-create-fixture-draft",
+      "label": "Create fixture draft after gate review",
+      "module": "Schedules/results",
+      "moduleSlug": "schedules-results",
+      "collectionId": "dd_match_fixtures",
+      "model": "MatchFixture",
+      "mutation": "create_record",
+      "moduleAction": "Create fixture drafts",
+      "requiredAccess": "manage",
+      "actorRole": "Team Manager",
+      "externalGateConfirmed": true,
+      "requestBody": {
+        "module_slug": "schedules-results",
+        "collection_id": "dd_match_fixtures",
+        "model": "MatchFixture",
+        "mutation": "create_record",
+        "module_action": "Create fixture drafts",
+        "actor_role": "Team Manager",
+        "record_id": "",
+        "external_gate_confirmed": true,
+        "payload": {
+          "team_id": "team_senior_men",
+          "opponent": "Opponent pending confirmation",
+          "status": "draft",
+          "competition_label": "Future pathway fixture"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleWriteAction",
+        "function_execute_permission": "users",
+        "mutation": "create_record",
+        "module_slug": "schedules-results",
+        "module": "Schedules/results",
+        "actor_role": "Team Manager",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "collection_id": "dd_match_fixtures",
+        "model": "MatchFixture",
+        "record_id": "created dd_match_fixtures document id",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "admin_module_write_action",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Team Manager",
+        "target_model": "MatchFixture",
+        "target_collection_id": "dd_match_fixtures",
+        "target_record_id": "created dd_match_fixtures document id",
+        "metadata_json": "module, mutation, action, required access, and payload keys JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "media-update-proof-slot",
+      "label": "Update approved proof slot",
+      "module": "Website content sections",
+      "moduleSlug": "website-content-sections",
+      "collectionId": "dd_news_posts",
+      "model": "NewsPost",
+      "mutation": "update_record",
+      "moduleAction": "Update proof slots",
+      "requiredAccess": "manage",
+      "actorRole": "Media/Admin Staff",
+      "externalGateConfirmed": true,
+      "requestBody": {
+        "module_slug": "website-content-sections",
+        "collection_id": "dd_news_posts",
+        "model": "NewsPost",
+        "mutation": "update_record",
+        "module_action": "Update proof slots",
+        "actor_role": "Media/Admin Staff",
+        "record_id": "news_preview_001",
+        "external_gate_confirmed": true,
+        "payload": {
+          "status": "review",
+          "summary": "Proof slot updated after owner review."
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "function_id": "detroitDynamoAdminModuleWriteAction",
+        "function_execute_permission": "users",
+        "mutation": "update_record",
+        "module_slug": "website-content-sections",
+        "module": "Website content sections",
+        "actor_role": "Media/Admin Staff",
+        "actor_user_id": "authenticated Appwrite user id",
+        "role_assignment_id": "active dd_admin_role_assignments document id",
+        "collection_id": "dd_news_posts",
+        "model": "NewsPost",
+        "record_id": "news_preview_001",
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "admin_module_write_action",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Media/Admin Staff",
+        "target_model": "NewsPost",
+        "target_collection_id": "dd_news_posts",
+        "target_record_id": "news_preview_001",
+        "metadata_json": "module, mutation, action, required access, and payload keys JSON",
+        "created_at": "now"
+      }
+    }
+  ],
+  "rejectionFixtures": [
+    {
+      "id": "reject-unauthenticated-write",
+      "label": "Reject unauthenticated write",
+      "moduleSlug": "teams",
+      "collectionId": "dd_teams",
+      "actorRole": "Club Director",
+      "mutation": "create_record",
+      "moduleAction": "Create team shells",
+      "requestBody": {
+        "module_slug": "teams",
+        "collection_id": "dd_teams",
+        "model": "Team",
+        "mutation": "create_record",
+        "module_action": "Create team shells",
+        "actor_role": "Club Director",
+        "record_id": "",
+        "external_gate_confirmed": false,
+        "payload": {
+          "status": "preview"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 401,
+        "error": "Detroit Dynamo admin module write requires an authenticated Appwrite user."
+      },
+      "reason": "Protected module writes must only run from an authenticated dashboard session."
+    },
+    {
+      "id": "reject-unassigned-role-write",
+      "label": "Reject unassigned role write",
+      "moduleSlug": "players",
+      "collectionId": "dd_players",
+      "actorRole": "Registrar",
+      "mutation": "update_record",
+      "moduleAction": "Assign status",
+      "requestBody": {
+        "module_slug": "players",
+        "collection_id": "dd_players",
+        "model": "Player",
+        "mutation": "update_record",
+        "module_action": "Assign status",
+        "actor_role": "Registrar",
+        "record_id": "player_preview_001",
+        "external_gate_confirmed": false,
+        "payload": {
+          "status": "preview"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 403,
+        "error": "Actor role is not assigned to this authenticated Appwrite user."
+      },
+      "reason": "The requested actor role must be backed by an active dd_admin_role_assignments grant."
+    },
+    {
+      "id": "reject-role-without-write-access",
+      "label": "Reject coach payment write",
+      "moduleSlug": "payments-packages",
+      "collectionId": "dd_payments",
+      "actorRole": "Coach",
+      "mutation": "update_record",
+      "moduleAction": "Review payment status",
+      "requestBody": {
+        "module_slug": "payments-packages",
+        "collection_id": "dd_payments",
+        "model": "Payment",
+        "mutation": "update_record",
+        "module_action": "Review payment status",
+        "actor_role": "Coach",
+        "record_id": "payment_preview_001",
+        "external_gate_confirmed": true,
+        "payload": {
+          "status": "preview"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 403,
+        "error": "Actor role does not have the required access for this Detroit Dynamo admin action."
+      },
+      "reason": "Coaches must not mutate payment or package administration records."
+    },
+    {
+      "id": "reject-external-gate-unconfirmed",
+      "label": "Reject unconfirmed external gate",
+      "moduleSlug": "schedules-results",
+      "collectionId": "dd_match_results",
+      "actorRole": "Team Manager",
+      "mutation": "update_record",
+      "moduleAction": "Publish results",
+      "requestBody": {
+        "module_slug": "schedules-results",
+        "collection_id": "dd_match_results",
+        "model": "MatchResult",
+        "mutation": "update_record",
+        "module_action": "Publish results",
+        "actor_role": "Team Manager",
+        "record_id": "result_preview_001",
+        "external_gate_confirmed": false,
+        "payload": {
+          "status": "preview"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 409,
+        "error": "External readiness gate must be confirmed before this Detroit Dynamo module write."
+      },
+      "reason": "Fixtures, results, payment, waiver, and launch-content modules require real-world proof before writes are enabled."
+    },
+    {
+      "id": "reject-collection-outside-module-write",
+      "label": "Reject cross-module write",
+      "moduleSlug": "sponsors",
+      "collectionId": "dd_players",
+      "actorRole": "Media/Admin Staff",
+      "mutation": "update_record",
+      "moduleAction": "Track package interest",
+      "requestBody": {
+        "module_slug": "sponsors",
+        "collection_id": "dd_players",
+        "model": "Player",
+        "mutation": "update_record",
+        "module_action": "Track package interest",
+        "actor_role": "Media/Admin Staff",
+        "record_id": "player_preview_001",
+        "external_gate_confirmed": false,
+        "payload": {
+          "status": "preview"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "collection_id must belong to the requested Detroit Dynamo admin module."
+      },
+      "reason": "A sponsor permission surface cannot mutate player records."
+    },
+    {
+      "id": "reject-update-without-record",
+      "label": "Reject missing record id",
+      "moduleSlug": "news-posts",
+      "collectionId": "dd_news_posts",
+      "actorRole": "Media/Admin Staff",
+      "mutation": "archive_record",
+      "moduleAction": "Archive old posts",
+      "requestBody": {
+        "module_slug": "news-posts",
+        "collection_id": "dd_news_posts",
+        "model": "NewsPost",
+        "mutation": "archive_record",
+        "module_action": "Archive old posts",
+        "actor_role": "Media/Admin Staff",
+        "record_id": "",
+        "external_gate_confirmed": false,
+        "payload": {
+          "status": "preview"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "record_id is required for update_record and archive_record."
+      },
+      "reason": "Update and archive mutations must target a real Appwrite document."
+    },
+    {
+      "id": "reject-invalid-module-action",
+      "label": "Reject invalid module action",
+      "moduleSlug": "teams",
+      "collectionId": "dd_teams",
+      "actorRole": "Club Director",
+      "mutation": "update_record",
+      "moduleAction": "Publish results",
+      "requestBody": {
+        "module_slug": "teams",
+        "collection_id": "dd_teams",
+        "model": "Team",
+        "mutation": "update_record",
+        "module_action": "Publish results",
+        "actor_role": "Club Director",
+        "record_id": "team_preview_001",
+        "external_gate_confirmed": false,
+        "payload": {
+          "status": "preview"
+        }
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "module_action must be one of the requested Detroit Dynamo admin module actions."
+      },
+      "reason": "Write requests must align with the module action-guard registry, not arbitrary labels."
+    }
+  ],
+  "issues": []
+}

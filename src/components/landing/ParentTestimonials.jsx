@@ -2,13 +2,13 @@ import React from 'react';
 
 const testimonials = [
   {
-    quote: "LC Training has completely transformed my son's confidence on the field. The one-on-one attention is unlike anything he's gotten from a team setting.",
+    quote: "Detroit Dynamo has completely transformed my son's confidence on the field. The one-on-one attention is unlike anything he's gotten from a team setting.",
     name: "Maria T.",
     child: "Parent of a 12-year-old midfielder",
     county: "Oakland County",
   },
   {
-    quote: "My daughter went from barely touching the ball to starting on her varsity team — all within one season of training with LC. Worth every penny.",
+    quote: "My daughter went from barely touching the ball to starting on her varsity team - all within one season of training with Detroit Dynamo. Worth every penny.",
     name: "James R.",
     child: "Parent of a 15-year-old forward",
     county: "Macomb County",
@@ -35,7 +35,7 @@ export default function ParentTestimonials() {
           <p className="text-accent font-oswald tracking-widest uppercase text-sm mb-2">Real Families. Real Results.</p>
           <h2 className="font-oswald text-4xl font-bold tracking-tight text-foreground">WHAT PARENTS ARE SAYING</h2>
           <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
-            Hear from the families who have seen the LC Training difference firsthand.
+            Hear from the families who have seen the Detroit Dynamo difference firsthand.
           </p>
         </div>
 

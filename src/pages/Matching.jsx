@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { matchRequestRepo, conversationRepo, profileRepo } from '@/api/repo';
 import { rpc } from '@/lib/rpc';
 import { email as emailLib } from '@/lib/email';
+import { LIMITS, isValidEmail, normalizeEmail } from '@/lib/validation';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +24,7 @@ function calcAge(dob) {
 
 function generateToken() {
   const bytes = new Uint8Array(24);
-  (window.crypto || window.msCrypto).getRandomValues(bytes);
+  window.crypto.getRandomValues(bytes);
   return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
 }
 
@@ -131,39 +132,40 @@ export default function Matching() {
     const emailToUse = parentEmailInput || defaultEmail;
 
     const sendConsentEmail = async () => {
-      if (!emailToUse || !/^\S+@\S+\.\S+$/.test(emailToUse)) {
+      if (!isValidEmail(emailToUse)) {
         toast.error('Please enter a valid parent/guardian email.');
         return;
       }
+      const consentEmail = normalizeEmail(emailToUse);
       setSendingConsent(true);
       try {
         const token = generateToken();
         await profileRepo.updateById(user.id, {
           parent_consent_token: token,
           parent_consent_sent_at: new Date().toISOString(),
-          parent_consent_email: emailToUse,
+          parent_consent_email: consentEmail,
         });
         const childName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email;
         const consentUrl = `${window.location.origin}/parent-consent?token=${token}`;
         await emailLib.send({
-          to: emailToUse,
-          subject: `Consent Requested: ${childName} wants to use LC Training Player Matching`,
+          to: consentEmail,
+          subject: `Consent Requested: ${childName} wants to use Detroit Dynamo Player Matching`,
           body: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-              <h2 style="color: #B89A45;">LC Training — Parent/Guardian Consent</h2>
+              <h2 style="color: #0078FF;">Detroit Dynamo - Parent/Guardian Consent</h2>
               <p>Hi,</p>
-              <p><strong>${childName}</strong>${userAge ? ` (age ${userAge})` : ''} has requested your consent to use the Player Matching feature on LC Training.</p>
+              <p><strong>${childName}</strong>${userAge ? ` (age ${userAge})` : ''} has requested your consent to use the Player Matching feature on Detroit Dynamo.</p>
               <p>Player Matching lets your child connect with other players in the Oakland, Macomb, and Wayne county areas. Only first name and age are visible to other players, and all messages are monitored for safety.</p>
               <p style="margin: 24px 0;">
-                <a href="${consentUrl}" style="background:#B89A45; color:#000; padding:12px 20px; text-decoration:none; border-radius:6px; font-weight:bold;">Review &amp; Respond</a>
+                <a href="${consentUrl}" style="background:#0078FF; color:#fff; padding:12px 20px; text-decoration:none; border-radius:6px; font-weight:bold;">Review &amp; Respond</a>
               </p>
               <p style="font-size: 12px; color: #666;">Or copy this link into your browser:<br/>${consentUrl}</p>
               <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
-              <p style="font-size: 12px; color: #999;">If you did not expect this email, you can ignore it. Questions? <a href="mailto:support@lctrainings.com" style="color: #B89A45;">support@lctrainings.com</a></p>
+              <p style="font-size: 12px; color: #999;">If you did not expect this email, you can ignore it. Questions? <a href="mailto:support@detroitdynamo.com" style="color: #0078FF;">support@detroitdynamo.com</a></p>
             </div>
           `,
         });
-        toast.success(`Consent email sent to ${emailToUse}.`);
+        toast.success(`Consent email sent to ${consentEmail}.`);
         if (refetch) await refetch();
       } catch {
         toast.error('Could not send consent email. Please try again.');
@@ -197,6 +199,7 @@ export default function Matching() {
             <Label className="font-oswald tracking-wider uppercase text-xs">Parent / Guardian Email</Label>
             <Input
               type="email"
+              maxLength={LIMITS.email}
               value={parentEmailInput || defaultEmail}
               onChange={e => setParentEmailInput(e.target.value)}
               placeholder="parent@example.com"
@@ -288,7 +291,7 @@ export default function Matching() {
           <ul className="list-disc pl-5 space-y-1">
             <li>Only your <strong className="text-foreground">first name</strong> and age are shown to other players. Email and phone are never shared.</li>
             <li>Players under 18 need a parent/guardian to consent before matching unlocks.</li>
-            <li>Messages route through LC Training so a coach or admin can step in if anything feels off — <a href="mailto:support@lctrainings.com" className="text-accent hover:underline">tell us</a>.</li>
+            <li>Messages route through Detroit Dynamo so a coach or admin can step in if anything feels off - <a href="mailto:support@detroitdynamo.com" className="text-accent hover:underline">tell us</a>.</li>
             <li>You can opt out any time from <Link to="/settings" className="text-accent hover:underline">Settings</Link>.</li>
           </ul>
         </div>

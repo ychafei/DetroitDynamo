@@ -1,4 +1,14 @@
-import { account, databases, functions, DB_ID, COL, Query, ID } from '@/api/appwriteClient';
+import {
+  account,
+  COL,
+  createAppwriteDisabledError,
+  databases,
+  DB_ID,
+  functions,
+  ID,
+  isAppwriteBrowserEnabled,
+  Query,
+} from '@/api/appwriteClient';
 import { OAuthProvider } from 'appwrite';
 
 // Hydrate the matching `profiles` document for an Appwrite account, then
@@ -115,6 +125,7 @@ async function hydrateProfile(acc) {
 export const auth = {
   // Returns the merged profile+account object, or throws if not signed in.
   getCurrentUser: async () => {
+    if (!isAppwriteBrowserEnabled()) throw createAppwriteDisabledError();
     const acc = await account.get();
     return hydrateProfile(acc);
   },

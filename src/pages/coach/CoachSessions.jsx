@@ -366,7 +366,7 @@ export default function CoachSessions() {
           subject: `Session rescheduled — ${formatLongDateET(newDate)}`,
           body: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-              <h2 style="color: #B89A45;">Session Rescheduled</h2>
+              <h2 style="color: #0078FF;">Session Rescheduled</h2>
               <p>Hi ${rescheduleSession.client_name || 'there'},</p>
               <p>Your session with <strong>${coachName}</strong> has been rescheduled.</p>
               <p><strong>Previous:</strong> <span style="text-decoration:line-through; color:#888;">${oldWhen}</span></p>

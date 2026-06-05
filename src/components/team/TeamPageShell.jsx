@@ -1,13 +1,13 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 
-export function TeamPageHero({ eyebrow, title, accentTitle, description, badge }) {
+export function TeamPageHero({ eyebrow, title, accentTitle = '', description, badge = '' }) {
   return (
     <section className="relative py-20 sm:py-24 overflow-hidden border-b border-border">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/10" />
       <div className="absolute top-20 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
       <img
-        src="/logo-shield.png"
+        src="/detroit-dynamo/logo-primary.png"
         alt=""
         aria-hidden="true"
         className="pointer-events-none select-none absolute right-[-140px] top-1/2 -translate-y-1/2 w-[560px] opacity-[0.08] mix-blend-screen hidden lg:block"
@@ -39,7 +39,7 @@ export function TeamPageHero({ eyebrow, title, accentTitle, description, badge }
   );
 }
 
-export function SectionHeader({ eyebrow, title, description, badge }) {
+export function SectionHeader({ eyebrow, title, description = '', badge = '' }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
       <div className="max-w-2xl">

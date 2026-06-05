@@ -1,0 +1,519 @@
+{
+  "generatedAt": "2026-05-29T14:14:32.027Z",
+  "functionId": "detroitDynamoLeadPipelineAction",
+  "functionExecutePermission": "users",
+  "auditEventCollectionId": "dd_admin_audit_events",
+  "supportedModels": [
+    {
+      "model": "ContactLead",
+      "collectionId": "dd_contact_leads",
+      "ownerRole": "Media/Admin Staff"
+    },
+    {
+      "model": "Booking",
+      "collectionId": "dd_bookings",
+      "ownerRole": "Training Director"
+    },
+    {
+      "model": "TryoutRegistration",
+      "collectionId": "dd_tryout_registrations",
+      "ownerRole": "Registrar"
+    },
+    {
+      "model": "Sponsor",
+      "collectionId": "dd_sponsors",
+      "ownerRole": "Media/Admin Staff"
+    }
+  ],
+  "successFixtures": [
+    {
+      "id": "contact-new-to-triaged",
+      "label": "General contact lead triage",
+      "model": "ContactLead",
+      "collectionId": "dd_contact_leads",
+      "leadType": "contact",
+      "currentStatus": "new",
+      "nextStatus": "triaged",
+      "allowedNextStatuses": [
+        "triaged",
+        "closed_duplicate"
+      ],
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "model": "ContactLead",
+        "collection_id": "dd_contact_leads",
+        "record_id": "preview_contact_new_to_triaged",
+        "next_status": "triaged",
+        "actor_role": "Media/Admin Staff",
+        "owner_role": "Media/Admin Staff",
+        "note": "Validated contact route, source, and preferred callback window."
+      },
+      "currentRecordFixture": {
+        "$id": "preview_contact_new_to_triaged",
+        "pipeline_status": "new",
+        "pipeline_owner_role": "Media/Admin Staff",
+        "pipeline_due_at": "2026-05-28T20:00:00.000Z",
+        "pipeline_updated_at": "2026-05-28T16:00:00.000Z",
+        "pipeline_last_note": "Confirm the lead type, source route, contact information, and required player or business context.",
+        "pipeline_event_count": 0
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "from_status": "new",
+        "to_status": "triaged",
+        "actor_role": "Media/Admin Staff",
+        "owner_role": "Media/Admin Staff",
+        "pipeline_event_count": 1,
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedUpdatedFields": {
+        "pipeline_status": "triaged",
+        "pipeline_owner_role": "Media/Admin Staff",
+        "pipeline_due_at": "now + 24h",
+        "pipeline_updated_at": "now",
+        "pipeline_last_note": "Validated contact route, source, and preferred callback window.",
+        "pipeline_event_count": "previous + 1",
+        "updated_at": "now"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "pipeline_status_transition",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Media/Admin Staff",
+        "target_model": "ContactLead",
+        "target_collection_id": "dd_contact_leads",
+        "target_record_id": "preview_contact_new_to_triaged",
+        "previous_status": "new",
+        "next_status": "triaged",
+        "metadata_json": "owner role and note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "training-contacted-to-package",
+      "label": "Training booking package discussion",
+      "model": "Booking",
+      "collectionId": "dd_bookings",
+      "leadType": "training",
+      "currentStatus": "contacted",
+      "nextStatus": "package_discussion",
+      "allowedNextStatuses": [
+        "awaiting_response",
+        "evaluation_scheduled",
+        "package_discussion",
+        "closed_not_fit"
+      ],
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "model": "Booking",
+        "collection_id": "dd_bookings",
+        "record_id": "preview_training_contacted_to_package",
+        "next_status": "package_discussion",
+        "actor_role": "Training Director",
+        "owner_role": "Training Director",
+        "note": "Family asked for private training package options after first contact."
+      },
+      "currentRecordFixture": {
+        "$id": "preview_training_contacted_to_package",
+        "pipeline_status": "contacted",
+        "pipeline_owner_role": "Training Director",
+        "pipeline_due_at": "2026-05-28T20:00:00.000Z",
+        "pipeline_updated_at": "2026-05-28T16:00:00.000Z",
+        "pipeline_last_note": "Send the first email, call, or text, then log the response window and any missing details.",
+        "pipeline_event_count": 0
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "from_status": "contacted",
+        "to_status": "package_discussion",
+        "actor_role": "Training Director",
+        "owner_role": "Training Director",
+        "pipeline_event_count": 1,
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedUpdatedFields": {
+        "pipeline_status": "package_discussion",
+        "pipeline_owner_role": "Training Director",
+        "pipeline_due_at": "now + 96h",
+        "pipeline_updated_at": "now",
+        "pipeline_last_note": "Family asked for private training package options after first contact.",
+        "pipeline_event_count": "previous + 1",
+        "updated_at": "now"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "pipeline_status_transition",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Training Director",
+        "target_model": "Booking",
+        "target_collection_id": "dd_bookings",
+        "target_record_id": "preview_training_contacted_to_package",
+        "previous_status": "contacted",
+        "next_status": "package_discussion",
+        "metadata_json": "owner role and note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "tryout-contacted-to-evaluation",
+      "label": "Tryout registration evaluation scheduled",
+      "model": "TryoutRegistration",
+      "collectionId": "dd_tryout_registrations",
+      "leadType": "tryout",
+      "currentStatus": "contacted",
+      "nextStatus": "evaluation_scheduled",
+      "allowedNextStatuses": [
+        "awaiting_response",
+        "evaluation_scheduled",
+        "package_discussion",
+        "closed_not_fit"
+      ],
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "model": "TryoutRegistration",
+        "collection_id": "dd_tryout_registrations",
+        "record_id": "preview_tryout_contacted_to_evaluation",
+        "next_status": "evaluation_scheduled",
+        "actor_role": "Registrar",
+        "owner_role": "Registrar",
+        "note": "Player evaluation window confirmed with guardian."
+      },
+      "currentRecordFixture": {
+        "$id": "preview_tryout_contacted_to_evaluation",
+        "pipeline_status": "contacted",
+        "pipeline_owner_role": "Registrar",
+        "pipeline_due_at": "2026-05-28T20:00:00.000Z",
+        "pipeline_updated_at": "2026-05-28T16:00:00.000Z",
+        "pipeline_last_note": "Send the first email, call, or text, then log the response window and any missing details.",
+        "pipeline_event_count": 0
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "from_status": "contacted",
+        "to_status": "evaluation_scheduled",
+        "actor_role": "Registrar",
+        "owner_role": "Registrar",
+        "pipeline_event_count": 1,
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedUpdatedFields": {
+        "pipeline_status": "evaluation_scheduled",
+        "pipeline_owner_role": "Registrar",
+        "pipeline_due_at": "now + 72h",
+        "pipeline_updated_at": "now",
+        "pipeline_last_note": "Player evaluation window confirmed with guardian.",
+        "pipeline_event_count": "previous + 1",
+        "updated_at": "now"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "pipeline_status_transition",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Registrar",
+        "target_model": "TryoutRegistration",
+        "target_collection_id": "dd_tryout_registrations",
+        "target_record_id": "preview_tryout_contacted_to_evaluation",
+        "previous_status": "contacted",
+        "next_status": "evaluation_scheduled",
+        "metadata_json": "owner role and note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "sponsor-contacted-to-package",
+      "label": "Sponsor inquiry package discussion",
+      "model": "Sponsor",
+      "collectionId": "dd_sponsors",
+      "leadType": "sponsor",
+      "currentStatus": "contacted",
+      "nextStatus": "package_discussion",
+      "allowedNextStatuses": [
+        "awaiting_response",
+        "evaluation_scheduled",
+        "package_discussion",
+        "closed_not_fit"
+      ],
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "model": "Sponsor",
+        "collection_id": "dd_sponsors",
+        "record_id": "preview_sponsor_contacted_to_package",
+        "next_status": "package_discussion",
+        "actor_role": "Media/Admin Staff",
+        "owner_role": "Media/Admin Staff",
+        "note": "Local business requested founding sponsor inventory and logo rules."
+      },
+      "currentRecordFixture": {
+        "$id": "preview_sponsor_contacted_to_package",
+        "pipeline_status": "contacted",
+        "pipeline_owner_role": "Media/Admin Staff",
+        "pipeline_due_at": "2026-05-28T20:00:00.000Z",
+        "pipeline_updated_at": "2026-05-28T16:00:00.000Z",
+        "pipeline_last_note": "Send the first email, call, or text, then log the response window and any missing details.",
+        "pipeline_event_count": 0
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "from_status": "contacted",
+        "to_status": "package_discussion",
+        "actor_role": "Media/Admin Staff",
+        "owner_role": "Media/Admin Staff",
+        "pipeline_event_count": 1,
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedUpdatedFields": {
+        "pipeline_status": "package_discussion",
+        "pipeline_owner_role": "Media/Admin Staff",
+        "pipeline_due_at": "now + 96h",
+        "pipeline_updated_at": "now",
+        "pipeline_last_note": "Local business requested founding sponsor inventory and logo rules.",
+        "pipeline_event_count": "previous + 1",
+        "updated_at": "now"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "pipeline_status_transition",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Media/Admin Staff",
+        "target_model": "Sponsor",
+        "target_collection_id": "dd_sponsors",
+        "target_record_id": "preview_sponsor_contacted_to_package",
+        "previous_status": "contacted",
+        "next_status": "package_discussion",
+        "metadata_json": "owner role and note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "duplicate-contact-closed",
+      "label": "Duplicate contact merge",
+      "model": "ContactLead",
+      "collectionId": "dd_contact_leads",
+      "leadType": "contact",
+      "currentStatus": "new",
+      "nextStatus": "closed_duplicate",
+      "allowedNextStatuses": [
+        "triaged",
+        "closed_duplicate"
+      ],
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "model": "ContactLead",
+        "collection_id": "dd_contact_leads",
+        "record_id": "preview_duplicate_contact_closed",
+        "next_status": "closed_duplicate",
+        "actor_role": "Media/Admin Staff",
+        "owner_role": "Media/Admin Staff",
+        "note": "Merged duplicate submission into the oldest active lead record."
+      },
+      "currentRecordFixture": {
+        "$id": "preview_duplicate_contact_closed",
+        "pipeline_status": "new",
+        "pipeline_owner_role": "Media/Admin Staff",
+        "pipeline_due_at": "2026-05-28T20:00:00.000Z",
+        "pipeline_updated_at": "2026-05-28T16:00:00.000Z",
+        "pipeline_last_note": "Confirm the lead type, source route, contact information, and required player or business context.",
+        "pipeline_event_count": 0
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "from_status": "new",
+        "to_status": "closed_duplicate",
+        "actor_role": "Media/Admin Staff",
+        "owner_role": "Media/Admin Staff",
+        "pipeline_event_count": 1,
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedUpdatedFields": {
+        "pipeline_status": "closed_duplicate",
+        "pipeline_owner_role": "Media/Admin Staff",
+        "pipeline_due_at": "now + 24h",
+        "pipeline_updated_at": "now",
+        "pipeline_last_note": "Merged duplicate submission into the oldest active lead record.",
+        "pipeline_event_count": "previous + 1",
+        "updated_at": "now"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "pipeline_status_transition",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Media/Admin Staff",
+        "target_model": "ContactLead",
+        "target_collection_id": "dd_contact_leads",
+        "target_record_id": "preview_duplicate_contact_closed",
+        "previous_status": "new",
+        "next_status": "closed_duplicate",
+        "metadata_json": "owner role and note JSON",
+        "created_at": "now"
+      }
+    },
+    {
+      "id": "no-show-reopened",
+      "label": "No-show evaluation rescheduled",
+      "model": "TryoutRegistration",
+      "collectionId": "dd_tryout_registrations",
+      "leadType": "youth",
+      "currentStatus": "closed_no_show",
+      "nextStatus": "evaluation_scheduled",
+      "allowedNextStatuses": [
+        "archived",
+        "evaluation_scheduled"
+      ],
+      "requiredAuth": "Appwrite authenticated user execution",
+      "requestBody": {
+        "model": "TryoutRegistration",
+        "collection_id": "dd_tryout_registrations",
+        "record_id": "preview_no_show_reopened",
+        "next_status": "evaluation_scheduled",
+        "actor_role": "Registrar",
+        "owner_role": "Registrar",
+        "note": "Guardian requested one reschedule after missed evaluation."
+      },
+      "currentRecordFixture": {
+        "$id": "preview_no_show_reopened",
+        "pipeline_status": "closed_no_show",
+        "pipeline_owner_role": "Registrar",
+        "pipeline_due_at": "2026-05-28T20:00:00.000Z",
+        "pipeline_updated_at": "2026-05-28T16:00:00.000Z",
+        "pipeline_last_note": "Record the missed evaluation, meeting, or call and reopen only if the family, player, or business requests a new time.",
+        "pipeline_event_count": 0
+      },
+      "expectedResponse": {
+        "httpStatus": 200,
+        "success": true,
+        "from_status": "closed_no_show",
+        "to_status": "evaluation_scheduled",
+        "actor_role": "Registrar",
+        "owner_role": "Registrar",
+        "pipeline_event_count": 1,
+        "audit_event_id": "created dd_admin_audit_events document id"
+      },
+      "expectedUpdatedFields": {
+        "pipeline_status": "evaluation_scheduled",
+        "pipeline_owner_role": "Registrar",
+        "pipeline_due_at": "now + 72h",
+        "pipeline_updated_at": "now",
+        "pipeline_last_note": "Guardian requested one reschedule after missed evaluation.",
+        "pipeline_event_count": "previous + 1",
+        "updated_at": "now"
+      },
+      "expectedAuditEvent": {
+        "collectionId": "dd_admin_audit_events",
+        "action": "pipeline_status_transition",
+        "actor_user_id": "authenticated Appwrite user id",
+        "actor_role": "Registrar",
+        "target_model": "TryoutRegistration",
+        "target_collection_id": "dd_tryout_registrations",
+        "target_record_id": "preview_no_show_reopened",
+        "previous_status": "closed_no_show",
+        "next_status": "evaluation_scheduled",
+        "metadata_json": "owner role and note JSON",
+        "created_at": "now"
+      }
+    }
+  ],
+  "rejectionFixtures": [
+    {
+      "id": "reject-unauthenticated",
+      "label": "Reject unauthenticated action",
+      "model": "ContactLead",
+      "collectionId": "dd_contact_leads",
+      "leadType": "contact",
+      "currentStatus": "new",
+      "nextStatus": "triaged",
+      "requestBody": {
+        "model": "ContactLead",
+        "collection_id": "dd_contact_leads",
+        "record_id": "preview_reject_unauthenticated",
+        "next_status": "triaged",
+        "actor_role": "Media/Admin Staff",
+        "owner_role": "Media/Admin Staff",
+        "note": "Assign the correct director, registrar, training owner, or sponsor/media owner and set the next follow-up channel."
+      },
+      "currentRecordFixture": {
+        "$id": "preview_reject_unauthenticated",
+        "pipeline_status": "new",
+        "pipeline_owner_role": "Media/Admin Staff",
+        "pipeline_due_at": "2026-05-28T20:00:00.000Z",
+        "pipeline_updated_at": "2026-05-28T16:00:00.000Z",
+        "pipeline_last_note": "Confirm the lead type, source route, contact information, and required player or business context.",
+        "pipeline_event_count": 0
+      },
+      "expectedResponse": {
+        "httpStatus": 401,
+        "error": "Detroit Dynamo pipeline action requires an authenticated Appwrite user."
+      },
+      "reason": "The function must receive the authenticated Appwrite user header from a protected session."
+    },
+    {
+      "id": "reject-invalid-transition",
+      "label": "Reject disallowed transition",
+      "model": "TryoutRegistration",
+      "collectionId": "dd_tryout_registrations",
+      "leadType": "tryout",
+      "currentStatus": "new",
+      "nextStatus": "converted",
+      "requestBody": {
+        "model": "TryoutRegistration",
+        "collection_id": "dd_tryout_registrations",
+        "record_id": "preview_reject_invalid_transition",
+        "next_status": "converted",
+        "actor_role": "Registrar",
+        "owner_role": "Registrar",
+        "note": "Connect the lead to active player, booking, tryout, team, sponsor, payment, or waiver records once backend modules are live."
+      },
+      "currentRecordFixture": {
+        "$id": "preview_reject_invalid_transition",
+        "pipeline_status": "new",
+        "pipeline_owner_role": "Registrar",
+        "pipeline_due_at": "2026-05-28T20:00:00.000Z",
+        "pipeline_updated_at": "2026-05-28T16:00:00.000Z",
+        "pipeline_last_note": "Confirm the lead type, source route, contact information, and required player or business context.",
+        "pipeline_event_count": 0
+      },
+      "expectedResponse": {
+        "httpStatus": 409,
+        "error": "Pipeline transition is not allowed"
+      },
+      "reason": "New intake cannot skip triage, contact, scheduling, and invite or close review."
+    },
+    {
+      "id": "reject-unsupported-model",
+      "label": "Reject unsupported collection target",
+      "model": "Player",
+      "collectionId": "",
+      "leadType": "tryout",
+      "currentStatus": "new",
+      "nextStatus": "triaged",
+      "requestBody": {
+        "model": "Player",
+        "collection_id": "",
+        "record_id": "preview_reject_unsupported_model",
+        "next_status": "triaged",
+        "actor_role": "Registrar",
+        "owner_role": "Registrar",
+        "note": "Assign the correct director, registrar, training owner, or sponsor/media owner and set the next follow-up channel."
+      },
+      "currentRecordFixture": {
+        "$id": "preview_reject_unsupported_model",
+        "pipeline_status": "new",
+        "pipeline_owner_role": "Registrar",
+        "pipeline_due_at": "2026-05-28T20:00:00.000Z",
+        "pipeline_updated_at": "2026-05-28T16:00:00.000Z",
+        "pipeline_last_note": "Confirm the lead type, source route, contact information, and required player or business context.",
+        "pipeline_event_count": 0
+      },
+      "expectedResponse": {
+        "httpStatus": 400,
+        "error": "model or collection_id must target a pipeline-backed Detroit Dynamo collection"
+      },
+      "reason": "Only ContactLead, Booking, TryoutRegistration, and Sponsor are directly pipeline-backed."
+    }
+  ],
+  "issues": []
+}

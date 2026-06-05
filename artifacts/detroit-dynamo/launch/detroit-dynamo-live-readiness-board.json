@@ -1,0 +1,728 @@
+{
+  "generatedAt": "2026-05-29T14:14:30.694Z",
+  "decision": {
+    "decision": "no_go_preview_only",
+    "label": "No-Go: Preview Only",
+    "reason": "Detroit Dynamo has a complete preview and launch handoff, but live backend, payment, waiver, fact-proof, SEO, redirect, and owner approval gates are not cleared."
+  },
+  "columns": [
+    "id",
+    "label",
+    "phase",
+    "ownerRole",
+    "liveDecision",
+    "promotionGateStatuses",
+    "readinessStatuses",
+    "externalConfirmationStatuses",
+    "evidenceItems",
+    "intakeRows",
+    "productionPreviewTracks",
+    "requiredProof",
+    "verificationCommands",
+    "artifactReferences",
+    "blockedLiveActions",
+    "goLiveAllowed"
+  ],
+  "rows": [
+    {
+      "id": "current-site-rollback",
+      "label": "Current LC site and rollback",
+      "ownerRole": "Master Admin",
+      "phase": "Preserve existing business",
+      "sourceGates": [
+        "Current LC site preservation"
+      ],
+      "confirmationAreas": [
+        "Current LC Site"
+      ],
+      "productionTrackTypes": [
+        "route_browser_qa"
+      ],
+      "readinessCategories": [],
+      "liveDecision": "review_ready_not_promoted",
+      "requiredProof": [
+        "Current LC route smoke output from the production-preview URL",
+        "Browser QA screenshots for the current homepage and booking shell",
+        "Rollback deployment id or prior production build target"
+      ],
+      "verificationCommands": [
+        "BASE_URL=<production-preview-url> npm run test -- --run",
+        "BASE_URL=<production-preview-url> npm run qa:dynamo-browser"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/goal-audit.json",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-promotion-cutover.md"
+      ],
+      "blockedLiveActions": [
+        "root route promotion",
+        "permanent redirects",
+        "noindex removal"
+      ],
+      "promotionGateStatuses": [
+        "Current LC site preservation: passing_in_preview"
+      ],
+      "readinessStatuses": [],
+      "externalConfirmationStatuses": [],
+      "evidenceItems": 1,
+      "intakeRows": 1,
+      "productionPreviewTracks": 2,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "backend-appwrite-live",
+      "label": "Backend and Appwrite live mode",
+      "ownerRole": "Master Admin",
+      "phase": "Activate isolated data backend",
+      "sourceGates": [
+        "Data backend live"
+      ],
+      "confirmationAreas": [
+        "Backend/Data"
+      ],
+      "productionTrackTypes": [
+        "backend_activation"
+      ],
+      "readinessCategories": [
+        "Backend/Data"
+      ],
+      "liveDecision": "blocked_until_backend_evidence",
+      "requiredProof": [
+        "Preflight report without secret leakage",
+        "Provision/apply transcript for isolated dd_* collections",
+        "Function variables and deployment proof for all Detroit Dynamo functions"
+      ],
+      "verificationCommands": [
+        "npm run preflight:dynamo-backend",
+        "npm run provision:dynamo-appwrite -- --apply",
+        "node scripts/configure-functions.mjs"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-backend-activation-runbook.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-production-preview-evidence.md"
+      ],
+      "blockedLiveActions": [
+        "Appwrite intake default",
+        "live lead routing",
+        "protected admin live writes"
+      ],
+      "promotionGateStatuses": [
+        "Data backend live: planned"
+      ],
+      "readinessStatuses": [
+        "Backend/Data: planned"
+      ],
+      "externalConfirmationStatuses": [],
+      "evidenceItems": 2,
+      "intakeRows": 2,
+      "productionPreviewTracks": 8,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "public-form-production-preview",
+      "label": "Public form production-preview submissions",
+      "ownerRole": "Registrar",
+      "phase": "Verify lead intake",
+      "sourceGates": [
+        "Data backend live"
+      ],
+      "confirmationAreas": [
+        "Backend/Data"
+      ],
+      "productionTrackTypes": [
+        "public_form_submission",
+        "public_validation_probe"
+      ],
+      "readinessCategories": [
+        "Backend/Data"
+      ],
+      "liveDecision": "blocked_until_submission_ids",
+      "requiredProof": [
+        "Production-preview submission id for each public lead form variant",
+        "Successful validation and storage-error probes",
+        "Admin routing confirmation for training, youth, tryout, senior, sponsor, and contact leads"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-intake-contract",
+        "BASE_URL=<production-preview-url> npm run qa:dynamo-browser"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-lead-intake-fixtures.json",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-production-preview-evidence.md"
+      ],
+      "blockedLiveActions": [
+        "default live intake",
+        "live lead routing",
+        "owner launch approval"
+      ],
+      "promotionGateStatuses": [
+        "Data backend live: planned"
+      ],
+      "readinessStatuses": [
+        "Backend/Data: planned"
+      ],
+      "externalConfirmationStatuses": [],
+      "evidenceItems": 2,
+      "intakeRows": 2,
+      "productionPreviewTracks": 8,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "protected-admin-live-operations",
+      "label": "Protected admin live operations",
+      "ownerRole": "Master Admin",
+      "phase": "Verify role-scoped admin",
+      "sourceGates": [
+        "Data backend live"
+      ],
+      "confirmationAreas": [
+        "Backend/Data",
+        "Staff, Rosters & Safeguarding"
+      ],
+      "productionTrackTypes": [
+        "admin_function_action",
+        "admin_record_workspace"
+      ],
+      "readinessCategories": [
+        "Backend/Data"
+      ],
+      "liveDecision": "blocked_until_admin_function_evidence",
+      "requiredProof": [
+        "Authenticated success and rejection fixture results for pipeline, module-read, role-grant, and module-write functions",
+        "Audit event ids for permitted actions",
+        "Rejected unauthorized requests without protected record mutation"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-pipeline-actions",
+        "npm run verify:dynamo-admin-module-read",
+        "npm run verify:dynamo-admin-role-grants",
+        "npm run verify:dynamo-admin-module-writes"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-module-read-handoff.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-module-write-handoff.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-production-preview-evidence.md"
+      ],
+      "blockedLiveActions": [
+        "protected admin live reads",
+        "protected admin live writes",
+        "trusted role grants"
+      ],
+      "promotionGateStatuses": [
+        "Data backend live: planned"
+      ],
+      "readinessStatuses": [
+        "Backend/Data: planned"
+      ],
+      "externalConfirmationStatuses": [
+        "Staff, Rosters & Safeguarding: pending_confirmation"
+      ],
+      "evidenceItems": 3,
+      "intakeRows": 3,
+      "productionPreviewTracks": 5,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "payments-packages-provider",
+      "label": "Payments, packages, and provider tests",
+      "ownerRole": "Master Admin",
+      "phase": "Approve commercial setup",
+      "sourceGates": [
+        "Payments approved"
+      ],
+      "confirmationAreas": [
+        "Payments & Packages"
+      ],
+      "productionTrackTypes": [
+        "external_confirmation"
+      ],
+      "readinessCategories": [
+        "Payments/Packages"
+      ],
+      "liveDecision": "blocked_until_payment_approval",
+      "requiredProof": [
+        "Owner-approved package matrix with exact prices, taxes, fees, session counts, and refund rules",
+        "Provider product ids or invoice workflow ids",
+        "Sandbox success, failure, cancel, refund, webhook, and audit evidence"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-gate-contracts",
+        "Provider sandbox test plan"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-payment-waiver-gates.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-evidence-intake.csv"
+      ],
+      "blockedLiveActions": [
+        "checkout activation",
+        "payment collection",
+        "published exact pricing"
+      ],
+      "promotionGateStatuses": [
+        "Payments approved: pending_confirmation"
+      ],
+      "readinessStatuses": [
+        "Payments/Packages: pending_confirmation"
+      ],
+      "externalConfirmationStatuses": [
+        "Payments & Packages: pending_confirmation"
+      ],
+      "evidenceItems": 2,
+      "intakeRows": 2,
+      "productionPreviewTracks": 1,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "waivers-legal-signature",
+      "label": "Waivers, legal, and signature workflow",
+      "ownerRole": "Registrar",
+      "phase": "Approve participation controls",
+      "sourceGates": [
+        "Waivers approved"
+      ],
+      "confirmationAreas": [
+        "Waivers & Legal"
+      ],
+      "productionTrackTypes": [
+        "external_confirmation"
+      ],
+      "readinessCategories": [
+        "Waivers/Legal"
+      ],
+      "liveDecision": "blocked_until_legal_approval",
+      "requiredProof": [
+        "Approved waiver/legal version register for youth, adult, medical, media, camp, and travel consent",
+        "Guardian and adult signature workflow tests",
+        "Retention, expiration, revocation, and roster-eligibility rules"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-gate-contracts",
+        "npm run verify:dynamo-safeguarding"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-evidence-intake.csv"
+      ],
+      "blockedLiveActions": [
+        "signature capture",
+        "medical intake",
+        "roster eligibility clearance"
+      ],
+      "promotionGateStatuses": [
+        "Waivers approved: pending_confirmation"
+      ],
+      "readinessStatuses": [
+        "Waivers/Legal: pending_confirmation"
+      ],
+      "externalConfirmationStatuses": [
+        "Waivers & Legal: pending_confirmation"
+      ],
+      "evidenceItems": 2,
+      "intakeRows": 2,
+      "productionPreviewTracks": 1,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "league-facility-operations-proof",
+      "label": "League, facility, and operations proof",
+      "ownerRole": "Club Director",
+      "phase": "Confirm real-world soccer operations",
+      "sourceGates": [
+        "League and facility facts confirmed"
+      ],
+      "confirmationAreas": [
+        "League & Competition Facts",
+        "Facilities & Operations"
+      ],
+      "productionTrackTypes": [
+        "external_confirmation"
+      ],
+      "readinessCategories": [
+        "League/Competition",
+        "Facilities/Operations"
+      ],
+      "liveDecision": "blocked_until_fact_confirmation",
+      "requiredProof": [
+        "Official league or owner-approved future-pathway wording for every competition claim",
+        "Facility permits, calendars, insurance notes, emergency procedures, and publish approval",
+        "Fixture, opponent, venue, roster, staff, and competition proof before publication"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-claim-safety",
+        "npm run verify:dynamo-safeguarding"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-evidence-intake.csv"
+      ],
+      "blockedLiveActions": [
+        "league claim publication",
+        "facility publication",
+        "fixture/result publication"
+      ],
+      "promotionGateStatuses": [
+        "League and facility facts confirmed: future_pathway"
+      ],
+      "readinessStatuses": [
+        "League/Competition: future_pathway",
+        "Facilities/Operations: pending_confirmation"
+      ],
+      "externalConfirmationStatuses": [
+        "League & Competition Facts: future_pathway",
+        "Facilities & Operations: pending_confirmation"
+      ],
+      "evidenceItems": 4,
+      "intakeRows": 4,
+      "productionPreviewTracks": 3,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "staff-roster-safeguarding-proof",
+      "label": "Staff, rosters, and safeguarding proof",
+      "ownerRole": "Club Director",
+      "phase": "Protect youth and roster data",
+      "sourceGates": [
+        "League and facility facts confirmed"
+      ],
+      "confirmationAreas": [
+        "Staff, Rosters & Safeguarding"
+      ],
+      "productionTrackTypes": [
+        "external_confirmation"
+      ],
+      "readinessCategories": [
+        "League/Competition"
+      ],
+      "liveDecision": "blocked_until_safeguarding_review",
+      "requiredProof": [
+        "Approved staff names, roles, bios, photos, licenses, and public contact rules",
+        "Background/safeguarding review for youth-facing staff",
+        "Guardian/media-release controls before youth roster or player profile publication"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-safeguarding",
+        "npm run verify:dynamo-admin-role-grants"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-safeguarding-privacy.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-admin-role-grant-handoff.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-evidence-intake.csv"
+      ],
+      "blockedLiveActions": [
+        "staff proof publication",
+        "youth roster publication",
+        "team-manager sensitive access"
+      ],
+      "promotionGateStatuses": [
+        "League and facility facts confirmed: future_pathway"
+      ],
+      "readinessStatuses": [
+        "League/Competition: future_pathway"
+      ],
+      "externalConfirmationStatuses": [
+        "Staff, Rosters & Safeguarding: pending_confirmation"
+      ],
+      "evidenceItems": 4,
+      "intakeRows": 4,
+      "productionPreviewTracks": 3,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "sponsor-media-content-proof",
+      "label": "Sponsor, media, and content proof",
+      "ownerRole": "Media/Admin Staff",
+      "phase": "Approve public proof",
+      "sourceGates": [
+        "League and facility facts confirmed",
+        "SEO and redirect launch approved"
+      ],
+      "confirmationAreas": [
+        "Sponsors, Media & Content Proof"
+      ],
+      "productionTrackTypes": [
+        "external_confirmation"
+      ],
+      "readinessCategories": [
+        "Content/Brand Promotion"
+      ],
+      "liveDecision": "blocked_until_content_permissions",
+      "requiredProof": [
+        "Sponsor logo permissions, website links, package inventory, and display rules",
+        "Testimonial, player story, photo, video, and media-release permissions",
+        "Launch content calendar and proof source material"
+      ],
+      "verificationCommands": [
+        "npm run verify:dynamo-claim-safety"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-claim-safety.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-external-confirmation-register.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-evidence-intake.csv"
+      ],
+      "blockedLiveActions": [
+        "sponsor logo publication",
+        "testimonial publication",
+        "player outcome publication"
+      ],
+      "promotionGateStatuses": [
+        "League and facility facts confirmed: future_pathway",
+        "SEO and redirect launch approved: preview_only"
+      ],
+      "readinessStatuses": [
+        "Content/Brand Promotion: preview_only"
+      ],
+      "externalConfirmationStatuses": [
+        "Sponsors, Media & Content Proof: preview_only"
+      ],
+      "evidenceItems": 6,
+      "intakeRows": 6,
+      "productionPreviewTracks": 1,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "seo-redirect-root-cutover",
+      "label": "SEO, redirects, and root cutover",
+      "ownerRole": "Master Admin",
+      "phase": "Promote public brand only after approval",
+      "sourceGates": [
+        "SEO and redirect launch approved"
+      ],
+      "confirmationAreas": [
+        "Sponsors, Media & Content Proof"
+      ],
+      "productionTrackTypes": [
+        "route_browser_qa",
+        "external_confirmation"
+      ],
+      "readinessCategories": [
+        "Content/Brand Promotion"
+      ],
+      "liveDecision": "blocked_until_cutover_approval",
+      "requiredProof": [
+        "Approved titles, descriptions, favicon, Open Graph asset, robots, sitemap, canonical URLs, and noindex removal",
+        "Redirect/exclusion decisions for old LC routes, auth routes, admin routes, booking, and payment callbacks",
+        "Post-cutover desktop/mobile route QA plan and rollback instructions"
+      ],
+      "verificationCommands": [
+        "BASE_URL=<production-preview-url> npm run verify:dynamo",
+        "BASE_URL=<production-url> npm run qa:dynamo-browser"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-sitemap-preview.xml",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-redirect-plan.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-promotion-cutover.md",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-evidence-intake.csv"
+      ],
+      "blockedLiveActions": [
+        "root metadata replacement",
+        "noindex removal",
+        "permanent redirects"
+      ],
+      "promotionGateStatuses": [
+        "SEO and redirect launch approved: preview_only"
+      ],
+      "readinessStatuses": [
+        "Content/Brand Promotion: preview_only"
+      ],
+      "externalConfirmationStatuses": [
+        "Sponsors, Media & Content Proof: preview_only"
+      ],
+      "evidenceItems": 3,
+      "intakeRows": 3,
+      "productionPreviewTracks": 3,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    },
+    {
+      "id": "post-launch-monitoring-rollback",
+      "label": "Post-launch monitoring and rollback",
+      "ownerRole": "Master Admin",
+      "phase": "Watch the launch window",
+      "sourceGates": [
+        "SEO and redirect launch approved"
+      ],
+      "confirmationAreas": [
+        "Sponsors, Media & Content Proof"
+      ],
+      "productionTrackTypes": [
+        "route_browser_qa"
+      ],
+      "readinessCategories": [
+        "Content/Brand Promotion"
+      ],
+      "liveDecision": "blocked_until_monitoring_owner",
+      "requiredProof": [
+        "Named monitoring owner for first hour and first week",
+        "Rollback trigger list for routes, forms, booking, auth, admin, payments, waivers, analytics, and support",
+        "Support inbox, legal/support sender identity, analytics, and search-console watch plan"
+      ],
+      "verificationCommands": [
+        "BASE_URL=<production-url> npm run qa:dynamo-browser",
+        "npm run audit:dynamo-goal"
+      ],
+      "artifactReferences": [
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-promotion-cutover.md",
+        "artifacts/detroit-dynamo/browser-qa/browser-qa-report.json",
+        "artifacts/detroit-dynamo/launch/detroit-dynamo-owner-launch-review.md"
+      ],
+      "blockedLiveActions": [
+        "post-launch closeout",
+        "permanent redirect finalization",
+        "launch announcement closeout"
+      ],
+      "promotionGateStatuses": [
+        "SEO and redirect launch approved: preview_only"
+      ],
+      "readinessStatuses": [
+        "Content/Brand Promotion: preview_only"
+      ],
+      "externalConfirmationStatuses": [
+        "Sponsors, Media & Content Proof: preview_only"
+      ],
+      "evidenceItems": 3,
+      "intakeRows": 3,
+      "productionPreviewTracks": 2,
+      "goLiveAllowed": false,
+      "previewOnlyReason": "External evidence and owner approval are still required before this row can unlock any live action."
+    }
+  ],
+  "summary": {
+    "rowsTotal": 11,
+    "goLiveAllowedRows": 0,
+    "blockedRows": 11,
+    "liveGatesCleared": 0,
+    "publicationsUnlocked": 0,
+    "productionSubmissionsRecorded": 0,
+    "safeToPublishRows": 0,
+    "rootPromotionAllowed": false,
+    "liveBackendDefaultAllowed": false,
+    "checkoutAllowed": false,
+    "signatureCaptureAllowed": false,
+    "publicClaimPublicationAllowed": false,
+    "noindexRemovalAllowed": false,
+    "permanentRedirectsAllowed": false,
+    "blockedLiveActions": 29,
+    "ownerReviewDecision": "no_go_preview_only",
+    "ownerEvidenceIntakeRows": 13,
+    "productionPreviewEvidenceTracks": 30,
+    "launchEvidenceItems": 13
+  },
+  "launchBlockers": [
+    "Do not replace the LC Training root route.",
+    "Do not remove noindex or publish permanent redirects.",
+    "Do not make Appwrite intake, admin writes, checkout, or waiver signatures live by default.",
+    "Do not publish current league, facility, staff, roster, sponsor, testimonial, or outcome claims without proof.",
+    "Do not announce launch until owner evidence intake, production-preview evidence, and owner launch review are all signed off."
+  ],
+  "blockedLiveActions": [
+    "Appwrite intake default",
+    "checkout activation",
+    "default live intake",
+    "facility publication",
+    "fixture/result publication",
+    "launch announcement closeout",
+    "league claim publication",
+    "live lead routing",
+    "medical intake",
+    "noindex removal",
+    "owner launch approval",
+    "payment collection",
+    "permanent redirect finalization",
+    "permanent redirects",
+    "player outcome publication",
+    "post-launch closeout",
+    "protected admin live reads",
+    "protected admin live writes",
+    "published exact pricing",
+    "root metadata replacement",
+    "root route promotion",
+    "roster eligibility clearance",
+    "signature capture",
+    "sponsor logo publication",
+    "staff proof publication",
+    "team-manager sensitive access",
+    "testimonial publication",
+    "trusted role grants",
+    "youth roster publication"
+  ],
+  "referencedReports": {
+    "ownerLaunchReview": {
+      "sectionsTotal": 9,
+      "reviewReady": 1,
+      "blockedSections": 8,
+      "externalApprovalsRequired": 6,
+      "unresolvedEvidenceItems": 12,
+      "liveGatesCleared": 0,
+      "publicationsUnlocked": 0,
+      "paymentPackageTracks": 6,
+      "waiverTracks": 6,
+      "claimSafetyTracks": 7,
+      "cutoverTracks": 9,
+      "safeguardingTracks": 8,
+      "backendActivationSteps": 8,
+      "blockedLiveActions": 25
+    },
+    "ownerEvidenceIntake": {
+      "intakeRows": 13,
+      "unresolvedRows": 12,
+      "previewPassedRows": 1,
+      "ownerRoles": 4,
+      "blockedLiveActions": 37,
+      "safeToPublishRows": 0,
+      "liveGatesCleared": 0,
+      "publicationsUnlocked": 0
+    },
+    "productionPreviewEvidence": {
+      "tracksTotal": 30,
+      "evidenceRequired": 30,
+      "liveGatesCleared": 0,
+      "productionSubmissionsRecorded": 0,
+      "publicationsUnlocked": 0,
+      "trackTypes": {
+        "public_form_submission": 7,
+        "public_validation_probe": 1,
+        "admin_function_action": 4,
+        "admin_record_workspace": 1,
+        "route_browser_qa": 3,
+        "backend_activation": 8,
+        "external_confirmation": 6
+      },
+      "ownerRoles": [
+        "Club Director",
+        "Master Admin",
+        "Media/Admin Staff",
+        "Registrar",
+        "Training Director"
+      ],
+      "publicFormTracks": 7,
+      "adminActionTracks": 4,
+      "routeQaTracks": 3,
+      "backendActivationTracks": 8,
+      "externalConfirmationTracks": 6,
+      "launchEvidenceItems": 13,
+      "ownerReviewSections": 9,
+      "ownerReviewDecision": "no_go_preview_only",
+      "blockedLiveActions": 24
+    },
+    "launchEvidence": {
+      "total": 13,
+      "previewPassed": 1,
+      "evidenceRequired": 4,
+      "pendingConfirmation": 5,
+      "futurePathway": 1,
+      "previewOnly": 2,
+      "blockedActions": 37
+    }
+  },
+  "issues": []
+}

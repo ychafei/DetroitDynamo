@@ -1,4 +1,4 @@
-import { functions } from '@/api/appwriteClient';
+import { createAppwriteDisabledError, functions, isAppwriteBrowserEnabled } from '@/api/appwriteClient';
 
 // Thin wrapper that mimics Base44's rpc.invoke shape. Existing callers do
 // `const res = await rpc.invoke('foo', payload)` and then read `res.data` —
@@ -7,6 +7,8 @@ import { functions } from '@/api/appwriteClient';
 // Each function id matches an Appwrite Function (see appwrite.json).
 export const rpc = {
   invoke: async (name, body) => {
+    if (!isAppwriteBrowserEnabled()) throw createAppwriteDisabledError();
+
     const exec = await functions.createExecution(
       name,
       JSON.stringify(body ?? {}),
